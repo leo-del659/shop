@@ -1,0 +1,55 @@
+<view class="sku-mask" wx:if="{{visible}}" bindtap="close">
+  <view class="sku-panel" catchtap="stopProp">
+    <!-- 商品头部：图片 + 名称/规格/价格/库存 + 右上角关闭 -->
+    <view class="sku-header">
+      <image class="sku-thumb" src="{{coverImg}}" mode="aspectFill" />
+      <view class="sku-header-info">
+        <text class="sku-goods-name">{{goods.goodsName}}</text>
+        <text class="sku-selected-spec">已选：{{selectedSkuName || goods.spec || '默认规格'}}</text>
+        <view class="sku-meta-row">
+          <text class="sku-selected-price">¥{{displayPrice}}</text>
+          <text class="sku-selected-stock" wx:if="{{!soldOut}}">库存 {{selectedStock}}</text>
+          <text class="sku-selected-stock soldout" wx:else>已售罄</text>
+        </view>
+      </view>
+      <view class="sku-close" catchtap="close">×</view>
+    </view>
+
+    <!-- 规格组 -->
+    <block wx:for="{{specGroups}}" wx:for-item="grp" wx:for-index="gi" wx:key="gi">
+      <view class="spec-group">
+        <view class="options">
+          <block wx:for="{{grp.options}}" wx:for-item="opt" wx:for-index="oi" wx:key="id">
+            <view
+              class="opt {{selectedSkuId === opt.id ? 'active' : ''}} {{opt.stock <= 0 ? 'disabled' : ''}}"
+              data-id="{{opt.id}}"
+              catchtap="onPickSpec"
+            >
+              <text class="opt-name">{{opt.skuName}}</text>
+              <text class="opt-price">¥{{opt.priceText}}</text>
+            </view>
+          </block>
+        </view>
+      </view>
+    </block>
+
+    <!-- 数量 -->
+    <view class="qty-line flex-between">
+      <view class="qty-left">
+        <text>数量</text>
+      </view>
+      <van-stepper
+        value="{{qty}}"
+        min="1"
+        max="{{maxStock > 0 ? maxStock : 1}}"
+        integer
+        bind:change="onStep"
+      />
+    </view>
+
+    <!-- 确定 -->
+    <view class="btn-confirm {{soldOut ? 'disabled' : ''}}" catchtap="confirm">
+      {{soldOut ? '已售罄' : '确定'}}
+    </view>
+  </view>
+</view>

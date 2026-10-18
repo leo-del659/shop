@@ -1,0 +1,51 @@
+<view class="withdraw">
+  <view class="balance-card">
+    <view class="bc-main">
+      <view class="bc-label">可提现余额</view>
+      <view class="bc-amount">¥{{available || 0}}</view>
+      <view class="bc-btn" bindtap="openWithdraw">申请提现</view>
+    </view>
+    <view class="bc-divider"></view>
+    <view class="bc-row">
+      <view class="bc-item"><view class="bc-num">¥{{totalEarned}}</view><view class="bc-sub">累计已售</view></view>
+      <view class="bc-item"><view class="bc-num">¥{{withdrawn}}</view><view class="bc-sub">累计已提现</view></view>
+      <view class="bc-item"><view class="bc-num">{{completedOrderCount}}</view><view class="bc-sub">已完成订单</view></view>
+    </view>
+  </view>
+
+  <view class="entry-grid">
+    <view class="entry-item" bindtap="goRecords">
+      <view class="entry-icon">📜</view>
+      <view class="entry-text">提现记录</view>
+    </view>
+    <view class="entry-item" bindtap="goBank">
+      <view class="entry-icon">🏦</view>
+      <view class="entry-text">收款账户</view>
+    </view>
+  </view>
+
+  <view class="page-pad-bottom"></view>
+
+  <view wx:if="{{showWithdraw}}" class="mask" bindtap="closeWithdraw">
+    <view class="dialog" catchtap="noop">
+      <view class="dialog-title">申请提现</view>
+      <view class="dialog-tip">可提现余额 ¥{{available}}</view>
+      <view class="dialog-field">
+        <view class="df-label">提现金额</view>
+        <input class="df-input" type="digit" placeholder="请输入金额" value="{{wdAmount}}" data-field="wdAmount" bindinput="onWdInput" />
+      </view>
+      <view class="dialog-field">
+        <view class="df-label">收款账户</view>
+        <view class="df-input readonly">{{wdAccount}}</view>
+      </view>
+      <view class="dialog-field">
+        <view class="df-label">备注</view>
+        <input class="df-input" placeholder="选填" value="{{wdRemark}}" data-field="wdRemark" bindinput="onWdInput" />
+      </view>
+      <view class="dialog-btns">
+        <view class="dialog-btn ghost" bindtap="closeWithdraw">取消</view>
+        <view class="dialog-btn primary" bindtap="confirmWithdraw">{{submitting ? '提交中...' : '确认提现'}}</view>
+      </view>
+    </view>
+  </view>
+</view>

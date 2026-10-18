@@ -1,0 +1,33 @@
+<view class="edit-page">
+  <view class="form-card">
+    <!-- 头像 -->
+    <view class="form-item" bindtap="chooseAvatar">
+      <text class="label">头像</text>
+      <view class="avatar-right">
+        <image wx:if="{{avatarUrl}}" class="avatar-img" src="{{avatarUrl}}" mode="aspectFill" />
+        <view wx:else class="avatar-img avatar-img--text">{{avatarText}}</view>
+        <text class="avatar-arrow">{{uploading ? '上传中...' : '更换 ›'}}</text>
+      </view>
+    </view>
+
+    <!-- 商户名称 -->
+    <view class="form-item">
+      <text class="label">商户名称</text>
+      <input
+        class="input"
+        type="text"
+        value="{{merchantName}}"
+        data-field="merchantName"
+        bindinput="onInput"
+        placeholder="请输入商户名称"
+        maxlength="30"
+      />
+    </view>
+  </view>
+
+  <view class="tips">头像与名称修改后将同步至首页、个人中心</view>
+
+  <view class="footer">
+    <view class="save-btn {{saving ? 'disabled' : ''}}" bindtap="save">{{saveBtnText}}</view>
+  </view>
+</view>

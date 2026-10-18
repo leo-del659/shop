@@ -1,0 +1,409 @@
+.goods-page {
+  min-height: 100vh;
+  background: var(--bg);
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+}
+
+.search-row {
+  display: flex;
+  align-items: center;
+  padding: 8rpx 20rpx;
+  gap: 16rpx;
+}
+.search-box {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 36rpx;
+  padding: 16rpx 24rpx;
+  border: 1rpx solid var(--line);
+  transition: border-color 0.2s ease;
+}
+.search-box:focus-within {
+  border-color: var(--brand);
+}
+.search-ico {
+  font-size: 28rpx;
+  margin-right: 12rpx;
+  opacity: 0.7;
+}
+.search-input {
+  flex: 1;
+  min-width: 0;
+  font-size: 27rpx;
+  color: var(--text);
+}
+.search-ph {
+  color: var(--muted);
+  font-size: 26rpx;
+}
+.search-clear {
+  flex: none;
+  width: 40rpx;
+  height: 40rpx;
+  line-height: 40rpx;
+  text-align: center;
+  border-radius: 50%;
+  background: var(--line);
+  color: var(--muted);
+  font-size: 24rpx;
+  margin-left: 10rpx;
+}
+.search-clear:active { opacity: 0.7; }
+
+.search-add {
+  flex: none;
+  padding: 18rpx 28rpx;
+  background: var(--brand);
+  color: #fff;
+  border-radius: 36rpx;
+  font-size: 26rpx;
+  font-weight: 500;
+  white-space: nowrap;
+  box-shadow: 0 6rpx 16rpx rgba(46, 125, 110, 0.25);
+}
+.search-add:active { opacity: 0.85; transform: scale(0.97); }
+
+/* 分类栏（下拉picker + 新增按钮） */
+.cat-row {
+  display: flex;
+  align-items: center;
+  margin: 12rpx 20rpx 0;
+  gap: 16rpx;
+}
+.cat-picker {
+  flex: none;
+}
+.cat-picker-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 10rpx;
+  background: #fff;
+  border: 1rpx solid var(--line-strong);
+  border-radius: 40rpx;
+  padding: 10rpx 24rpx;
+  font-size: 25rpx;
+  color: var(--brand);
+  font-weight: 500;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+.cat-picker-inner:active { transform: scale(0.97); background: var(--surface-variant); }
+.cat-label { color: var(--muted); font-weight: 400; }
+.cat-value { font-weight: 600; }
+.cat-arrow { font-size: 22rpx; opacity: 0.8; }
+.btn-add-text {
+  flex: none;
+  margin-left: auto;
+  padding: 10rpx 28rpx;
+  background: linear-gradient(135deg, var(--brand), var(--brand));
+  color: #fff;
+  border-radius: 40rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 6rpx 18rpx rgba(46, 125, 110, 0.3);
+}
+.btn-add-text:active { opacity: 0.85; transform: scale(0.96); }
+
+/* 统计卡片 */
+.stat-row {
+  display: flex;
+  margin: 16rpx 20rpx;
+  gap: 12rpx;
+}
+.stat-item {
+  flex: 1;
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 20rpx 0;
+  text-align: center;
+  border: 1rpx solid var(--line);
+}
+.stat-num {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: var(--text);
+}
+.stat-num.blue { color: var(--info); }
+.stat-num.green { color: var(--brand); }
+.stat-num.gold { color: var(--warning); }
+.stat-num.red { color: var(--danger); }
+.stat-label {
+  font-size: 22rpx;
+  color: var(--muted);
+  margin-top: 4rpx;
+}
+
+/* 筛选栏 */
+.filter-row {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  padding: 0 20rpx;
+  gap: 12rpx;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.filter-row::-webkit-scrollbar {
+  display: none;
+}
+.filter-tag {
+  flex: none;
+  padding: 10rpx 22rpx;
+  background: #fff;
+  border-radius: 40rpx;
+  font-size: 24rpx;
+  color: var(--muted);
+  border: 1rpx solid var(--line-strong);
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  white-space: nowrap;
+}
+.filter-tag:active {
+  opacity: 0.8;
+}
+.filter-tag.active {
+  background: var(--brand);
+  color: #fff;
+  border-color: var(--brand);
+}
+.filter-tag .warn-icon {
+  font-size: 22rpx;
+}
+.filter-tag .count {
+  background: rgba(0, 0, 0, 0.06);
+  padding: 0 8rpx;
+  border-radius: 30rpx;
+  font-size: 20rpx;
+  margin-left: 2rpx;
+}
+.filter-tag.active .count {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* 商品列表 */
+.product-list {
+  padding: 0 20rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  margin-top: 16rpx;
+}
+.product-item {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 24rpx 28rpx;
+  border: 1rpx solid var(--line);
+  display: flex;
+  gap: 24rpx;
+  align-items: center;
+}
+.product-item:active { transform: scale(0.98); }
+.product-img,
+.product-emoji {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 20rpx;
+  background: var(--line);
+  flex-shrink: 0;
+}
+.product-emoji {
+  font-size: 64rpx;
+  text-align: center;
+  line-height: 120rpx;
+}
+.product-item .info {
+  flex: 1;
+  min-width: 0;
+}
+.product-item .name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.product-item .meta {
+  font-size: 24rpx;
+  color: var(--muted);
+  margin-top: 10rpx;
+  display: flex;
+  gap: 16rpx;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.product-item .meta .price {
+  font-weight: 600;
+  color: var(--brand);
+}
+.product-item .meta .stock.low {
+  color: var(--danger);
+  font-weight: 600;
+}
+.product-item .meta .stock.normal {
+  color: var(--brand);
+}
+.restock-history {
+  font-size: 22rpx;
+  color: var(--muted);
+  margin-top: 10rpx;
+}
+
+.product-item .right {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 14rpx;
+  flex-shrink: 0;
+}
+.status-badge {
+  font-size: 22rpx;
+  font-weight: 600;
+  padding: 4rpx 18rpx;
+  border-radius: 30rpx;
+  display: inline-block;
+}
+.status-badge.published { background: var(--brand-light); color: var(--brand-dark); }
+.status-badge.draft { background: var(--warning-bg); color: var(--warning-deep); }
+.status-badge.disabled { background: var(--danger-bg); color: var(--danger); }
+
+.action-btns {
+  display: flex;
+  gap: 10rpx;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.action-btns view {
+  padding: 4rpx 16rpx;
+  border-radius: 24rpx;
+  font-size: 22rpx;
+  font-weight: 500;
+  text-align: center;
+}
+.btn-edit {
+  background: var(--info-bg);
+  color: var(--info);
+  padding: 4rpx 12rpx !important;
+}
+.btn-restock {
+  background: var(--warning-bg);
+  color: var(--warning-deep);
+}
+.btn-restock.urgent {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+.btn-toggle {
+  background: var(--warning-bg);
+  color: var(--warning-deep);
+}
+.btn-toggle.on {
+  background: var(--brand-light);
+  color: var(--brand-dark);
+}
+
+/* 空状态 */
+.empty {
+  text-align: center;
+  padding: 80rpx 40rpx;
+  color: var(--muted);
+  font-size: 28rpx;
+}
+.empty-ico {
+  font-size: 80rpx;
+  margin-bottom: 16rpx;
+  opacity: 0.5;
+}
+.empty-sub {
+  font-size: 24rpx;
+  color: var(--muted);
+  margin-top: 8rpx;
+}
+
+/* 补货弹窗 */
+.mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+.dialog {
+  width: 560rpx;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 40rpx 36rpx;
+}
+.dialog-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  text-align: center;
+  color: var(--text);
+}
+.dialog-sub {
+  font-size: 24rpx;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 10rpx;
+}
+.dialog-input {
+  margin-top: 28rpx;
+  background: var(--surface-variant);
+  border-radius: 14rpx;
+  padding: 22rpx 24rpx;
+  font-size: 28rpx;
+}
+.dialog-btns {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 32rpx;
+}
+.dialog-btn {
+  flex: 1;
+  text-align: center;
+  padding: 20rpx 0;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+}
+.dialog-btn.primary {
+  background: var(--brand);
+  color: #fff;
+}
+.dialog-btn.ghost {
+  background: #fff;
+  color: var(--brand);
+  border: 1rpx solid var(--brand);
+}
+
+/* 上下架操作行 */
+.action-row {
+  display: flex;
+  gap: 8rpx;
+}
+.toggle-btn {
+  font-size: 20rpx;
+  font-weight: 600;
+  padding: 4rpx 16rpx;
+  border-radius: 24rpx;
+  line-height: 1.6;
+}
+.toggle-btn.off {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+.toggle-btn.on {
+  background: var(--brand-light);
+  color: var(--brand-dark);
+}
+.toggle-btn.pending {
+  background: var(--warning-bg);
+  color: var(--warning-deep);
+}

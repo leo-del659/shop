@@ -1,0 +1,88 @@
+<view class="profile-page">
+  <!-- 浅色品牌页头（与用户端「我的」同款） -->
+  <view class="hero">
+    <view class="hero-bg"></view>
+    <view class="hero-row">
+      <image wx:if="{{avatarUrl}}" class="avatar-img" src="{{avatarUrl}}" mode="aspectFill" />
+      <view wx:else class="avatar">{{avatarText}}</view>
+      <view class="hero-info">
+        <view class="hero-name">{{displayName || '商户名称'}}</view>
+        <view class="hero-sub">{{subLine || '负责人'}}</view>
+        <view wx:if="{{phone}}" class="hero-phone">📞 {{phone}}</view>
+      </view>
+      <view class="setting-btn" hover-class="btn-press" bindtap="onEditProfile">编辑资料</view>
+    </view>
+  </view>
+
+  <!-- 经营统计 -->
+  <view class="card stat-block">
+    <view class="stat-item" hover-class="stat-hover" bindtap="goOrders">
+      <view class="stat-num">{{statOrders}}</view>
+      <view class="stat-label">累计订单</view>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <view class="stat-num">¥{{statRevenue}}</view>
+      <view class="stat-label">累计交易额</view>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item" hover-class="stat-hover" bindtap="goGoods">
+      <view class="stat-num">{{statProducts}}</view>
+      <view class="stat-label">在售商品</view>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item" hover-class="stat-hover" bindtap="goOrders">
+      <view class="stat-num {{statPending > 0 ? 'warn' : ''}}">{{statPending}}</view>
+      <view class="stat-label">待处理</view>
+    </view>
+  </view>
+
+  <!-- 常用功能 -->
+  <view class="card menu-section">
+    <view class="section-title">常用功能</view>
+    <view class="menu-list">
+      <view class="menu-item" data-key="address" bindtap="onMenu" hover-class="menu-hover">
+        <view class="icon icon-brand">📍</view>
+        <view class="content">
+          <view class="title">收货地址</view>
+          <view class="desc">管理收货地址</view>
+        </view>
+        <view class="arrow">›</view>
+      </view>
+      <view class="menu-item" data-key="security" bindtap="onMenu" hover-class="menu-hover">
+        <view class="icon icon-blue">🛡️</view>
+        <view class="content">
+          <view class="title">安全设置</view>
+          <view class="desc">密码修改 · 登录设备</view>
+        </view>
+        <view class="arrow">›</view>
+      </view>
+      <view class="menu-item" data-key="bind" bindtap="onMenu" hover-class="menu-hover">
+        <view class="icon icon-gold">🏦</view>
+        <view class="content">
+          <view class="title">账户绑定</view>
+          <view class="desc">银行卡 · 支付宝</view>
+        </view>
+        <view class="arrow">›</view>
+      </view>
+      <view class="menu-item" data-key="qualification" bindtap="onMenu" hover-class="menu-hover">
+        <view class="icon icon-purple">📄</view>
+        <view class="content">
+          <view class="title">资质管理</view>
+          <view class="desc">上传/更新资质证书</view>
+        </view>
+        <view class="arrow">›</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 退出登录 -->
+  <view class="card logout-wrap">
+    <view class="logout-btn" hover-class="btn-press" bindtap="onLogout">
+      <text class="logout-icon">🚪</text>
+      <text>退出登录</text>
+    </view>
+  </view>
+
+  <view class="page-pad-bottom"></view>
+</view>

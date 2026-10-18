@@ -1,0 +1,71 @@
+<view class="checkout">
+  <view class="block addr" bind:tap="goAddress">
+    <van-icon name="location-o" />
+    <view class="addr-text" wx:if="{{address}}">
+      <view class="addr-hd">
+        <text class="name">{{address.name}}</text>
+        <text class="mobile">{{address.mobile}}</text>
+      </view>
+      <view class="muted ellipsis">{{address.fullAddress}}</view>
+    </view>
+    <view class="addr-text muted" wx:else>请选择收货地址</view>
+    <van-icon name="arrow" class="arrow" />
+  </view>
+
+  <view class="block">
+    <view wx:for="{{items}}" wx:key="index" class="co-item {{item.stock === 0 ? 'co-out' : ''}}">
+      <image class="co-img" src="{{item.coverImg}}" mode="aspectFill" />
+      <view class="co-info">
+        <view class="ellipsis">{{item.goodsName}}</view>
+        <view class="muted" wx:if="{{item.skuName}}">{{item.specName}}：{{item.skuName}}</view>
+        <view class="flex-between">
+          <text class="price">{{item.price}}</text>
+          <text class="muted">x{{item.buyNum}}</text>
+        </view>
+        <view wx:if="{{item.stock === 0}}" class="co-stock-tip">已售罄</view>
+        <view wx:elif="{{item.stock > 0 && item.buyNum > item.stock}}" class="co-stock-tip">库存仅 {{item.stock}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 运费明细：商品金额 / 运费（计费方式）/ 应付合计 -->
+  <view class="block freight">
+    <view class="block-title">运费明细</view>
+    <view class="freight-row">
+      <text class="freight-label">商品金额</text>
+      <text class="freight-value">¥{{total}}</text>
+    </view>
+    <view class="freight-row">
+      <text class="freight-label">
+        运费<text wx:if="{{freight && freight.chargeTypeText}}">（{{freight.chargeTypeText}}）</text>
+      </text>
+      <text class="freight-value {{freight && freight.freeShipping ? 'freight-free' : 'freight-fee'}}">
+        {{freight ? (freightText || '—') : '计算中…'}}
+      </text>
+    </view>
+    <view class="freight-row" wx:if="{{freight && freight.chargeRule}}">
+      <text class="freight-rule">{{freight.chargeRule}}</text>
+    </view>
+    <view class="freight-row freight-total">
+      <text class="freight-label">应付合计</text>
+      <text class="price">{{payableTotalText || ('¥' + total)}}</text>
+    </view>
+    <view class="freight-row" wx:if="{{freight && freight.payStatus === 1}}">
+      <text class="freight-paid">运费已支付{{freight.payTime ? ' · ' + freight.payTime : ''}}</text>
+    </view>
+  </view>
+
+  <view class="block">
+    <van-field label="备注" placeholder="选填，给商家留言" value="{{remark}}" bind:change="onRemark" />
+  </view>
+
+  <view style="height: 120rpx;"></view>
+  <view class="co-action">
+    <view class="co-action-price">
+      <text class="muted">合计</text>
+      <text class="co-total">{{payableTotalText || ('¥' + total)}}</text>
+    </view>
+    <van-button class="co-btn" type="default" plain bind:tap="onCancelCheckout">取消订单</van-button>
+    <van-button class="co-btn co-btn-primary" type="primary" bind:tap="onSubmit" loading="{{submitting}}" disabled="{{submitting}}">立即支付</van-button>
+  </view>
+</view>

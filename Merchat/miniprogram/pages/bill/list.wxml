@@ -1,0 +1,24 @@
+<view class="bill">
+  <view class="filter-bar">
+    <view wx:for="{{filters}}" wx:key="key" class="filter-tab {{filter === item.key ? 'active' : ''}}" data-key="{{item.key}}" bindtap="setFilter">
+      {{item.label}}
+    </view>
+  </view>
+
+  <view wx:for="{{list}}" wx:key="id" class="row-card">
+    <view class="rc-head">
+      <view class="rc-title">{{item.billNo}}</view>
+      <view class="tag {{item.oCls}}">{{item.oLabel}}</view>
+    </view>
+    <view class="rc-sub muted">{{item.merchantName}} · {{item.goodsName}} ×{{item.buyNum}}</view>
+    <view class="rc-sub muted">{{item.time}}</view>
+    <view class="rc-foot">
+      <text class="muted">账单金额</text>
+      <text class="rc-total">¥{{item.amount}}</text>
+    </view>
+  </view>
+
+  <view wx:if="{{list.length === 0}}" class="empty">暂无账单记录</view>
+
+  <view class="page-pad-bottom"></view>
+</view>

@@ -1,0 +1,60 @@
+<view class="qual-page">
+  <view class="list-card">
+    <view class="section-head">已上传资质</view>
+    <view class="empty" wx:if="{{list.length === 0}}">
+      <text class="empty-ico">📄</text>
+      <text class="empty-txt">暂无资质证书，请添加</text>
+    </view>
+    <view class="qual-item" wx:for="{{list}}" wx:key="id">
+      <view class="qual-img-wrap" wx:if="{{item.fileUrl}}" bindtap="previewListImage" data-url="{{item.fileUrl}}">
+        <image class="qual-img" src="{{item.fileUrl}}" mode="aspectFill" binderror="onImgError" />
+      </view>
+      <view class="qual-img-wrap qual-img-placeholder" wx:else>
+        <text class="qual-img-fallback">📄</text>
+      </view>
+      <view class="qual-main">
+        <view class="qual-type">{{item.qualType}}</view>
+        <view class="qual-no">编号：{{item.qualNo}}</view>
+        <view class="qual-date" wx:if="{{item.expireDate}}">有效期至：{{item.expireDate}}</view>
+      </view>
+      <view class="qual-status {{item.banCls}}">{{item.banText}}</view>
+    </view>
+  </view>
+
+  <view class="form-card">
+    <view class="section-head">添加资质</view>
+    <view class="form-item">
+      <text class="label">资质类型</text>
+      <input class="input" type="text" value="{{form.qualType}}" data-field="qualType" bindinput="onInput" placeholder="如：食品经营许可证" maxlength="50" />
+    </view>
+    <view class="form-item">
+      <text class="label">证书编号</text>
+      <input class="input" type="text" value="{{form.qualNo}}" data-field="qualNo" bindinput="onInput" placeholder="请输入证书编号" maxlength="50" />
+    </view>
+    <view class="form-item">
+      <text class="label">有效期至</text>
+      <picker mode="date" value="{{form.expireDate}}" bindchange="onDateChange">
+        <view class="input picker {{expireDateCls}}">{{form.expireDate || expirePlaceholder}}</view>
+      </picker>
+    </view>
+    <view class="form-item upload-item">
+      <text class="label">资质图片</text>
+      <view class="upload-wrap">
+        <view class="upload-box {{uploadBoxCls}}" bindtap="{{uploadBoxAction}}">
+          <image wx:if="{{previewUrl}}" class="upload-preview" src="{{previewUrl}}" mode="aspectFill" binderror="onPreviewImgError" />
+          <view wx:else class="upload-placeholder">
+            <text class="upload-ico">📷</text>
+            <text class="upload-txt">{{uploadText}}</text>
+          </view>
+          <view wx:if="{{previewUrl}}" class="remove-btn" catchtap="removeImage">
+            <text>✕</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="footer">
+    <view class="save-btn {{saveDisabled}}" bindtap="save">{{saveBtnText}}</view>
+  </view>
+</view>

@@ -1,0 +1,45 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/register/register",
+    "pages/home/home",
+    "pages/order/list",
+    "pages/order/detail",
+    "pages/goods/list",
+    "pages/goods/detail",
+    "pages/goods/add/add",
+    "pages/reconcile/reconcile",
+    "pages/profile/profile",
+    "pages/profile/edit/edit",
+    "pages/profile/security/security",
+    "pages/profile/bind/bind",
+    "pages/profile/qualification/qualification",
+    "pages/bill/list",
+    "pages/withdraw/withdraw",
+    "pages/withdraw/records",
+    "pages/bank/bank",
+    "pages/profile/address/list",
+    "pages/profile/address/edit"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "集邻生活商户端",
+    "navigationBarBackgroundColor": "#ffffff",
+    "backgroundColor": "#f5f5f5"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#999999",
+    "selectedColor": "#3b6fe0",
+    "list": [
+      { "pagePath": "pages/home/home", "text": "首页" },
+      { "pagePath": "pages/order/list", "text": "订单" },
+      { "pagePath": "pages/goods/list", "text": "商品" },
+      { "pagePath": "pages/reconcile/reconcile", "text": "对账" },
+      { "pagePath": "pages/profile/profile", "text": "我的" }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

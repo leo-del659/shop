@@ -1,0 +1,64 @@
+<view class="profile">
+  <!-- 顶部个人信息区（头像 + 名称，点击分别进入上传/修改） -->
+  <view class="header">
+    <view class="header-bg">
+      <view class="decor decor-1"></view>
+      <view class="decor decor-2"></view>
+    </view>
+    <view class="header-main">
+      <view class="header-left">
+        <view class="avatar-box" bindtap="onChooseAvatar">
+          <image wx:if="{{avatarUrl}}" class="avatar" src="{{avatarUrl}}" mode="aspectFill" />
+          <view wx:else class="avatar avatar-default">
+            <van-icon name="user-o" size="64rpx" color="#fa3534" />
+          </view>
+          <view class="avatar-edit">换</view>
+        </view>
+        <view class="meta">
+          <view wx:if="{{logged}}" class="name" bindtap="onEditName">
+            {{profile.name || '未设置名称'}}
+            <van-icon name="edit" size="28rpx" color="#fa3534" class="name-edit-icon" />
+          </view>
+          <view wx:else class="login-tip" bindtap="goLogin">点击登录</view>
+          <view wx:if="{{logged}}" class="muted">账号 {{profile.account}}</view>
+          <view wx:else class="muted">登录后可享受更多服务</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 设置列表 -->
+  <view class="settings-card" wx:if="{{logged}}">
+    <view class="settings-title">账号设置</view>
+
+    <view class="cell" bindtap="onChooseAvatar">
+      <view class="cell-label">上传头像</view>
+      <view class="cell-value">
+        <image wx:if="{{avatarUrl}}" class="cell-avatar" src="{{avatarUrl}}" mode="aspectFill" />
+        <text wx:else>未设置</text>
+      </view>
+      <van-icon name="arrow" size="30rpx" color="#c8c9cc" />
+    </view>
+
+    <view class="cell" bindtap="onEditName">
+      <view class="cell-label">修改名称</view>
+      <view class="cell-value">{{profile.name || '未设置'}}</view>
+      <van-icon name="arrow" size="30rpx" color="#c8c9cc" />
+    </view>
+
+    <view class="cell cell-logout" bindtap="onLogout">
+      <view class="cell-label cell-label-danger">退出登录</view>
+      <van-icon name="arrow" size="30rpx" color="#c8c9cc" />
+    </view>
+  </view>
+
+  <!-- 底部装饰与版本信息 -->
+  <view class="bottom-section">
+    <view class="footer-tag">
+      <text class="tag-line"></text>
+      <text class="tag-text">集邻生活 · 用心服务邻里</text>
+      <text class="tag-line"></text>
+    </view>
+    <view class="version">Version 1.0.0</view>
+  </view>
+</view>

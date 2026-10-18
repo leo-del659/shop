@@ -1,0 +1,9 @@
+{
+  "usingComponents": {
+    "goods-card": "/components/goods-card/goods-card",
+    "sku-popup": "/components/sku-popup/sku-popup",
+    "van-icon": "@vant/weapp/icon/index"
+  },
+  "navigationBarTitleText": "",
+  "enablePullDownRefresh": true
+}

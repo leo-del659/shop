@@ -1,0 +1,47 @@
+<view class="category" wx:if="{{!loading}}">
+  <!-- 左侧：一级分类导航 -->
+  <scroll-view scroll-y class="side">
+    <view
+      wx:for="{{categories}}"
+      wx:key="id"
+      class="side-item {{activeId === item.id ? 'active' : ''}}"
+      data-id="{{item.id}}"
+      bindtap="onSelect"
+    >{{item.categoryName}}</view>
+  </scroll-view>
+
+  <!-- 右侧：子分类 tab + 商品网格 -->
+  <scroll-view scroll-y class="content">
+    <!-- 顶部子分类 chips -->
+    <view class="sub-chips" wx:if="{{subCats.length}}">
+      <text
+        wx:for="{{subCats}}"
+        wx:key="id"
+        class="chip {{activeSubId === item.id ? 'chip-active' : ''}}"
+        data-id="{{item.id}}"
+        bindtap="onSubSelect"
+      >{{item.name}}</text>
+    </view>
+
+    <!-- 商品网格 -->
+    <view wx:if="{{goods.length}}" class="goods-grid">
+      <view wx:for="{{goods}}" wx:key="id" class="goods-cell">
+        <goods-card goods="{{item}}" quantity="{{item._qty || 0}}" mode="list" bind:tap="goDetail" bind:openSku="onOpenSku" bind:incCart="onIncCart" bind:decCart="onDecCart" />
+      </view>
+    </view>
+    <view wx:elif="{{!goods.length}}" class="empty-hint">该分类暂无商品</view>
+    <view wx:if="{{goods.length}}" class="bottom-tip">—— 已经到底啦 ——</view>
+  </scroll-view>
+</view>
+
+<view wx:if="{{loading}}" class="empty-wrap">加载中...</view>
+
+<!-- SKU 规格选择弹窗（复用首页/详情页组件） -->
+<sku-popup
+  visible="{{showSku}}"
+  goods="{{skuGoods}}"
+  action="{{skuAction}}"
+  initialQty="{{1}}"
+  bind:close="closeSku"
+  bind:confirm="onSkuConfirm"
+/>

@@ -1,0 +1,107 @@
+<view class="od" wx:if="{{!loading && order}}">
+  <!-- 顶部单一状态 -->
+  <view class="block head">
+    <view wx:if="{{!topStatus.hide}}" class="od-status {{cancelled ? 'cancel' : ''}}">{{topStatus.text}}</view>
+    <view wx:if="{{order.merchantName}}" class="muted">商户：{{order.merchantName}}</view>
+    <view class="muted">订单号：{{order.orderNo}}</view>
+    <view wx:if="{{order.remark}}" class="muted">备注：{{order.remark}}</view>
+  </view>
+
+  <!-- 订单信息 -->
+  <view class="block">
+    <view class="block-title">订单信息</view>
+    <view wx:for="{{infoRows}}" wx:key="label" class="info-row">
+      <text class="info-label">{{item.label}}</text>
+      <text class="info-value">{{item.value}}</text>
+    </view>
+    <view class="info-row info-delete" bindtap="onDelete">
+      <text class="info-label">删除订单</text>
+      <text class="info-delete-btn">›</text>
+    </view>
+  </view>
+
+  <view class="block">
+    <view wx:for="{{order.items}}" wx:key="goodsId" class="oc-item">
+      <image class="oc-img" src="{{item.goodsImg}}" mode="aspectFill" />
+      <view class="oc-info">
+        <view class="ellipsis">{{item.goodsName}}</view>
+        <view class="flex-between">
+          <text class="price">{{item.buyPrice}}</text>
+          <text class="muted">x{{item.buyNum}}</text>
+        </view>
+        <view wx:if="{{order.orderStatus === 4}}" class="oc-review">
+          <text wx:if="{{reviewed[item.goodsId + '_' + (item.skuId || '')]}}" class="oc-reviewed">已评价</text>
+          <text wx:else class="oc-review-btn" data-item="{{item}}" bindtap="onReview">去评价</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 运费明细（运费金额 / 计费方式 / 生效时间 / 支付状态） -->
+  <view class="block" wx:if="{{freight}}">
+    <view class="block-title">运费明细</view>
+    <view class="info-row">
+      <text class="info-label">运费状态</text>
+      <text class="info-value {{freight.payStatus === 1 ? 'freight-ok' : 'freight-wait'}}">{{freight.payStatusText}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">计费方式</text>
+      <text class="info-value">{{freight.chargeTypeText}}</text>
+    </view>
+    <view class="info-row" wx:if="{{freight.chargeRule}}">
+      <text class="info-label">计费规则</text>
+      <text class="info-value">{{freight.chargeRule}}</text>
+    </view>
+    <view class="info-row" wx:if="{{freightEffectiveTime}}">
+      <text class="info-label">生效时间</text>
+      <text class="info-value">{{freightEffectiveTime}}</text>
+    </view>
+    <view class="info-row" wx:if="{{freightPayTime}}">
+      <text class="info-label">支付时间</text>
+      <text class="info-value">{{freightPayTime}}</text>
+    </view>
+  </view>
+
+  <view class="block foot">
+    <view class="flex-between">
+      <text class="muted">商品总额</text>
+      <text class="price">{{order.totalAmount}}</text>
+    </view>
+    <view class="flex-between freight-line" wx:if="{{freight}}">
+      <text class="muted">运费<text wx:if="{{freight.chargeTypeText}}">（{{freight.chargeTypeText}}）</text></text>
+      <text class="{{freight.freeShipping ? 'freight-free' : 'price'}}">{{freight.freightAmountText}}</text>
+    </view>
+    <view class="flex-between freight-line" wx:if="{{freight}}">
+      <text class="muted">应付合计</text>
+      <text class="price">{{freight.totalAmountText}}</text>
+    </view>
+  </view>
+
+  <view style="height: 120rpx;"></view>
+
+  <!-- 待付款（未支付）：允许取消 / 去支付 -->
+  <view class="action-bar" wx:if="{{order.orderStatus === 1 && order.payStatus !== 1}}">
+    <van-button type="default" bind:tap="onCancel">取消订单</van-button>
+    <van-button type="primary" bind:tap="onPay">去支付</van-button>
+    <text class="muted tip">订单待付款，请尽快完成支付</text>
+  </view>
+  <!-- 已支付但商家尚未接单（orderStatus 仍为 1、payStatus=1）：直接退款 -->
+  <view class="action-bar" wx:elif="{{order.orderStatus === 1 && order.payStatus === 1}}">
+    <van-button type="default" bind:tap="onApplyRefund">直接退款</van-button>
+    <van-button wx:if="{{freightPending}}" type="primary" bind:tap="onPayFreight">支付运费 {{freight.freightAmountText}}</van-button>
+    <text class="muted tip">{{freightPending ? '运费待支付' : '已支付，等待商家接单'}}</text>
+  </view>
+  <view class="action-bar" wx:elif="{{order.orderStatus === 2}}">
+    <van-button type="default" bind:tap="onApplyRefund">直接退款</van-button>
+    <van-button wx:if="{{freightPending}}" type="primary" bind:tap="onPayFreight">支付运费 {{freight.freightAmountText}}</van-button>
+    <text class="muted tip">{{freightPending ? '运费待支付' : '已支付，等待商家发货'}}</text>
+  </view>
+  <view class="action-bar" wx:elif="{{order.orderStatus === 3}}">
+    <van-button type="default" bind:tap="onApplyRefund">申请退款</van-button>
+    <van-button wx:if="{{freightPending}}" type="primary" bind:tap="onPayFreight">支付运费 {{freight.freightAmountText}}</van-button>
+    <van-button wx:else type="primary" bind:tap="onConfirmReceipt">确认收货</van-button>
+    <text class="muted tip">{{freightPending ? '运费待支付' : '商家已发货，等待收货'}}</text>
+  </view>
+</view>
+
+<view wx:if="{{loading}}" class="empty-wrap">加载中...</view>

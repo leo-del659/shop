@@ -1,0 +1,72 @@
+<view class="order-list">
+  <!-- 自定义导航栏：返回 + 订单搜索框（右侧避开胶囊） -->
+  <view class="nav" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-inner" style="height: {{navBarHeight}}px; padding-right: {{navGap}}px;">
+      <van-icon class="back" name="arrow-left" size="22" color="#1a1a1a" bindtap="goBack" />
+      <view class="search-bar">
+        <van-icon name="search" size="16" color="#999" />
+        <input
+          class="search-input"
+          placeholder="搜索订单号 / 商品 / 商户"
+          placeholder-style="color:#bbb"
+          value="{{keyword}}"
+          bindinput="onSearchInput"
+          confirm-type="search"
+        />
+        <text wx:if="{{keyword}}" class="clear-input" catchtap="onClearKeyword">×</text>
+      </view>
+    </view>
+  </view>
+
+  <van-tabs active="{{active}}" bind:change="onTabChange">
+    <van-tab title="全部" />
+    <van-tab title="待付款" />
+    <van-tab title="待发货" />
+    <van-tab title="待收货" />
+    <van-tab title="已完成" />
+    <van-tab title="已取消" />
+  </van-tabs>
+
+  <view wx:if="{{loading}}" class="empty-wrap">加载中...</view>
+
+  <view wx:elif="{{orders.length}}" class="olist">
+    <view wx:for="{{orders}}" wx:key="id" class="order-card" data-id="{{item.id}}" bindtap="goDetail">
+      <view class="oc-head flex-between">
+        <view class="oc-head-left">
+          <text class="muted">{{item.merchantName || '订单号 ' + item.orderNo}}</text>
+          <text wx:if="{{item.merchantName}}" class="muted order-no">{{item.orderNo}}</text>
+        </view>
+        <text class="status">{{item.statusText}}</text>
+      </view>
+      <view wx:for="{{item.items}}" wx:for-item="it" wx:key="goodsId" class="oc-item">
+        <image class="oc-img" src="{{it.goodsImg}}" mode="aspectFill" />
+        <view class="oc-info">
+          <view class="ellipsis">{{it.goodsName}}</view>
+          <view class="flex-between">
+            <text class="price">{{it.buyPrice}}</text>
+            <text class="muted">x{{it.buyNum}}</text>
+          </view>
+        </view>
+      </view>
+      <view class="oc-foot flex-between">
+        <text class="muted">共 {{item.items.length}} 件</text>
+        <view class="oc-foot-right">
+          <text class="oc-delete" catchtap="onDelete" data-id="{{item.id}}">删除</text>
+          <text class="price">合计 {{item.totalAmount}}</text>
+        </view>
+      </view>
+    </view>
+    <view wx:if="{{finished && !keyword}}" class="empty-wrap">没有更多了</view>
+  </view>
+
+  <view wx:else class="empty-wrap">
+    <block wx:if="{{keyword}}">
+      <van-empty description="未找到匹配订单" />
+      <van-button type="primary" bind:tap="onClearKeyword">清除搜索</van-button>
+    </block>
+    <block wx:else>
+      <van-empty description="暂无订单" />
+      <van-button type="primary" bind:tap="goBuy">去下单</van-button>
+    </block>
+  </view>
+</view>

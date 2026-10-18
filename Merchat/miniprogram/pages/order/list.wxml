@@ -1,0 +1,92 @@
+<view class="page">
+  <!-- 统计卡片 -->
+  <view class="stats">
+    <view class="stat-item" bindtap="setFilter" data-filter="all">
+      <text class="stat-n blue">{{statAll}}</text>
+      <text class="stat-l">全部</text>
+    </view>
+    <view class="stat-item" bindtap="setFilter" data-filter="pending">
+      <text class="stat-n gold">{{statPending}}</text>
+      <text class="stat-l">待接单</text>
+    </view>
+    <view class="stat-item" bindtap="setFilter" data-filter="shipping">
+      <text class="stat-n purple">{{statShipping}}</text>
+      <text class="stat-l">配送中</text>
+    </view>
+    <view class="stat-item" bindtap="setFilter" data-filter="completed">
+      <text class="stat-n green">{{statCompleted}}</text>
+      <text class="stat-l">已完成</text>
+    </view>
+    <view class="stat-item" bindtap="setFilter" data-filter="cancelled">
+      <text class="stat-n red">{{statCancelled}}</text>
+      <text class="stat-l">已取消</text>
+    </view>
+  </view>
+
+  <!-- 筛选标签 -->
+  <view class="tags-bar">
+    <scroll-view scroll-x class="tags" enhanced show-scrollbar="{{false}}">
+    <view class="tag {{fAll}}" bindtap="setFilter" data-filter="all">全部</view>
+    <view class="tag {{fPending}}" bindtap="setFilter" data-filter="pending">待处理</view>
+    <view class="tag {{fShipping}}" bindtap="setFilter" data-filter="shipping">配送中</view>
+    <view class="tag {{fCompleted}}" bindtap="setFilter" data-filter="completed">已完成</view>
+    <view class="tag {{fCancelled}}" bindtap="setFilter" data-filter="cancelled">已取消</view>
+    </scroll-view>
+  </view>
+
+  <!-- 卡片列表 -->
+  <view class="list-area">
+    <block wx:for="{{list}}" wx:key="id">
+      <view class="card" bindtap="goDetail" data-id="{{item.id}}">
+        <!-- 编号 + 时间 -->
+        <view class="card-top">
+          <text class="card-no">{{item.billNo}}</text>
+          <text class="card-time">{{item.time}}</text>
+        </view>
+        <!-- 商品图片 + 名称 + 购买数量 + 金额 -->
+        <view class="card-mid">
+          <view class="goods-row">
+            <image wx:if="{{item.hasImage}}" class="goods-thumb" src="{{item.coverImg}}" mode="aspectFill" lazy-load webp data-index="{{index}}" binderror="onImageError"></image>
+            <view wx:else class="goods-thumb goods-thumb--ph">{{item.emoji || item.defaultEmoji}}</view>
+            <view class="goods-info">
+              <text class="card-party">{{item.partyName}}</text>
+              <text class="card-goods">{{item.goodsName}}</text>
+              <text class="card-qty">共 {{item.buyNum}} 件</text>
+            </view>
+          </view>
+          <text class="card-money">¥{{item.amount}}</text>
+        </view>
+        <!-- 状态 + 操作按钮（商户接单/拒绝/发货/完成） -->
+        <view class="card-bot">
+          <text class="badge {{item.statusCls}}">{{item.statusLabel}}</text>
+          <view class="btns" catchtap="stopProp">
+            <block wx:if="{{item.orderStatus === 1}}">
+              <text class="btn btn-g" catchtap="action" data-id="{{item.id}}" data-op="accept">接单</text>
+              <text class="btn btn-r" catchtap="action" data-id="{{item.id}}" data-op="reject">拒绝</text>
+            </block>
+            <block wx:elif="{{item.orderStatus === 2}}">
+              <text class="btn btn-b" catchtap="action" data-id="{{item.id}}" data-op="ship">发货</text>
+              <text class="btn btn-w" catchtap="goDetail" data-id="{{item.id}}">查看</text>
+            </block>
+            <block wx:elif="{{item.orderStatus === 3}}">
+              <text class="btn btn-b" catchtap="action" data-id="{{item.id}}" data-op="complete">完成</text>
+              <text class="btn btn-w" catchtap="goDetail" data-id="{{item.id}}">查看</text>
+            </block>
+            <block wx:else>
+              <text class="btn btn-w" catchtap="goDetail" data-id="{{item.id}}">查看</text>
+            </block>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 空状态 -->
+    <view wx:if="{{list.length === 0}}" class="empty-box">
+      <text class="empty-txt">{{emptyTitle}}</text>
+      <text class="empty-sub">{{emptySub}}</text>
+    </view>
+  </view>
+
+  <!-- 底部安全区，避免被自定义 TabBar 遮挡 -->
+  <view class="page-pad-bottom"></view>
+</view>

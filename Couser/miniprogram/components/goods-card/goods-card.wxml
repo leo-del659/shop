@@ -1,0 +1,48 @@
+<view class="card {{mode === 'list' ? 'card-list' : 'card-grid'}} {{goods.stock === 0 ? 'is-soldout' : ''}}" bindtap="onTap">
+  <!-- 列表模式：左图右文 -->
+  <block wx:if="{{mode === 'list'}}">
+    <view class="img-wrap">
+      <image wx:if="{{!imgErr}}" class="list-img" src="{{goods.coverImg}}" mode="aspectFill" binderror="onImageError" />
+      <view wx:else class="list-img img-placeholder">{{goods.goodsName[0]}}</view>
+      <view wx:if="{{goods.stock === 0}}" class="soldout-badge">缺货</view>
+    </view>
+    <view class="list-info">
+      <text class="list-name ellipsis-2">{{goods.goodsName}}</text>
+      <text class="sold-tag">已售 {{soldText}}</text>
+      <view class="list-bottom">
+        <text class="price">¥{{goods.salePrice || goods.price}}</text>
+        <!-- 已在购物车：显示 -/num/+ -->
+        <view class="stepper" wx:if="{{quantity > 0}}" catchtap="noop">
+          <view class="stepper-btn minus" catchtap="onDec">−</view>
+          <text class="stepper-num">{{quantity}}</text>
+          <view class="stepper-btn plus {{goods.stock > 0 && quantity >= goods.stock ? 'disabled' : ''}}" catchtap="onInc">+</view>
+        </view>
+        <!-- 缺货：禁用加购 -->
+        <view wx:elif="{{goods.stock === 0}}" class="cart-btn disabled">缺货</view>
+        <!-- 未加购：立即购买按钮 -->
+        <view wx:else class="cart-btn buy-btn" catchtap="onAdd">立即购买</view>
+      </view>
+    </view>
+  </block>
+
+  <!-- 网格模式（首页）：上图下文 -->
+  <block wx:else>
+    <view class="img-wrap">
+      <image wx:if="{{!imgErr}}" class="cover" src="{{goods.coverImg}}" mode="aspectFill" binderror="onImageError" />
+      <view wx:else class="cover img-placeholder">{{goods.goodsName[0]}}</view>
+      <view wx:if="{{goods.stock === 0}}" class="soldout-badge">缺货</view>
+    </view>
+    <view class="name ellipsis">{{goods.goodsName}}</view>
+    <text class="sold-tag">已售 {{soldText}}</text>
+    <view class="bottom flex-between">
+      <text class="price">¥{{goods.salePrice || goods.price}}</text>
+      <view class="stepper" wx:if="{{quantity > 0}}" catchtap="noop">
+        <view class="stepper-btn minus" catchtap="onDec">−</view>
+        <text class="stepper-num">{{quantity}}</text>
+        <view class="stepper-btn plus {{goods.stock > 0 && quantity >= goods.stock ? 'disabled' : ''}}" catchtap="onInc">+</view>
+      </view>
+      <view wx:elif="{{goods.stock === 0}}" class="cart-btn disabled">缺货</view>
+      <view wx:else class="cart-btn buy-btn" catchtap="onAdd">立即购买</view>
+    </view>
+  </block>
+</view>

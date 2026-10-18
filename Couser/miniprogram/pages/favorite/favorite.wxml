@@ -1,0 +1,81 @@
+<view class="page">
+  <!-- 自定义导航栏：返回 + 搜索框 + 搜索按钮（右侧避开胶囊） -->
+  <view class="nav" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-inner" style="height: {{navBarHeight}}px; padding-right: {{navGap}}px;">
+      <van-icon class="back" name="arrow-left" size="22" color="#1a1a1a" bindtap="goBack" />
+      <view class="search-bar">
+        <van-icon name="search" size="16" color="#999" />
+        <input
+          class="search-input"
+          placeholder="搜索收藏商品名"
+          placeholder-style="color:#bbb"
+          value="{{keyword}}"
+          bindinput="onSearchInput"
+          confirm-type="search"
+        />
+        <text wx:if="{{keyword}}" class="clear-input" catchtap="onClearKeyword">×</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="header">
+    <view class="title-wrap">
+      <text class="title">我的收藏</text>
+      <text class="count" wx:if="{{count > 0}}">（{{count}}）</text>
+    </view>
+    <text class="manage-text" bindtap="onManage">{{manageMode ? '完成' : '管理'}}</text>
+  </view>
+
+  <view wx:if="{{list.length}}" class="list">
+    <view
+      class="swipe-wrap {{manageMode ? 'in-manage' : ''}}"
+      wx:for="{{list}}"
+      wx:key="goodsId"
+      data-id="{{item.goodsId}}"
+      bindtouchstart="onTouchStart"
+      bindtouchmove="onTouchMove"
+      bindtouchend="onTouchEnd"
+      bindtap="goDetail"
+    >
+      <view
+        class="swipe-content {{manageMode ? 'with-check' : ''}}"
+        style="transform: translateX({{_swipeOffsets[item.goodsId] || 0}}px); transition: {{_isDragging ? 'none' : 'transform 0.2s ease'}};"
+      >
+        <view wx:if="{{manageMode}}" class="check" catchtap="toggleSelect" data-id="{{item.goodsId}}">
+          <van-icon wx:if="{{_selectedMap[item.goodsId]}}" name="success" size="22" color="#07c160" />
+          <van-icon wx:else name="circle" size="22" color="#ccc" />
+        </view>
+        <image class="img" src="{{item.coverImg}}" mode="aspectFill" />
+        <view class="info">
+          <text class="name ellipsis-2">{{item.goodsName}}</text>
+          <view class="bottom">
+            <text class="price">¥{{item.salePrice}}</text>
+          </view>
+        </view>
+      </view>
+      <view wx:if="{{!manageMode}}" class="swipe-action">
+        <view class="del-btn" catchtap="onRemove" data-id="{{item.goodsId}}">删除</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:else class="empty">
+    <van-icon name="like-o" size="96rpx" color="#ddd" />
+    <block wx:if="{{keyword}}">
+      <text>未找到匹配商品</text>
+      <view class="btn" bindtap="onClearKeyword">清除搜索</view>
+    </block>
+    <block wx:else>
+      <text>暂无收藏商品</text>
+      <view class="btn" bindtap="goHome">去逛逛</view>
+    </block>
+  </view>
+
+  <view wx:if="{{manageMode}}" class="manage-bar">
+    <text class="select-count">已选 {{selectedCount}} 件</text>
+    <view
+      class="del-pill {{selectedCount > 0 ? 'active' : ''}}"
+      bindtap="onBulkDelete"
+    >删除</view>
+  </view>
+</view>

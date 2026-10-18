@@ -1,0 +1,101 @@
+<view class="goods-page">
+  <view class="search-row">
+    <view class="search-box">
+      <text class="search-ico">🔍</text>
+      <input
+        class="search-input"
+        type="text"
+        placeholder="搜索商品名称"
+        placeholder-class="search-ph"
+        value="{{keyword}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+        bindconfirm="onSearchConfirm"
+      />
+      <text wx:if="{{keyword}}" class="search-clear" catchtap="clearSearch">✕</text>
+    </view>
+  </view>
+
+  <!-- 分类下拉 + 新增商品按钮 -->
+  <view class="cat-row">
+    <picker class="cat-picker" mode="selector" range="{{categoryNames}}" value="{{categoryIndex}}" bindchange="onCategoryChange">
+      <view class="cat-picker-inner">
+        <text class="cat-label">分类</text>
+        <text class="cat-value">{{categoryNames[categoryIndex]}}</text>
+        <text class="cat-arrow">▾</text>
+      </view>
+    </picker>
+    <view wx:if="{{canManage}}" class="btn-add-text" bindtap="goAdd">+ 新增商品</view>
+  </view>
+
+  <view class="stat-row">
+    <view class="stat-item">
+      <view class="stat-num blue">{{statTotal}}</view>
+      <view class="stat-label">全部商品</view>
+    </view>
+    <view class="stat-item">
+      <view class="stat-num green">{{statPublished}}</view>
+      <view class="stat-label">已上架</view>
+    </view>
+    <view class="stat-item">
+      <view class="stat-num gold">{{statDraft}}</view>
+      <view class="stat-label">待审核</view>
+    </view>
+    <view class="stat-item">
+      <view class="stat-num red">{{statLow}}</view>
+      <view class="stat-label">库存不足</view>
+    </view>
+  </view>
+
+  <view class="filter-row">
+    <view class="filter-tag {{fAll}}" data-filter="all" bindtap="setFilter">全部</view>
+    <view class="filter-tag {{fPublished}}" data-filter="published" bindtap="setFilter">已上架</view>
+    <view class="filter-tag {{fDraft}}" data-filter="draft" bindtap="setFilter">待审核</view>
+    <view class="filter-tag {{fDisabled}}" data-filter="disabled" bindtap="setFilter">已下架</view>
+    <view class="filter-tag {{fLowStock}}" data-filter="low-stock" bindtap="setFilter">
+      <text class="warn-icon">⚠️</text> 库存不足 <text class="count">{{statLow}}</text>
+    </view>
+  </view>
+
+  <view class="product-list">
+    <view wx:for="{{list}}" wx:key="id" class="product-item" data-id="{{item.id}}" bindtap="goDetail">
+      <image wx:if="{{item.coverImgFull}}" class="product-img" src="{{item.coverImgFull}}" mode="aspectFill" lazy-load binderror="onImageError" data-id="{{item.id}}"></image>
+      <view wx:if="{{!item.coverImgFull || item.imgError}}" class="product-emoji">{{item.emoji || item.defaultEmoji}}</view>
+
+      <view class="info">
+        <view class="name">{{item.name}}</view>
+        <view class="meta">
+          <text class="price">¥{{item.price}}/{{item.unit}}</text>
+          <text class="stock {{item.stockCls}}">{{item.stockEmoji}} {{item.stock}} 件</text>
+        </view>
+      </view>
+
+      <view class="right">
+        <view class="status-badge {{item.status}}">
+          {{item.statusText}}
+        </view>
+        <view wx:if="{{canManage}}" class="action-row" catchtap stopPropagation>
+          <view
+            wx:if="{{item.status === 'published'}}"
+            class="toggle-btn off"
+            data-id="{{item.id}}"
+            bindtap="onToggleOff"
+          >下架</view>
+          <view
+            wx:elif="{{item.status !== 'draft'}}"
+            class="toggle-btn on"
+            data-id="{{item.id}}"
+            bindtap="onToggleOn"
+          >上架</view>
+          <view wx:else class="toggle-btn pending">待审核</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{list.length===0}}" class="empty">
+    <view class="empty-ico">📦</view>
+    <view>暂无商品</view>
+    <view class="empty-sub">点击右侧「新增商品」添加</view>
+  </view>
+</view>

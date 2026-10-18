@@ -1,0 +1,46 @@
+<view class="pd-mask {{visible ? 'pd-mask--enter' : 'pd-mask--leave'}}" wx:if="{{mounted}}" bindtap="onMaskTap" catchtouchmove="stopProp">
+  <!-- 居中弹窗模式（默认） -->
+  <view class="pd-dialog {{visible ? 'pd-dialog--enter' : 'pd-dialog--leave'}}" catchtap="stopProp" wx:if="{{mode !== 'bottom'}}">
+    <view class="pd-header">
+      <view class="pd-title">{{title}}</view>
+      <view class="pd-sub" wx:if="{{subtitle}}">{{subtitle}}</view>
+      <view class="pd-close" wx:if="{{showClose}}" bindtap="onClose">×</view>
+    </view>
+    <view class="pd-body">
+      <slot name="body"></slot>
+    </view>
+    <view class="pd-footer" wx:if="{{cancelText || confirmText}}">
+      <view class="pd-btn pd-btn--ghost" wx:if="{{cancelText}}" bindtap="onCancelTap">{{cancelText}}</view>
+      <view class="pd-btn pd-btn--primary {{loading || disabled ? 'is-disabled' : ''}}" bindtap="onConfirmTap">
+        <text wx:if="{{loading}}">处理中…</text>
+        <text wx:else>{{confirmText}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部弹出面板模式（mode=bottom） -->
+  <view class="pd-sheet {{visible ? 'pd-sheet--enter' : 'pd-sheet--leave'}}" catchtap="stopProp" wx:else>
+    <!-- 关闭按钮独占一排 -->
+    <view class="pd-sheet-close-row" wx:if="{{showClose}}">
+      <view class="pd-sheet-close" bindtap="onClose">×</view>
+    </view>
+
+    <!-- 可滚动内容区 -->
+    <scroll-view class="pd-sheet-scroll" scroll-y enhanced show-scrollbar="{{false}}">
+      <view class="pd-sheet-content">
+        <slot name="body"></slot>
+      </view>
+    </scroll-view>
+
+    <!-- 底部固定操作栏 -->
+    <view class="pd-sheet-footer" wx:if="{{confirmText || loading}}">
+      <view class="pd-btn pd-btn--primary pd-btn--block {{loading || disabled ? 'is-disabled' : ''}}" bindtap="onConfirmTap">
+        <text wx:if="{{loading}}">处理中…</text>
+        <block wx:else>
+          <text>{{confirmText}}</text>
+          <text wx:if="{{totalText}}" class="pd-sheet-pay-amount">{{totalText}}</text>
+        </block>
+      </view>
+    </view>
+  </view>
+</view>

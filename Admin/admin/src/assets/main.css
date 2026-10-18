@@ -1,0 +1,42 @@
+@import './base.css';
+@import './theme.css';
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* 内容卡片：随主题切换（浅色保留原白卡，深色转科技面板） */
+.l-container {
+  padding: 16px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  border-radius: 14px;
+  margin: 16px;
+  min-height: calc(100vh - 102px - 32px - 32px);
+  background-color: var(--bg-surface);
+  transition: background-color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+  /* 工具栏控件直接放在容器内：同一行排列、放不下自动换行，无需再包一层 div */
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+/* 块级内容（表格 / 卡片网格 / 分页 / 面板等）独占整行 */
+.l-container > * {
+  flex: 1 0 100%;
+}
+/* 表单控件（搜索框 / 下拉 / 按钮等）按内容尺寸排列，多个控件共享同一行 */
+.l-container > .el-input,
+.l-container > .el-select,
+.l-container > .el-button,
+.l-container > .el-radio-group,
+.l-container > .el-checkbox-group,
+.l-container > .el-date-editor,
+.l-container > .el-switch,
+.l-container > .el-link {
+  flex: 0 0 auto;
+}

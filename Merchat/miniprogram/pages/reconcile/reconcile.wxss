@@ -1,0 +1,318 @@
+/* 页面 */
+.reconcile {
+  min-height: 100vh;
+  background: var(--bg);
+  padding-bottom: 40rpx;
+  box-sizing: border-box;
+}
+
+/* 顶部品牌头部（浅色渐变，与首页/我的统一） */
+.header-section {
+  background: var(--header-gradient);
+  padding: 24rpx 32rpx 48rpx;
+  box-sizing: border-box;
+}
+
+.balance-card {
+  color: var(--text);
+}
+
+.balance-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.balance-label {
+  font-size: 26rpx;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.balance-action {
+  padding: 8rpx 28rpx;
+  background: var(--brand-light);
+  border: 1rpx solid var(--brand);
+  border-radius: 30rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: var(--brand-dark);
+}
+
+.balance-amount {
+  font-size: 60rpx;
+  font-weight: 700;
+  margin-top: 16rpx;
+  line-height: 1.1;
+  letter-spacing: -2rpx;
+  color: var(--brand);
+}
+
+.balance-stats {
+  display: flex;
+  margin-top: 28rpx;
+  padding-top: 24rpx;
+  border-top: 1rpx solid var(--line);
+  gap: 32rpx;
+}
+
+.balance-stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.bs-num {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.bs-label {
+  font-size: 22rpx;
+  color: var(--muted);
+  margin-top: 6rpx;
+}
+
+/* 主体内容白卡 */
+.main-card {
+  position: relative;
+  z-index: 2;
+  margin-top: -32rpx;
+  background: #fff;
+  border-radius: 32rpx 32rpx 0 0;
+  padding: 32rpx 24rpx 20rpx;
+  box-sizing: border-box;
+  min-height: 200rpx;
+}
+
+/* 月份选择器 */
+.month-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.month-picker {
+  display: flex;
+  align-items: center;
+  font-size: 26rpx;
+  color: var(--brand);
+  background: var(--brand-light);
+  padding: 10rpx 22rpx;
+  border-radius: 30rpx;
+  font-weight: 500;
+}
+
+/* 三个统计 */
+.stat-row {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 28rpx;
+}
+
+.stat-item {
+  flex: 1;
+  background: var(--surface-variant);
+  border-radius: 20rpx;
+  padding: 22rpx 0;
+  text-align: center;
+}
+
+.stat-num {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--brand);
+}
+
+.stat-label {
+  font-size: 22rpx;
+  color: var(--muted);
+  margin-top: 6rpx;
+}
+
+/* 分段控制器 Tab */
+.tabs {
+  display: flex;
+  background: var(--surface-variant);
+  border-radius: 16rpx;
+  padding: 6rpx;
+  margin-bottom: 20rpx;
+}
+
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 16rpx 0;
+  font-size: 26rpx;
+  color: var(--muted);
+  border-radius: 12rpx;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.tab.active {
+  background: #fff;
+  color: var(--brand);
+  font-weight: 600;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+}
+
+/* 列表 */
+.list-body {
+  min-height: 200rpx;
+}
+
+.row-card {
+  display: block;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid var(--line);
+}
+
+.row-card:last-child {
+  border-bottom: none;
+}
+
+.rc-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.rc-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.rc-sub {
+  font-size: 24rpx;
+  color: var(--muted);
+  margin-top: 10rpx;
+  line-height: 1.4;
+}
+
+.rc-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14rpx;
+}
+
+.rc-total {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.rc-total.plus {
+  color: var(--brand);
+}
+
+.rc-total.minus {
+  color: var(--danger);
+}
+
+.empty {
+  text-align: center;
+  color: var(--muted);
+  padding: 80rpx 0;
+  font-size: 26rpx;
+}
+
+.page-pad-bottom {
+  height: 40rpx;
+}
+
+/* 提现弹窗 */
+.mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.dialog {
+  width: 600rpx;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 40rpx 36rpx;
+  box-sizing: border-box;
+}
+
+.dialog-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  text-align: center;
+  color: var(--text);
+}
+
+.dialog-tip {
+  font-size: 24rpx;
+  color: var(--brand);
+  text-align: center;
+  margin-top: 10rpx;
+}
+
+.dialog-field {
+  margin-top: 24rpx;
+}
+
+.df-label {
+  font-size: 24rpx;
+  color: var(--muted);
+  margin-bottom: 10rpx;
+}
+
+.df-input {
+  background: var(--surface-variant);
+  border-radius: 14rpx;
+  padding: 22rpx 24rpx;
+  font-size: 28rpx;
+  color: var(--text);
+  box-sizing: border-box;
+}
+
+.df-input.readonly {
+  color: var(--muted);
+}
+
+.dialog-btns {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 32rpx;
+}
+
+.dialog-btn {
+  flex: 1;
+  text-align: center;
+  padding: 20rpx 0;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.dialog-btn.primary {
+  background: var(--brand);
+  color: #fff;
+}
+
+.dialog-btn.ghost {
+  background: #fff;
+  color: var(--brand);
+  border: 1rpx solid var(--brand);
+}

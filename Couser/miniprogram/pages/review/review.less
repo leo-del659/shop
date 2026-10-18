@@ -1,0 +1,169 @@
+.review-page {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding-bottom: 140rpx;
+}
+.block {
+  background: #fff;
+  margin-top: 20rpx;
+  padding: 24rpx;
+}
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 20rpx 24rpx;
+  margin-top: 0;
+}
+.header-label {
+  font-size: 26rpx;
+  color: #999;
+  flex-shrink: 0;
+}
+.header-no {
+  font-size: 26rpx;
+  color: #333;
+  flex: 1;
+  word-break: break-all;
+}
+.field-title {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: bold;
+  margin-bottom: 20rpx;
+}
+.stars {
+  display: flex;
+  gap: 16rpx;
+}
+.star {
+  font-size: 52rpx;
+  color: #ddd;
+  &.on {
+    color: #ff9900;
+  }
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+.tag {
+  padding: 10rpx 24rpx;
+  background: #f5f5f5;
+  border-radius: 30rpx;
+  font-size: 26rpx;
+  color: #666;
+  border: 2rpx solid transparent;
+  transition: all 0.15s ease;
+  &.on {
+    background: #e6f7ed;
+    color: #07c160;
+    border-color: #07c160;
+    font-weight: 500;
+  }
+}
+.tag-hover {
+  opacity: 0.7;
+  transform: scale(0.96);
+}
+.content {
+  width: 100%;
+  height: 200rpx;
+  font-size: 28rpx;
+  color: #333;
+  box-sizing: border-box;
+}
+.anonymous {
+  padding: 16rpx 24rpx;
+}
+.anon-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+.anon-check {
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  border: 2rpx solid #ccc;
+  background: #fff;
+  text-align: center;
+  line-height: 32rpx;
+  font-size: 24rpx;
+  color: #fff;
+  flex-shrink: 0;
+  &.on {
+    background: #07c160;
+    border-color: #07c160;
+  }
+}
+.anon-text {
+  font-size: 26rpx;
+  color: #666;
+  flex: 1;
+}
+.imgs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+.img-item {
+  position: relative;
+  width: 160rpx;
+  height: 160rpx;
+}
+.img {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 8rpx;
+  background: #f0f0f0;
+}
+.img-del {
+  position: absolute;
+  top: -10rpx;
+  right: -10rpx;
+  width: 36rpx;
+  height: 36rpx;
+  line-height: 36rpx;
+  text-align: center;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 28rpx;
+}
+.img-add {
+  width: 160rpx;
+  height: 160rpx;
+  line-height: 160rpx;
+  text-align: center;
+  font-size: 60rpx;
+  color: #bbb;
+  border: 2rpx dashed #ddd;
+  border-radius: 8rpx;
+  background: #fafafa;
+}
+.submit-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 16rpx 24rpx;
+  background: #fff;
+  border-top: 1rpx solid #f0f0f0;
+}
+.btn-submit {
+  background: #07c160;
+  color: #fff;
+  font-size: 30rpx;
+  border-radius: 44rpx;
+  &::after {
+    border: none;
+  }
+}
+.empty-wrap {
+  padding: 200rpx 0;
+  text-align: center;
+  color: #999;
+  font-size: 28rpx;
+}

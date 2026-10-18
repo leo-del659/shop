@@ -1,0 +1,17 @@
+<view class="records">
+  <view wx:for="{{list}}" wx:key="id" class="row-card">
+    <view class="rc-head">
+      <view class="rc-title">{{item.account}}</view>
+      <view class="tag {{item.wdCls}}">{{item.wdLabel}}</view>
+    </view>
+    <view class="rc-sub muted">{{item.timeText}} · {{item.remark || '无备注'}}</view>
+    <view class="rc-foot">
+      <text class="muted">提现金额</text>
+      <text class="rc-total minus">{{item.amountText}}</text>
+    </view>
+  </view>
+
+  <view wx:if="{{list.length === 0}}" class="empty">暂无提现记录</view>
+
+  <view class="page-pad-bottom"></view>
+</view>

@@ -1,0 +1,213 @@
+/** app.wxss —— 设计令牌与共享样式
+ *  商户端采用蓝白商务风：主蓝 #3b6fe0 / 灰底 #f5f5f5 / 白卡 16rpx / 描边标签 */
+page {
+  /* 品牌色（商户端蓝白主题） */
+  --brand: #3b6fe0;
+  --brand-dark: #2b57be;
+  --brand-deep: #23479b;
+  --brand-light: #ebf1fd;
+  /* 浅色页头渐变（首页 / 我的 / 登录注册 用） */
+  --header-gradient: linear-gradient(180deg, #ebf1fd 0%, #f5f5f5 100%);
+  /* 资金卡渐变（品牌蓝） */
+  --balance-gradient: linear-gradient(135deg, #3b6fe0 0%, #2b57be 100%);
+  --bg: #f5f5f5;
+  --card: #ffffff;
+  --text: #333333;
+  --muted: #999999;
+  --line: #f0f0f0;
+  --line-strong: #dddddd;
+  /* 语义色（仅用于状态，不用于装饰） */
+  --warning: #f6a200;
+  --warning-deep: #b26a00;
+  --warning-bg: rgba(246, 162, 0, 0.1);
+  --danger: #fa3534;
+  --danger-bg: rgba(250, 53, 52, 0.08);
+  --info: #1989fa;
+  --info-bg: rgba(25, 137, 250, 0.1);
+  --purple: #7367d8;
+  --purple-bg: rgba(115, 103, 216, 0.1);
+  /* 弱化品牌色 */
+  --brand-soft: rgba(59, 111, 224, 0.3);
+  --surface-variant: #f7f8fa;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 28rpx;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+}
+
+/* 卡片（与用户端 .block 一致：白底 16rpx 圆角） */
+.card {
+  background: var(--card);
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+/* 区块标题 */
+.section-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--text);
+  margin: 8rpx 4rpx;
+}
+
+/* 状态标签（与用户端 .tag 一致：描边风） */
+.tag {
+  display: inline-block;
+  font-size: 20rpx;
+  padding: 2rpx 12rpx;
+  border-radius: 6rpx;
+  line-height: 1.5;
+  border: 1rpx solid transparent;
+  background: transparent;
+  margin-right: 10rpx;
+}
+.tag.pending { color: var(--warning-deep); border-color: var(--warning); }
+.tag.shipping { color: var(--info); border-color: var(--info); }
+.tag.completed { color: var(--brand); border-color: var(--brand); }
+.tag.cancelled { color: var(--muted); border-color: var(--line-strong); }
+.tag.paid { color: var(--brand); border-color: var(--brand); }
+.tag.unpaid { color: var(--warning-deep); border-color: var(--warning); }
+.tag.partial { color: var(--warning-deep); border-color: var(--warning); }
+.tag.overdue { color: var(--danger); border-color: var(--danger); }
+.tag.draft { color: var(--muted); border-color: var(--line-strong); }
+.tag.disabled { color: var(--muted); border-color: var(--line-strong); }
+.tag.published { color: var(--brand); border-color: var(--brand); }
+.tag.success { color: var(--brand); border-color: var(--brand); }
+.tag.failed { color: var(--danger); border-color: var(--danger); }
+
+/* 库存状态字色 */
+.stock.critical { color: var(--danger); }
+.stock.low { color: var(--warning-deep); }
+.stock.normal { color: var(--brand); }
+
+/* 按钮 */
+.btn-primary {
+  background: var(--brand);
+  color: #fff;
+  border-radius: 40rpx;
+  padding: 18rpx 0;
+  text-align: center;
+  font-size: 30rpx;
+}
+.btn-ghost {
+  background: #fff;
+  color: var(--brand);
+  border: 1rpx solid var(--brand);
+  border-radius: 40rpx;
+  padding: 17rpx 0;
+  text-align: center;
+  font-size: 30rpx;
+}
+
+/* 通用文本 */
+.muted { color: var(--muted); }
+.bold { font-weight: 600; }
+
+/* 列表底部安全区，避免被自定义 TabBar 遮挡 */
+.page-pad-bottom { padding-bottom: calc(130rpx + env(safe-area-inset-bottom)); }
+
+/* 余额卡片（账单提现共用，品牌蓝渐变） */
+.balance-card {
+  margin: 20rpx;
+  padding: 36rpx 32rpx;
+  background: var(--balance-gradient);
+  border-radius: 24rpx;
+  color: #fff;
+}
+.bc-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 28rpx;
+}
+.bc-label { font-size: 26rpx; opacity: 0.9; }
+.bc-amount { font-size: 64rpx; font-weight: 700; margin-top: 12rpx; line-height: 1.1; }
+.bc-btn {
+  margin-top: 24rpx;
+  min-width: 220rpx;
+  background: #fff;
+  color: var(--brand-dark);
+  text-align: center;
+  padding: 16rpx 44rpx;
+  border-radius: 40rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+}
+.bc-divider { height: 1rpx; background: rgba(255, 255, 255, 0.18); margin: 0 12rpx 24rpx; }
+.bc-row { display: flex; }
+.bc-item { flex: 1; text-align: center; border-right: 1rpx solid rgba(255, 255, 255, 0.18); }
+.bc-item:last-child { border-right: none; }
+.bc-num { font-size: 30rpx; font-weight: 600; }
+.bc-sub { font-size: 22rpx; opacity: 0.8; margin-top: 6rpx; }
+
+/* 快捷入口网格（提现页等复用） */
+.entry-grid { display: flex; margin: 20rpx; gap: 16rpx; }
+.entry-item {
+  flex: 1;
+  background: var(--card);
+  border-radius: 18rpx;
+  padding: 26rpx 0;
+  text-align: center;
+}
+.entry-icon { font-size: 40rpx; }
+.entry-text { font-size: 24rpx; color: var(--text); margin-top: 10rpx; }
+
+/* 通用行卡片（账单/提现列表） */
+.row-card {
+  display: block;
+  background: var(--card);
+  border-radius: 16rpx;
+  padding: 26rpx 28rpx;
+  margin: 16rpx 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+.rc-head { display: flex; align-items: center; justify-content: space-between; }
+.rc-title { font-size: 28rpx; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rc-sub { font-size: 22rpx; margin-top: 8rpx; }
+.rc-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 12rpx; }
+.rc-total { font-size: 32rpx; font-weight: 700; color: var(--brand); }
+.rc-total.minus { color: var(--info); }
+
+.empty { text-align: center; color: var(--muted); padding: 60rpx 0; font-size: 26rpx; }
+
+/* 提现/表单弹窗与字段（账单提现共用） */
+.mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+.dialog { width: 600rpx; background: #fff; border-radius: 24rpx; padding: 40rpx 36rpx; }
+.dialog-title { font-size: 34rpx; font-weight: 700; text-align: center; }
+.dialog-tip { font-size: 24rpx; color: var(--brand-dark); text-align: center; margin-top: 10rpx; }
+.dialog-field { margin-top: 24rpx; }
+.df-label { font-size: 24rpx; color: var(--muted); margin-bottom: 10rpx; }
+.df-input {
+  background: var(--surface-variant);
+  border-radius: 14rpx;
+  padding: 22rpx 24rpx;
+  font-size: 28rpx;
+}
+.df-input.readonly { color: var(--muted); }
+.dialog-btns { display: flex; gap: 20rpx; margin-top: 32rpx; }
+.dialog-btn { flex: 1; text-align: center; padding: 20rpx 0; border-radius: 40rpx; font-size: 28rpx; }
+.dialog-btn.primary { background: var(--brand); color: #fff; }
+.dialog-btn.ghost { background: #fff; color: var(--brand); border: 1rpx solid var(--brand); }
+
+/* 筛选标签条 */
+.filter-bar { display: flex; margin: 16rpx 20rpx; gap: 12rpx; }
+.filter-tab {
+  flex: 1;
+  text-align: center;
+  padding: 16rpx 0;
+  font-size: 24rpx;
+  color: var(--muted);
+  background: #fff;
+  border-radius: 30rpx;
+}
+.filter-tab.active { color: #fff; background: var(--brand); font-weight: 600; }

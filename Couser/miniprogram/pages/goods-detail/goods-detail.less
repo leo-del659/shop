@@ -1,0 +1,168 @@
+.detail {
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+.swiper {
+  width: 100%;
+  height: 600rpx;
+  background: #fff;
+}
+.slide-img {
+  width: 100%;
+  height: 600rpx;
+}
+.no-img {
+  height: 600rpx;
+  line-height: 600rpx;
+  text-align: center;
+  color: #999;
+  background: #fff;
+}
+.name {
+  font-size: 32rpx;
+  font-weight: bold;
+}
+.price-line {
+  margin: 16rpx 0 4rpx;
+  display: flex;
+  align-items: baseline;
+}
+.price {
+  font-size: 40rpx;
+  color: #ee0a24;
+  font-weight: bold;
+}
+/* 已售数量（小灰字） */
+.sold-line {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+  line-height: 1.4;
+  padding-bottom: 8rpx;
+}
+.sku-bar {
+  margin-top: 0;
+}
+/* 用户评价 */
+.reviews {
+  margin-top: 20rpx;
+}
+.review-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+}
+.rc-chip {
+  padding: 8rpx 24rpx;
+  background: #f5f5f5;
+  border-radius: 30rpx;
+  font-size: 24rpx;
+  color: #666;
+  border: 2rpx solid transparent;
+  &.rc-on {
+    background: #e6f7ed;
+    color: #07c160;
+    border-color: #07c160;
+  }
+}
+.review-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-bottom: 16rpx;
+}
+.rt-tag {
+  padding: 4rpx 16rpx;
+  background: #f0f7ff;
+  color: #1989fa;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+}
+.section-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  margin-bottom: 20rpx;
+}
+.review-list {
+  .review-item {
+    padding: 24rpx 0;
+    border-bottom: 1rpx solid #f0f0f0;
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+.review-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+.review-avatar {
+  width: 64rpx;
+  height: 64rpx;
+  line-height: 64rpx;
+  text-align: center;
+  border-radius: 50%;
+  background: #07c160;
+  color: #fff;
+  font-size: 28rpx;
+  margin-right: 16rpx;
+  overflow: hidden;
+}
+.review-meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.review-nick {
+  font-size: 28rpx;
+  color: #333;
+}
+.review-stars {
+  margin-top: 4rpx;
+  .star {
+    color: #ff9900;
+    font-size: 24rpx;
+    margin-right: 4rpx;
+  }
+}
+.review-time {
+  font-size: 24rpx;
+  color: #999;
+}
+.review-content {
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.6;
+  margin-bottom: 16rpx;
+}
+.review-imgs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+.review-img {
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: 8rpx;
+  background: #f5f5f5;
+}
+.empty-reviews {
+  text-align: center;
+  padding: 60rpx 0;
+  font-size: 28rpx;
+}
+.review-error {
+  color: #ee0a24;
+}
+.retry-btn {
+  display: inline-block;
+  margin-top: 20rpx;
+  padding: 12rpx 36rpx;
+  border-radius: 30rpx;
+  font-size: 26rpx;
+  background: #07c160;
+  color: #fff;
+  border: none;
+}

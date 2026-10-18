@@ -1,0 +1,44 @@
+/* TabBar：与用户端一致 —— 白底 + 顶部细线 + 未选 var(--muted) + 选中品牌绿 */
+.tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: calc(110rpx + env(safe-area-inset-bottom));
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  border-top: 1rpx solid var(--line);
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 9999;
+}
+
+.tab-bar-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 110rpx;
+  color: var(--muted);
+  font-size: 22rpx;
+  transition: color 0.2s;
+}
+
+.tab-bar-item.active {
+  color: var(--brand);
+}
+
+.tab-bar-item-hover {
+  opacity: 0.7;
+}
+
+.tab-icon {
+  font-size: 40rpx;
+  line-height: 1;
+  margin-bottom: 6rpx;
+}
+
+.tab-text {
+  line-height: 1.2;
+}

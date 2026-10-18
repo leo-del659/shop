@@ -1,0 +1,144 @@
+<view class="goods-list-page">
+  <!-- 搜索框（带可点击搜索图标） -->
+  <view class="search-header">
+    <view class="search-bar">
+      <van-icon name="search" class="s-ic" />
+      <input
+        class="s-input"
+        value="{{keyword}}"
+        placeholder="搜索商品或分类"
+        placeholder-class="s-ph"
+        confirm-type="search"
+        bindinput="onSearchInput"
+        bindconfirm="onSearch"
+      />
+      <van-icon wx:if="{{keyword}}" name="clear" class="s-clear" bindtap="onClear" />
+      <view class="s-btn" bindtap="onSearch">
+        <van-icon name="search" />
+      </view>
+    </view>
+  </view>
+
+  <!-- 搜索历史痕迹 -->
+  <view class="history-wrap" wx:if="{{!searching && historyList.length}}">
+    <view class="history-head">
+      <text class="history-title">搜索历史</text>
+      <text class="history-clear" bindtap="clearHistory">清空</text>
+    </view>
+    <view class="history-tags">
+      <text
+        wx:for="{{historyList}}"
+        wx:key="*this"
+        class="history-tag"
+        data-kw="{{item}}"
+        bindtap="onHistoryTap"
+      >{{item}}</text>
+    </view>
+  </view>
+
+  <!-- 搜索结果（输入关键词后显示） -->
+  <block wx:if="{{searching}}">
+    <!-- 子分类筛选标签 -->
+    <view class="sub-chips" wx:if="{{searchSubCats.length > 1}}">
+      <text
+        wx:for="{{searchSubCats}}"
+        wx:key="id"
+        class="chip {{activeSearchSubId === item.id ? 'chip-active' : ''}}"
+        data-id="{{item.id}}"
+        bindtap="onSearchSubTap"
+      >{{item.name}}</text>
+    </view>
+
+    <view wx:if="{{searchResults.length}}" class="goods-grid">
+      <view wx:for="{{searchResults}}" wx:key="id" class="goods-cell">
+        <goods-card goods="{{item}}" quantity="{{item._qty || 0}}" mode="list" bind:tap="goDetail" bind:openSku="onOpenSku" bind:incCart="onIncCart" bind:decCart="onDecCart" />
+      </view>
+    </view>
+    <view wx:else class="empty-wrap">未找到「{{keyword}}」相关商品</view>
+  </block>
+
+  <!-- 默认展示：热搜榜 + 新品榜 并排 -->
+  <block wx:elif="{{!loading}}">
+    <view class="rank-row" wx:if="{{hotList.length || newList.length}}">
+      <!-- 左侧：热搜榜 -->
+      <view class="rank-section rank-half" wx:if="{{hotList.length}}">
+        <view class="rank-head">
+          <text class="rank-icon">🔥</text>
+          <text class="rank-title">热搜榜</text>
+        </view>
+        <scroll-view scroll-y class="rank-list-scroll">
+          <view class="rank-list">
+            <view
+              wx:for="{{hotList}}"
+              wx:key="id"
+              class="rank-item"
+              data-id="{{item.id}}"
+              bindtap="goDetail"
+            >
+              <text class="rank-num {{index < 3 ? 'top' : ''}}">{{index + 1}}</text>
+              <image class="rank-img" src="{{item.coverImg}}" mode="aspectFill" />
+              <view class="rank-info">
+                <text class="rank-name">{{item.goodsName}}</text>
+                <text class="rank-price">¥{{item.salePrice || item.price}}</text>
+              </view>
+              <block wx:if="{{item._qty > 0}}">
+                <view class="stepper" catchtap="noop">
+                  <view class="stepper-btn minus" catchtap="onRankDec" data-goods-id="{{item.id}}">-</view>
+                  <text class="stepper-num">{{item._qty}}</text>
+                  <view class="stepper-btn plus" catchtap="onRankInc" data-goods-id="{{item.id}}">+</view>
+                </view>
+              </block>
+              <view wx:else class="rank-add" catchtap="onAddToCart" data-goods="{{item}}">加购</view>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
+
+      <!-- 右侧：新品榜（与热搜榜同款列表） -->
+      <view class="rank-section rank-half" wx:if="{{newList.length}}">
+        <view class="rank-head">
+          <text class="rank-icon">✨</text>
+          <text class="rank-title">新品榜</text>
+        </view>
+        <scroll-view scroll-y class="rank-list-scroll">
+          <view class="rank-list">
+            <view
+              wx:for="{{newList}}"
+              wx:key="id"
+              class="rank-item"
+              data-id="{{item.id}}"
+              bindtap="goDetail"
+            >
+              <text class="rank-num new-num">{{index + 1}}</text>
+              <image class="rank-img" src="{{item.coverImg}}" mode="aspectFill" />
+              <view class="rank-info">
+                <text class="rank-name">{{item.goodsName}}</text>
+                <text class="rank-price">¥{{item.salePrice || item.price}}</text>
+              </view>
+              <block wx:if="{{item._qty > 0}}">
+                <view class="stepper" catchtap="noop">
+                  <view class="stepper-btn minus" catchtap="onRankDec" data-goods-id="{{item.id}}">-</view>
+                  <text class="stepper-num">{{item._qty}}</text>
+                  <view class="stepper-btn plus" catchtap="onRankInc" data-goods-id="{{item.id}}">+</view>
+                </view>
+              </block>
+              <view wx:else class="rank-add" catchtap="onAddToCart" data-goods="{{item}}">加购</view>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
+    </view>
+  </block>
+
+  <view wx:if="{{loading}}" class="empty-wrap">加载中...</view>
+</view>
+
+<!-- SKU 规格选择弹窗（复用首页/详情页组件） -->
+<sku-popup
+  visible="{{showSku}}"
+  goods="{{skuGoods}}"
+  action="{{skuAction}}"
+  initialQty="{{1}}"
+  bind:close="closeSku"
+  bind:confirm="onSkuConfirm"
+/>

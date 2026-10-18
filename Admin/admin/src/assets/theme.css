@@ -1,0 +1,96 @@
+/* =========================================================
+   浅色设计令牌系统 (ECommerce Admin · 暖琥珀米色编辑风)
+   - 主色 暖琥珀金 #C0821B + 米色/奶油中性
+   - 8px 间距刻度 / 圆角 / 阴影 / 字号层级
+   - 覆写 Element Plus 主题变量，统一全站视觉语言
+   - 本文件由 main.css 在基础样式之后 @import，确保 --el-* 覆盖生效
+   说明：所有页面均通过以下同名 token 取色，改这里即整站换肤。
+   ========================================================= */
+
+/* ===================== 设计令牌（默认浅色） ===================== */
+:root {
+  /* 背景层 */
+  --bg-page: #FBF6EC;          /* 米色页面底色 */
+  --bg-surface: #FFFFFF;       /* 卡片 / 面板 */
+  --bg-surface-2: #F9F3E8;     /* 暖浅次级填充（标签 / 悬停底） */
+
+  /* 边框 */
+  --border: #ECDABB;           /* 暖描边 */
+  --border-soft: rgba(236, 218, 187, 0.8);
+
+  /* 文字层级（标题 → 极淡） */
+  --text-1: #2f2820;           /* 深棕 标题 / 强 */
+  --text-2: #5c5247;           /* 棕灰 正文 */
+  --text-3: #9c9183;           /* 浅棕 次要 */
+  --text-4: #d9cdbb;           /* 极淡 */
+
+  /* 阴影（暖棕调，克制） */
+  --shadow-card: 0 1px 2px rgba(91, 70, 54, 0.04), 0 1px 3px rgba(91, 70, 54, 0.06);
+  --shadow-hover: 0 10px 24px rgba(91, 70, 54, 0.10);
+
+  /* 品牌主色（暖琥珀金） */
+  --accent: #C0821B;           /* 琥珀金 */
+  --accent-2: #9A6816;         /* 深琥珀 */
+  --accent-glow: rgba(192, 130, 27, 0.15);
+
+  /* 语义色（WCAG AA 可读） */
+  --success: #16A34A;
+  --warning: #D97706;
+  --danger: #DC2626;
+  --info: #64748B;
+
+  /* 外壳：侧边栏 */
+  --sidebar-bg: #FFFCF5;
+  --sidebar-text: #8C5A2B;
+  --sidebar-text-hover: #2f2820;
+  --sidebar-active-text: #C0821B;
+  --sidebar-active-bg: rgba(192, 130, 27, 0.10);
+  --sidebar-hover-bg: #F9F3E8;
+  --sidebar-border: #ECDABB;
+  --sidebar-footer-text: #a99e90;
+
+  /* 外壳：顶栏 */
+  --header-bg: #FFFCF5;
+  --header-text: #2f2820;
+  --header-sub-text: #a99e90;
+  --header-hover-bg: #F9F3E8;
+  --header-user-bg: #F9F3E8;
+  --header-border: #ECDABB;
+  --header-icon: #5c5247;
+
+  /* ===== Element Plus 主题覆写（主色 暖琥珀 + 派生色） ===== */
+  --el-color-primary: #C0821B;
+  --el-color-primary-light-3: #D3A85F;
+  --el-color-primary-light-5: #E0C18D;
+  --el-color-primary-light-7: #F2E6D1;
+  --el-color-primary-light-8: #F9F3E8;
+  --el-color-primary-light-9: #FBF6EC;
+  --el-color-primary-dark-2: #9A6816;
+
+  --el-color-success: #16A34A;
+  --el-color-warning: #D97706;
+  --el-color-danger: #DC2626;
+  --el-color-error: #DC2626;
+  --el-color-info: #64748B;
+
+  --el-text-color-primary: #2f2820;
+  --el-text-color-regular: #5c5247;
+  --el-text-color-secondary: #9c9183;
+  --el-text-color-placeholder: #d9cdbb;
+  --el-text-color-disabled: #d9cdbb;
+
+  --el-border-color: #ECDABB;
+  --el-border-color-light: #F2E6D1;
+  --el-border-color-lighter: #F9F3E8;
+  --el-border-color-extra-light: #FBF6EC;
+
+  --el-fill-color: #F9F3E8;
+  --el-fill-color-light: #FBF6EC;
+  --el-fill-color-lighter: #FDFBF7;
+  --el-fill-color-blank: #FFFFFF;
+
+  --el-bg-color: #FFFFFF;
+  --el-bg-color-overlay: #FFFFFF;
+  --el-border-radius-base: 8px;
+  --el-font-size-base: 14px;
+}

@@ -1,0 +1,264 @@
+.mine {
+  min-height: 100vh;
+  background: #f6f7f9;
+  padding-bottom: 40rpx;
+}
+
+/* 个人信息区 */
+.header {
+  position: relative;
+  padding: 0 30rpx 40rpx;
+  overflow: hidden;
+}
+.header-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 260rpx;
+  background: linear-gradient(180deg, #ffeaea 0%, #fff 100%);
+  border-radius: 0 0 60rpx 60rpx;
+}
+.user-row {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  margin-top: 60rpx;
+}
+.avatar {
+  display: block;          /* 消除 image 行内元素底部白边 */
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  border: 4rpx solid rgba(250, 53, 52, 0.12);
+  background: #fff;
+  overflow: hidden;        /* 圆框内裁剪 */
+  object-fit: cover;       /* 配合 aspectFill，CSS 兜底再裁一次 */
+}
+.avatar-default {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff5f5;
+}
+/* 头像外层容器：用来占位固定宽高，避免外层 flex 把它挤扁 */
+.avatar-wrap {
+  position: relative;
+  width: 128rpx;
+  height: 128rpx;
+  flex-shrink: 0;
+}
+.user-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14rpx;
+}
+.user-name {
+  font-size: 38rpx;
+  font-weight: bold;
+  color: #1a1a1a;
+}
+.user-sub {
+  font-size: 24rpx;
+  color: #888;
+}
+/* 头部右侧按钮组：资质上传 + 退出登录 */
+.actions {
+  margin-left: auto;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+/* 头部右侧设置按钮 */
+.setting-btn {
+  flex-shrink: 0;
+  padding: 10rpx 28rpx;
+  font-size: 26rpx;
+  color: #fff;
+  background: #07c160;
+  border-radius: 32rpx;
+}
+.setting-btn:active {
+  opacity: 0.85;
+}
+/* 资质上传文字按钮（次级描边样式） */
+.qual-btn {
+  flex-shrink: 0;
+  padding: 10rpx 28rpx;
+  font-size: 26rpx;
+  color: #fa3534;
+  background: #fff;
+  border: 2rpx solid #fa3534;
+  border-radius: 32rpx;
+}
+.qual-btn:active {
+  opacity: 0.8;
+}
+
+/* 我的资产 */
+.asset-block {
+  display: flex;
+  justify-content: space-around;
+  padding: 32rpx 24rpx;
+}
+.asset-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10rpx;
+  padding: 16rpx 40rpx;
+  border-radius: 16rpx;
+}
+.asset-item:active {
+  background: #f7f8fa;
+}
+.asset-num {
+  font-size: 44rpx;
+  font-weight: bold;
+  color: #1a1a1a;
+}
+.asset-icon {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff5f5;
+}
+.icon-fav-block { background: #fff5f5; }
+.icon-foot-block { background: #ecf5ff; }
+.asset-unit {
+  font-size: 24rpx;
+  font-weight: normal;
+  margin-left: 4rpx;
+}
+.asset-label {
+  font-size: 24rpx;
+  color: #888;
+}
+
+/* 卡片通用 */
+.block {
+  margin: 24rpx;
+  padding: 28rpx;
+  background: #fff;
+  border-radius: 28rpx;
+  border: 1rpx solid #f0f0f0;
+}
+.block-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #1a1a1a;
+  margin-bottom: 28rpx;
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
+/* 订单入口网格 */
+.order-grid {
+  display: flex;
+  justify-content: space-between;
+}
+.order-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14rpx;
+  padding: 16rpx 8rpx;
+  font-size: 24rpx;
+  color: #444;
+  flex: 1;
+}
+.order-item:active {
+  opacity: 0.7;
+}
+.order-icon {
+  width: 84rpx;
+  height: 84rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.order-badge {
+  position: absolute;
+  top: -8rpx;
+  right: -8rpx;
+  min-width: 32rpx;
+  height: 32rpx;
+  line-height: 32rpx;
+  padding: 0 8rpx;
+  background: #fa3534;
+  color: #fff;
+  font-size: 20rpx;
+  text-align: center;
+  border-radius: 16rpx;
+  box-sizing: border-box;
+}
+.order-pay { background: linear-gradient(135deg, #ff9f43 0%, #ffca28 100%); }
+.order-delivery { background: linear-gradient(135deg, #07c160 0%, #10b981 100%); }
+.order-comment { background: linear-gradient(135deg, #2e86de 0%, #54a0ff 100%); }
+.order-fav { background: linear-gradient(135deg, #fa3534 0%, #ff7878 100%); }
+.order-refund { background: linear-gradient(135deg, #ee5a6f 0%, #ff9ff3 100%); }
+.order-receive { background: linear-gradient(135deg, #1989fa 0%, #4cb1ff 100%); }
+.order-all { background: linear-gradient(135deg, #8395a7 0%, #b2bec3 100%); }
+
+/* 地址 / 退出 等菜单图标 */
+.icon-address { background: linear-gradient(135deg, #07c160 0%, #10b981 100%); }
+
+/* 猜你喜欢网格 */
+.rec-grid {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -10rpx;
+}
+.rec-cell {
+  width: 50%;
+  box-sizing: border-box;
+  padding: 10rpx;
+}
+
+/* 退出登录 */
+.menu-block {
+  padding: 8rpx 28rpx;
+}
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 0;
+}
+.menu-item:active {
+  opacity: 0.7;
+}
+.menu-left {
+  display: flex;
+  align-items: center;
+  gap: 22rpx;
+  font-size: 30rpx;
+  color: #333;
+}
+.menu-icon {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 18rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.icon-logout { background: linear-gradient(135deg, #8395a7 0%, #b2bec3 100%); }
+
+/* 底部文案 */
+.footer-tip {
+  text-align: center;
+  margin-top: 60rpx;
+  color: #bbb;
+  font-size: 24rpx;
+}

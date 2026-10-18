@@ -1,0 +1,22 @@
+<view class="security-page">
+  <view class="form-card">
+    <view class="section-head">修改登录密码</view>
+    <view class="form-item">
+      <text class="label">原密码</text>
+      <input class="input" type="text" password value="{{form.oldPassword}}" data-field="oldPassword" bindinput="onInput" placeholder="请输入原密码" maxlength="20" />
+    </view>
+    <view class="form-item">
+      <text class="label">新密码</text>
+      <input class="input" type="text" password value="{{form.newPassword}}" data-field="newPassword" bindinput="onInput" placeholder="请输入新密码（至少6位）" maxlength="20" />
+    </view>
+    <view class="form-item">
+      <text class="label">确认密码</text>
+      <input class="input" type="text" password value="{{form.confirmPassword}}" data-field="confirmPassword" bindinput="onInput" placeholder="请再次输入新密码" maxlength="20" />
+    </view>
+    <view class="error-msg" wx:if="{{errorMsg}}">{{errorMsg}}</view>
+  </view>
+
+  <view class="footer">
+    <view class="save-btn {{saveDisabled}}" bindtap="save">{{saveBtnText}}</view>
+  </view>
+</view>

@@ -1,0 +1,43 @@
+<view class="detail" wx:if="{{!loading && detail}}">
+  <!-- 状态条 -->
+  <view class="status-bar b{{detail.refundStatus}}">
+    <view class="s-title">{{detail.statusText}}</view>
+    <view class="s-sub">{{detail.typeText}} · 退款金额 ¥{{detail.refundAmount}}</view>
+  </view>
+
+  <!-- 退款信息 -->
+  <view class="card">
+    <view class="row"><text class="muted">退款单号</text><text>{{detail.refundNo}}</text></view>
+    <view class="row"><text class="muted">退款类型</text><text>{{detail.typeText}}</text></view>
+    <view class="row"><text class="muted">退款金额</text><text class="price">{{detail.refundAmount}}</text></view>
+    <view class="row"><text class="muted">退款原因</text><text class="right">{{detail.refundReason || '—'}}</text></view>
+    <view class="row" wx:if="{{detail.refundNum}}"><text class="muted">退货数量</text><text>{{detail.refundNum}}</text></view>
+    <view class="row" wx:if="{{detail.handleRemark}}"><text class="muted">审核备注</text><text class="right">{{detail.handleRemark}}</text></view>
+    <view class="row" wx:if="{{detail.handleTime}}"><text class="muted">审核时间</text><text>{{detail.handleTime}}</text></view>
+  </view>
+
+  <!-- 退货物流（仅退货退款） -->
+  <view class="card" wx:if="{{detail.return}}">
+    <view class="card-title">退货信息</view>
+    <view class="row"><text class="muted">退货单号</text><text>{{detail.return.returnNo}}</text></view>
+    <view class="row"><text class="muted">退货状态</text><text>{{detail.return.returnStatusText}}</text></view>
+    <view class="row" wx:if="{{detail.return.returnNum}}"><text class="muted">退货数量</text><text>{{detail.return.returnNum}}</text></view>
+  </view>
+
+  <!-- 订单商品 -->
+  <view class="card">
+    <view class="card-title">订单商品</view>
+    <view class="goods" wx:for="{{detail.itemsDecorated}}" wx:key="goodsId">
+      <image class="thumb" src="{{item.cover}}" mode="aspectFill" wx:if="{{item.cover}}" />
+      <view class="thumb thumb-default" wx:else>商</view>
+      <view class="goods-info">
+        <view class="g-name ellipsis">{{item.goodsName}}</view>
+        <view class="muted">x{{item.buyNum}} · ¥{{item.buyPrice}}</view>
+      </view>
+      <view class="g-amount">¥{{item.subAmount}}</view>
+    </view>
+    <view class="row total"><text class="muted">订单实付</text><text class="price">{{detail.orderTotal}}</text></view>
+  </view>
+</view>
+
+<view wx:elif="{{loading}}" class="loading">加载中...</view>

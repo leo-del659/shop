@@ -1,0 +1,2 @@
+.bank { min-height: 100vh; }
+.tip { font-size: 22rpx; margin: 4rpx 28rpx 12rpx; }

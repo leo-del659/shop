@@ -1,0 +1,197 @@
+/* 页面：浅色背景，与用户端/商户登录页统一 */
+page {
+  background: var(--bg);
+}
+
+.register {
+  min-height: 100vh;
+  padding-bottom: 80rpx;
+  box-sizing: border-box;
+}
+
+/* 顶部品牌区 */
+.header {
+  position: relative;
+  padding: 80rpx 40rpx 120rpx;
+  overflow: hidden;
+}
+.header-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, #3b6fe0 0%, #5b8def 100%);
+  border-radius: 0 0 80rpx 80rpx;
+}
+.decor {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+}
+.decor-1 {
+  width: 320rpx;
+  height: 320rpx;
+  top: -80rpx;
+  right: -80rpx;
+}
+.decor-2 {
+  width: 220rpx;
+  height: 220rpx;
+  bottom: 20rpx;
+  left: -60rpx;
+}
+.logo-wrap {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18rpx;
+}
+.logo-img {
+  width: 150rpx;
+  height: 150rpx;
+  border-radius: 40rpx;
+  box-shadow: 0 12rpx 32rpx rgba(0, 0, 0, 0.18);
+}
+.logo-text {
+  font-size: 48rpx;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 4rpx;
+  text-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+.logo-sub {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 2rpx;
+}
+
+/* 注册卡片 */
+.card {
+  position: relative;
+  z-index: 2;
+  margin: -80rpx 40rpx 0;
+  background: #fff;
+  border-radius: 44rpx;
+  padding: 48rpx 40rpx 56rpx;
+  box-shadow: 0 20rpx 60rpx rgba(0, 0, 0, 0.08);
+}
+.card-title {
+  text-align: center;
+  font-size: 36rpx;
+  font-weight: 700;
+  color: var(--text);
+}
+.card-sub {
+  text-align: center;
+  font-size: 24rpx;
+  color: var(--muted);
+  margin-top: 12rpx;
+  margin-bottom: 36rpx;
+}
+
+/* 输入行：下划线风格 */
+.input-group {
+  margin-top: 16rpx;
+}
+.input-row {
+  display: flex;
+  align-items: center;
+  padding: 28rpx 0;
+  border-bottom: 1rpx solid var(--line);
+}
+.input-icon {
+  margin-right: 20rpx;
+  flex-shrink: 0;
+  font-size: 32rpx;
+}
+.native-input {
+  flex: 1;
+  font-size: 30rpx;
+  color: var(--text);
+  min-width: 0;
+}
+.native-input::placeholder {
+  color: var(--muted);
+}
+
+/* 验证码按钮：描边胶囊（与用户端一致） */
+.code-btn-wrap {
+  flex-shrink: 0;
+  margin-left: 16rpx;
+  display: flex;
+  align-items: center;
+}
+.code-btn {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--brand);
+  padding: 10rpx 20rpx;
+  border: 2rpx solid var(--brand);
+  border-radius: 32rpx;
+  white-space: nowrap;
+}
+.code-btn:active {
+  opacity: 0.7;
+}
+.code-btn-disabled {
+  color: var(--muted);
+  border-color: var(--line);
+}
+
+/* 错误提示 */
+.error-wrap {
+  min-height: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 8rpx;
+}
+.error {
+  font-size: 24rpx;
+  color: var(--warning);
+  text-align: center;
+}
+
+/* 注册按钮：品牌蓝渐变 */
+.reg-btn {
+  margin-top: 40rpx;
+  height: 96rpx;
+  line-height: 96rpx;
+  background: linear-gradient(135deg, #3b6fe0 0%, #5b8def 100%) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 48rpx !important;
+  box-shadow: 0 16rpx 40rpx rgba(59, 111, 224, 0.28);
+  font-size: 32rpx !important;
+  font-weight: 600;
+  letter-spacing: 4rpx;
+}
+.reg-btn::after {
+  border: none;
+}
+.reg-btn:active {
+  opacity: 0.9;
+  transform: translateY(2rpx);
+}
+.reg-btn[disabled] {
+  opacity: 0.6;
+  color: #fff !important;
+  background: linear-gradient(135deg, #3b6fe0 0%, #5b8def 100%) !important;
+}
+
+/* 底部返回登录 */
+.form-footer {
+  margin-top: 32rpx;
+  text-align: center;
+}
+.back-login-link {
+  font-size: 26rpx;
+  color: var(--brand);
+  padding: 8rpx 16rpx;
+}
+.back-login-link:active {
+  opacity: 0.7;
+}

@@ -1,0 +1,23 @@
+<view class="bind-page">
+  <view class="form-card">
+    <view class="section-head">银行卡信息</view>
+    <view class="form-item">
+      <text class="label">开户银行</text>
+      <input class="input" type="text" value="{{form.bankName}}" data-field="bankName" bindinput="onInput" placeholder="如：中国工商银行" maxlength="50" />
+    </view>
+    <view class="form-item">
+      <text class="label">银行卡号</text>
+      <input class="input" type="number" value="{{form.bankAccount}}" data-field="bankAccount" bindinput="onInput" placeholder="请输入银行卡号" maxlength="30" />
+    </view>
+    <view class="form-item">
+      <text class="label">开户姓名</text>
+      <input class="input" type="text" value="{{form.accountName}}" data-field="accountName" bindinput="onInput" placeholder="请输入开户姓名" maxlength="30" />
+    </view>
+  </view>
+
+  <view class="tips">绑定后可用于货款结算提现</view>
+
+  <view class="footer">
+    <view class="save-btn {{saveDisabled}}" bindtap="save">{{saveBtnText}}</view>
+  </view>
+</view>

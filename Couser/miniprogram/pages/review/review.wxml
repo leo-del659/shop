@@ -1,0 +1,77 @@
+<view class="review-page" wx:if="{{login}}">
+  <!-- 订单号 -->
+  <view class="block header" wx:if="{{orderNo}}">
+    <text class="header-label">订单号</text>
+    <text class="header-no">{{orderNo}}</text>
+  </view>
+
+  <!-- 满意度评价 -->
+  <view class="block">
+    <view class="field-title">满意度评价</view>
+    <view class="stars">
+      <text
+        wx:for="{{[1,2,3,4,5]}}"
+        wx:for-item="item"
+        wx:key="item"
+        class="star {{item <= rating ? 'on' : ''}}"
+        data-v="{{item}}"
+        bindtap="onStar"
+      >{{item <= rating ? '★' : '☆'}}</text>
+    </view>
+  </view>
+
+  <!-- 标签 -->
+  <view class="block">
+    <view class="field-title">请选择评价标签（可多选）</view>
+    <view class="tags">
+      <view
+        wx:for="{{tagOptions}}"
+        wx:key="name"
+        class="tag {{item.selected ? 'on' : ''}}"
+        data-tag="{{item.name}}"
+        bindtap="toggleTag"
+        hover-class="tag-hover"
+        hover-start-time="0"
+        hover-stay-time="100"
+      >{{item.name}}</view>
+    </view>
+  </view>
+
+  <!-- 对商家评价 -->
+  <view class="block">
+    <view class="field-title">对商家评价</view>
+    <textarea
+      class="content"
+      value="{{merchantReview}}"
+      bindinput="onMerchantReview"
+      placeholder="对商家有什么想说的吗~（选填）"
+      maxlength="200"
+    />
+  </view>
+
+  <!-- 匿名评价 -->
+  <view class="block anonymous">
+    <label class="anon-row" bindtap="toggleAnonymous">
+      <view class="anon-check {{anonymous ? 'on' : ''}}">{{anonymous ? '✓' : ''}}</view>
+      <text class="anon-text">匿名评价（匿名后您的昵称不会被展示）</text>
+    </label>
+  </view>
+
+  <!-- 图片 -->
+  <view class="block">
+    <view class="field-title">上传图片（最多3张）</view>
+    <view class="imgs">
+      <view class="img-item" wx:for="{{tempImages}}" wx:key="*this" wx:for-item="img">
+        <image class="img" src="{{img}}" mode="aspectFill" />
+        <text class="img-del" data-idx="{{index}}" catchtap="removeImage">×</text>
+      </view>
+      <view class="img-add" wx:if="{{tempImages.length < 3}}" bindtap="chooseImage">+</view>
+    </view>
+  </view>
+
+  <view class="submit-bar">
+    <button class="btn-submit" loading="{{submitting}}" bindtap="onSubmit">提交评价</button>
+  </view>
+</view>
+
+<view wx:else class="empty-wrap">请先登录后再评价</view>

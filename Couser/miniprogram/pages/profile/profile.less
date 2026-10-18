@@ -1,0 +1,196 @@
+.profile {
+  min-height: 100vh;
+  background: #f6f7f9;
+  padding-bottom: 60rpx;
+}
+
+/* 顶部个人信息区（与「我的」页一致的浅红粉渐变） */
+.header {
+  position: relative;
+  padding: 0 30rpx 40rpx;
+  overflow: hidden;
+}
+.header-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 300rpx;
+  background: linear-gradient(180deg, #ffeaea 0%, #fff 100%);
+  border-radius: 0 0 60rpx 60rpx;
+}
+.decor {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(250, 53, 52, 0.06);
+}
+.decor-1 {
+  width: 320rpx;
+  height: 320rpx;
+  top: -80rpx;
+  right: -80rpx;
+}
+.decor-2 {
+  width: 220rpx;
+  height: 220rpx;
+  bottom: 20rpx;
+  left: -60rpx;
+}
+.header-main {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 50rpx;
+}
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 28rpx;
+}
+.avatar-box {
+  position: relative;
+  flex-shrink: 0;
+}
+.avatar-box:active {
+  opacity: 0.85;
+}
+.avatar {
+  display: block;
+  width: 132rpx;
+  height: 132rpx;
+  border-radius: 50%;
+  border: 4rpx solid rgba(250, 53, 52, 0.12);
+  background: #fff;
+  overflow: hidden;
+  object-fit: cover;
+}
+.avatar-default {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.avatar-edit {
+  position: absolute;
+  right: -4rpx;
+  bottom: -4rpx;
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  background: #fa3534;
+  color: #fff;
+  font-size: 22rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3rpx solid #fff;
+}
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  min-width: 0;
+}
+.name {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+.name:active {
+  opacity: 0.7;
+}
+.name-edit-icon {
+  flex-shrink: 0;
+}
+.login-tip {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #fa3534;
+}
+.muted {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 设置列表卡片 */
+.settings-card {
+  margin: 20rpx 30rpx 0;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 10rpx 30rpx;
+  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.04);
+}
+.settings-title {
+  font-size: 26rpx;
+  color: #999;
+  padding: 24rpx 0 12rpx;
+}
+.cell {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 32rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+.cell:last-child {
+  border-bottom: none;
+}
+.cell:active {
+  opacity: 0.75;
+}
+.cell-label {
+  flex: 1;
+  font-size: 30rpx;
+  color: #1a1a1a;
+}
+.cell-label-danger {
+  color: #fa3534;
+  font-weight: 600;
+}
+.cell-value {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  font-size: 26rpx;
+  color: #999;
+  max-width: 300rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cell-avatar {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+}
+
+/* 底部装饰与版本信息 */
+.bottom-section {
+  margin-top: 80rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20rpx;
+}
+.footer-tag {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+.tag-line {
+  width: 60rpx;
+  height: 1rpx;
+  background: #ddd;
+}
+.tag-text {
+  font-size: 22rpx;
+  color: #bbb;
+}
+.version {
+  font-size: 22rpx;
+  color: #ccc;
+}

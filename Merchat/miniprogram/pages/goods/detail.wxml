@@ -1,0 +1,43 @@
+<view class="detail" wx:if="{{goods}}">
+  <swiper class="gallery" indicator-dots autoplay circular interval="3000" wx:if="{{goods.images && goods.images.length}}">
+    <swiper-item wx:for="{{goods.images}}" wx:key="id">
+      <image wx:if="{{item.url}}" class="gallery-img" src="{{item.url}}" mode="aspectFill" lazy-load></image>
+      <view wx:else class="gallery-emoji">{{item.emoji || item.defaultEmoji}}</view>
+    </swiper-item>
+  </swiper>
+
+  <view class="card">
+    <view class="d-top">
+      <view class="d-name">{{goods.name}}</view>
+      <view class="tag {{goods.status}}">{{goods.statusLabel}}</view>
+    </view>
+    <view class="d-price-row">
+      <text class="d-price-label">售价</text>
+      <view class="d-price">¥{{goods.price}}<text class="d-unit">/{{goods.unit}}</text></view>
+    </view>
+    <view class="d-stock stock {{goods.stockClass}}">{{goods.stockLabel}} · 库存 {{goods.stock}} {{goods.unit}}</view>
+  </view>
+
+  <view class="card info-card">
+    <view class="info-row" wx:if="{{goods.merchant}}">
+      <view class="info-label">所属商户</view>
+      <view class="info-val">{{goods.merchant}}</view>
+    </view>
+    <view class="info-row" wx:if="{{goods.costPriceText}}">
+      <view class="info-label">成本价</view>
+      <view class="info-val info-val--cost">¥{{goods.costPriceText}}<text class="info-val-unit"> / {{goods.unit}}</text></view>
+    </view>
+    <view class="info-row info-row--gap">
+      <view class="info-label">销量</view>
+      <view class="info-val">{{goods.sales}}</view>
+    </view>
+    <view class="info-row"><view class="info-label">上市时间</view><view class="info-val">{{goods.launchTimeText}}</view></view>
+  </view>
+
+  <view class="page-pad-bottom"></view>
+
+  <view class="footer-bar">
+    <view class="footer-btn ghost" bindtap="goEdit">修改</view>
+    <view class="footer-btn primary" bindtap="onToggleOff">{{goods.status === 'published' ? '下架' : '上架'}}</view>
+  </view>
+</view>

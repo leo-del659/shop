@@ -1,0 +1,71 @@
+.security-page {
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.form-card {
+  margin: -60rpx 24rpx 24rpx;
+  background: #fff;
+  border-radius: 28rpx;
+  border: 1rpx solid var(--line);
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.04);
+  padding: 0 28rpx;
+  position: relative;
+  z-index: 2;
+}
+.section-head {
+  padding: 28rpx 0 10rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--text);
+}
+.form-item {
+  display: flex;
+  align-items: center;
+  padding: 28rpx 0;
+  border-bottom: 1rpx solid var(--line);
+}
+.form-item:last-child {
+  border-bottom: none;
+}
+.label {
+  width: 160rpx;
+  font-size: 28rpx;
+  color: var(--text);
+  font-weight: 500;
+  flex-shrink: 0;
+}
+.input {
+  flex: 1;
+  font-size: 28rpx;
+  color: var(--text);
+  text-align: right;
+}
+.input::placeholder {
+  color: var(--muted);
+}
+
+.footer {
+  padding: 0 24rpx 40rpx;
+}
+.save-btn {
+  background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+  color: #fff;
+  text-align: center;
+  padding: 28rpx 0;
+  border-radius: 30rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+}
+.save-btn.disabled {
+  opacity: 0.6;
+}
+.save-btn:active {
+  opacity: 0.85;
+}
+.error-msg {
+  padding: 16rpx 0 24rpx;
+  font-size: 26rpx;
+  color: var(--danger);
+  line-height: 1.5;
+}

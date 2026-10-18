@@ -1,0 +1,72 @@
+<view class="apply" wx:if="{{!loading && order}}">
+  <!-- 订单信息 -->
+  <view class="card">
+    <view class="card-title">订单信息</view>
+    <view class="row"><text class="muted">订单号</text><text>{{order.orderNo}}</text></view>
+    <view class="row"><text class="muted">实付金额</text><text class="price">{{order.totalAmount}}</text></view>
+    <view class="goods" wx:for="{{order.items}}" wx:key="goodsId">
+      <image class="thumb" src="{{item.goodsImg ? item.goodsImg : ''}}" mode="aspectFill" />
+      <view class="goods-info">
+        <view class="g-name ellipsis">{{item.goodsName}}</view>
+        <view class="muted">x{{item.buyNum}} · ¥{{item.buyPrice}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 退款类型 -->
+  <view class="card">
+    <view class="card-title">退款类型</view>
+    <view class="type-row">
+      <!-- 未发货：仅退款 -->
+      <block wx:if="{{!shipped}}">
+        <view class="type-item active">
+          <view class="t-name">仅退款</view>
+        </view>
+      </block>
+      <!-- 已发货：退货退款 -->
+      <block wx:else>
+        <view class="type-item active">
+          <view class="t-name">退货退款</view>
+          <view class="muted">退款并退回商品</view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <!-- 退款金额 -->
+  <view class="card">
+    <view class="card-title">退款金额</view>
+    <view class="amount-row">
+      <text class="yen">¥</text>
+      <input class="amount-input" type="digit" value="{{refundAmount}}" bindinput="onAmountInput" placeholder="0.00" />
+    </view>
+    <view class="muted small">最多可退 ¥{{order.totalAmount}}</view>
+  </view>
+
+  <!-- 退款原因 -->
+  <view class="card">
+    <view class="card-title">退款原因</view>
+    <view class="reasons">
+      <view wx:for="{{reasons}}" wx:key="*this"
+            class="reason-tag {{reason === item ? 'active' : ''}}"
+            data-reason="{{item}}" bindtap="onChooseReason">{{item}}</view>
+    </view>
+    <textarea class="reason-input" value="{{reason}}" bindinput="onReasonInput"
+              placeholder="可补充说明（选填）" maxlength="200" />
+  </view>
+
+  <view class="footer">
+    <van-button type="primary" block loading="{{submitting}}" bind:click="onSubmit">
+      提交申请
+    </van-button>
+  </view>
+</view>
+
+<view wx:elif="{{loading}}" class="loading">加载中...</view>
+
+<!-- 加载失败占位：避免 catch 后整页空白（核心修复） -->
+<view wx:elif="{{loadError}}" class="error">
+  <van-icon name="warning-o" size="96rpx" color="#ee5a6f" />
+  <view class="error-msg">{{loadError}}</view>
+  <view class="error-retry" bindtap="onRetry">重新加载</view>
+</view>

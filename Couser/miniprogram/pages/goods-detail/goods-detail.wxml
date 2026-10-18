@@ -1,0 +1,118 @@
+<view class="detail" wx:if="{{!loading && good}}">
+  <swiper wx:if="{{swiperImages.length}}" class="swiper" indicator-dots autoplay circular indicator-active-color="#07c160">
+    <swiper-item wx:for="{{swiperImages}}" wx:key="*this">
+      <image
+        src="{{item}}"
+        mode="aspectFill"
+        class="slide-img"
+        data-idx="{{index}}"
+        data-src="{{item}}"
+        binderror="onImageError"
+      />
+    </swiper-item>
+  </swiper>
+  <view wx:else class="no-img">暂无图片</view>
+
+  <view class="info block">
+    <view class="name">{{good.goodsName}}</view>
+    <view class="price-line">
+      <!-- .price 类由全局 app.less ::before 自动加 ¥，data 里不再带 ¥ -->
+      <text class="price">{{displayPrice}}</text>
+    </view>
+    <text class="sold-line">已售 {{soldText}}</text>
+  </view>
+
+  <view class="sku-bar block flex-between" bindtap="openSku" data-action="buy">
+    <text>已选：{{selectedSkuName || '默认规格'}}</text>
+    <text class="muted">选规格 ></text>
+  </view>
+
+  <!-- 用户评价 -->
+  <view class="reviews block">
+    <view class="section-title flex-between">
+      <text>用户评价</text>
+      <text class="muted">共 {{reviewTotal}} 条</text>
+    </view>
+    <!-- 评价筛选：档位 / 标签 -->
+    <view class="review-chips">
+      <text
+        wx:for="{{reviewFilters}}"
+        wx:key="label"
+        class="rc-chip {{activeReviewFilter === index ? 'rc-on' : ''}}"
+        data-idx="{{index}}"
+        bindtap="onReviewFilter"
+      >{{item.label}}</text>
+    </view>
+    <view class="review-list">
+      <!-- 加载中（首次或筛选切换时） -->
+      <view wx:if="{{reviewLoading && !reviews.length}}" class="empty-reviews muted">评价加载中...</view>
+      <!-- 出错（接口失败/网络断开），提供重试入口 -->
+      <view wx:elif="{{reviewError}}" class="empty-reviews review-error">
+        <view>评价加载失败：{{reviewError}}</view>
+        <view class="retry-btn" bindtap="retryReviews">点击重试</view>
+      </view>
+      <!-- 正常列表 -->
+      <block wx:else>
+        <view class="review-item" wx:for="{{reviews}}" wx:key="id">
+          <view class="review-header">
+            <block wx:if="{{item.avatar}}">
+              <image
+                class="review-avatar"
+                src="{{item.avatar}}"
+                mode="aspectFill"
+                data-index="{{index}}"
+                binderror="onAvatarError"
+              />
+            </block>
+            <view wx:else class="review-avatar review-avatar-text">{{item.nickName[0]}}</view>
+            <view class="review-meta">
+              <text class="review-nick">{{item.nickName}}</text>
+              <view class="review-stars">
+                <text class="star" wx:for="{{[1,2,3,4,5]}}" wx:for-item="s" wx:key="s">{{s <= item.rating ? '★' : '☆'}}</text>
+              </view>
+            </view>
+            <text class="review-time">{{item.createTime}}</text>
+          </view>
+          <view class="review-content">{{item.content}}</view>
+          <view class="review-tags" wx:if="{{item.tags.length}}">
+            <text class="rt-tag" wx:for="{{item.tags}}" wx:for-item="t" wx:key="*this">{{t}}</text>
+          </view>
+          <view class="review-imgs" wx:if="{{item.images.length}}">
+            <image
+              wx:for="{{item.images}}"
+              wx:for-item="img"
+              wx:key="*this"
+              src="{{img}}"
+              mode="aspectFill"
+              class="review-img"
+            />
+          </view>
+        </view>
+        <view wx:if="{{!reviews.length && !reviewLoading && !reviewError}}" class="empty-reviews muted">暂无评价</view>
+      </block>
+    </view>
+  </view>
+
+  <view style="height: 120rpx;"></view>
+
+  <van-goods-action>
+    <van-goods-action-icon icon="cart-o" text="购物车" bind:click="goCart" info="{{cartCount > 0 ? cartCount : ''}}" />
+    <van-goods-action-icon icon="{{favorite ? 'like' : 'like-o'}}" text="{{favorite ? '已收藏' : '收藏'}}" color="{{favorite ? '#ee0a24' : '#323233'}}" bind:click="toggleFav" />
+    <van-goods-action-icon icon="wap-home-o" text="首页" bind:click="goHome" />
+    <van-goods-action-button text="加入购物车" type="warning" data-action="cart" bind:click="openSku" />
+    <van-goods-action-button text="立即购买" data-action="buy" bind:click="openSku" />
+  </van-goods-action>
+</view>
+
+<view wx:if="{{loading}}" class="empty-wrap">加载中...</view>
+
+<!-- SKU 规格选择弹窗（首页/详情页共用组件） -->
+<sku-popup
+  visible="{{showSku}}"
+  goods="{{good}}"
+  action="{{action}}"
+  initialQty="{{1}}"
+  bind:close="closeSku"
+  bind:change="onSkuChange"
+  bind:confirm="onSkuConfirm"
+/>

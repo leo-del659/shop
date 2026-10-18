@@ -1,0 +1,41 @@
+<view class="addr-list">
+  <view class="empty" wx:if="{{!loading && list.length === 0}}">
+    <view class="empty-icon">📮</view>
+    <view>还没有收货地址</view>
+    <view class="empty-tip">请添加收货地址，方便补货收货</view>
+  </view>
+
+  <view wx:for="{{list}}" wx:key="id" class="row {{item.isDefault === 1 ? 'is-default' : ''}}">
+    <view class="r-main" bindtap="onSetDefault" data-id="{{item.id}}">
+      <view class="r-line1">
+        <text class="r-name">{{item.name}}</text>
+        <text class="r-mobile">{{item.mobile}}</text>
+        <text wx:if="{{item.isDefault === 1}}" class="r-default">默认</text>
+      </view>
+      <view class="r-line2">{{item.region}} {{item.detailAddr}}</view>
+      <view wx:if="{{picking}}" class="r-pick-hint">点击此处选择该地址</view>
+    </view>
+    <view wx:if="{{!picking}}" class="r-actions">
+      <view class="r-btn" catchtap="onEdit" data-id="{{item.id}}">编辑</view>
+      <view class="r-btn danger" catchtap="onDeleteTap" data-id="{{item.id}}">删除</view>
+    </view>
+  </view>
+
+  <view class="add-bar" bindtap="onAdd">
+    <text>+ 新增收货地址</text>
+  </view>
+
+  <view class="page-pad-bottom"></view>
+
+  <popup-dialog
+    wx:if="{{!picking}}"
+    visible="{{!!pendingDeleteId}}"
+    title="删除地址"
+    subtitle="删除后无法恢复，确认操作？"
+    confirm-text="删除"
+    cancel-text="取消"
+    bind:close="onCancelDelete"
+    bind:cancel="onCancelDelete"
+    bind:confirm="onConfirmDelete"
+  ></popup-dialog>
+</view>

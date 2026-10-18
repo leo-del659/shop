@@ -1,0 +1,57 @@
+<view class="login">
+  <!-- 品牌区 -->
+  <view class="header">
+    <view class="header-bg">
+      <view class="decor decor-1"></view>
+      <view class="decor decor-2"></view>
+    </view>
+    <view class="logo-wrap">
+      <image class="logo-img" src="/images/logo.png" mode="aspectFit" />
+      <view class="logo-text">集邻生活</view>
+      <view class="logo-sub">商户端 · 供货管理</view>
+    </view>
+  </view>
+
+  <!-- 登录卡片 -->
+  <view class="card">
+    <view class="card-title">登录</view>
+
+    <view class="form">
+      <view class="input-group">
+        <view class="input-row">
+          <text class="input-icon">📱</text>
+          <input
+            class="native-input"
+            type="number"
+            maxlength="11"
+            placeholder="请输入手机号"
+            value="{{phone}}"
+            data-field="phone"
+            bindinput="onInput"
+          />
+        </view>
+        <view class="input-row">
+          <text class="input-icon">🔒</text>
+          <input
+            class="native-input"
+            password
+            placeholder="请输入密码"
+            value="{{password}}"
+            data-field="password"
+            bindinput="onInput"
+          />
+        </view>
+      </view>
+
+      <view class="error-wrap">
+        <text wx:if="{{errorMsg}}" class="error">{{errorMsg}}</text>
+      </view>
+
+      <button class="login-btn" bindtap="onLogin" disabled="{{submitting}}">登 录</button>
+
+      <view class="form-footer">
+        <text class="register-link" bindtap="goRegister">还没有账号？快速注册</text>
+      </view>
+    </view>
+  </view>
+</view>

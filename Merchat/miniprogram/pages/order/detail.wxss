@@ -1,0 +1,239 @@
+page {
+  background: var(--bg);
+}
+.page {
+  min-height: 100vh;
+  padding-bottom: calc(140rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+}
+
+/* 订单状态头部 */
+.status-head {
+  margin: 20rpx;
+  padding: 24rpx;
+  background: var(--card);
+  border-radius: 16rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.sh-no {
+  font-size: 24rpx;
+  color: var(--muted);
+}
+
+/* 卡片通用 */
+.info-card,
+.product-card,
+.logistics-card {
+  margin: 20rpx;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 24rpx;
+  border: 1rpx solid var(--line);
+}
+
+/* 订单信息 */
+.info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 1rpx solid var(--line);
+}
+.info-no {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: var(--text);
+}
+.info-pay {
+  font-size: 24rpx;
+  font-weight: 500;
+}
+.info-pay.paid { color: var(--brand); }
+.info-pay.unpaid { color: var(--warning); }
+.info-pay.partial { color: var(--warning); }
+.info-pay.overdue { color: var(--danger); }
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10rpx 0;
+  font-size: 28rpx;
+  line-height: 1.5;
+}
+.info-row .label {
+  color: var(--muted);
+  flex-shrink: 0;
+  margin-right: 24rpx;
+}
+.info-row .value {
+  font-weight: 500;
+  color: var(--text);
+  text-align: right;
+  flex: 1;
+  word-break: break-all;
+}
+.info-row .value.highlight.paid { color: var(--brand); }
+.info-row .value.highlight.unpaid { color: var(--warning); }
+.info-row .value.highlight.partial { color: var(--warning); }
+.info-row .value.highlight.overdue { color: var(--danger); }
+.info-row .value.remark {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+/* 商品明细 */
+.card-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 16rpx;
+}
+.product-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid var(--line);
+}
+.product-item:last-child {
+  border-bottom: none;
+}
+.product-name {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: var(--text);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.product-qty-inline {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--brand);
+  flex-shrink: 0;
+  margin-left: 16rpx;
+}
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 20rpx;
+  margin-top: 8rpx;
+  border-top: 2rpx solid var(--line);
+  font-size: 32rpx;
+  font-weight: 700;
+}
+.total-amount {
+  color: var(--brand);
+}
+
+/* 物流跟踪 */
+.logistics-item {
+  display: flex;
+  gap: 20rpx;
+  padding: 12rpx 0;
+  font-size: 26rpx;
+  position: relative;
+}
+.dot-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 24rpx;
+  flex-shrink: 0;
+  padding-top: 6rpx;
+}
+.dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+}
+.dot.active { background: var(--brand); }
+.dot.inactive { background: var(--line); }
+.dot.current { background: var(--brand); box-shadow: 0 0 0 8rpx rgba(46,125,110,0.15); }
+.logistics-line {
+  flex: 1;
+  width: 4rpx;
+  min-height: 40rpx;
+  background: var(--line);
+  margin: 6rpx 0;
+}
+.logistics-line.active { background: var(--brand); }
+.logistics-content {
+  flex: 1;
+}
+.logistics-text {
+  color: var(--text);
+  line-height: 1.4;
+}
+.logistics-text.current {
+  font-weight: 600;
+  color: var(--brand);
+}
+.logistics-time {
+  font-size: 24rpx;
+  color: var(--muted);
+  margin-top: 4rpx;
+}
+
+/* 底部操作栏 */
+.bottom-space {
+  height: 120rpx;
+}
+.action-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-top: 1rpx solid var(--line);
+  padding: 16rpx 24rpx calc(16rpx + env(safe-area-inset-bottom)) 24rpx;
+  display: flex;
+  gap: 20rpx;
+  z-index: 100;
+}
+.action-btn {
+  flex: 1;
+  text-align: center;
+  padding: 22rpx 0;
+  border-radius: 44rpx;
+  font-weight: 500;
+  font-size: 28rpx;
+}
+.btn-accept {
+  background: var(--brand);
+  color: #fff;
+}
+.btn-reject {
+  background: var(--danger);
+  color: #fff;
+}
+.btn-complete {
+  background: var(--brand);
+  color: #fff;
+}
+.btn-ship {
+  background: var(--info);
+  color: #fff;
+}
+.btn-outline {
+  background: transparent;
+  color: var(--brand);
+  border: 1rpx solid var(--line-strong);
+}
+.action-btn:active { opacity: 0.85; }
+
+/* 空态 */
+.page-empty {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+}
+.empty-icon { font-size: 96rpx; margin-bottom: 20rpx; }
+.empty-text { font-size: 28rpx; color: var(--muted); }

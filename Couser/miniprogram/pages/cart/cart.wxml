@@ -1,0 +1,47 @@
+<view class="cart">
+  <view wx:if="{{items.length}}">
+    <van-swipe-cell wx:for="{{items}}" wx:key="index" right-width="{{64}}">
+      <view class="cart-item">
+        <image class="ci-img" src="{{item.coverImg}}" mode="aspectFill" />
+        <view class="ci-info">
+          <view class="ci-name ellipsis">{{item.goodsName}}</view>
+          <view class="ci-sku muted" wx:if="{{item.skuName}}">{{item.specName}}：{{item.skuName}}</view>
+          <view class="ci-bottom flex-between">
+            <text class="price">{{item.price}}</text>
+            <van-stepper value="{{item.buyNum}}" min="0" max="{{item.stock > 0 ? item.stock : 999999}}" integer
+              data-id="{{item.goodsId}}" data-sku="{{item.skuName}}" bind:change="onStep" />
+          </view>
+        </view>
+      </view>
+      <view slot="right" class="del-btn" data-id="{{item.goodsId}}" data-sku="{{item.skuName}}" bindtap="onDelete">删除</view>
+    </van-swipe-cell>
+
+    <!-- 为你推荐 -->
+    <view class="recommend-section" wx:if="{{recommend.length}}">
+      <view class="section-head">
+        <view class="section-title">为你推荐</view>
+      </view>
+      <view class="recommend-list">
+        <view wx:for="{{recommend}}" wx:key="id" class="rec-row" bindtap="goDetail" data-id="{{item.id}}">
+          <image class="rec-img" src="{{item.coverImg}}" mode="aspectFill" />
+          <view class="rec-info">
+            <view class="rec-name">{{item.goodsName}}</view>
+            <view class="rec-bottom">
+              <view class="rec-price">¥{{item.salePrice || item.price}}</view>
+              <view class="rec-btn">去看看</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <van-submit-bar price="{{total * 100}}" button-text="去结算" bind:submit="goCheckout">
+      <text class="muted count-tip">共 {{count}} 件</text>
+    </van-submit-bar>
+  </view>
+
+  <view wx:else class="empty-wrap">
+    <van-empty description="购物车空空如也" />
+    <van-button type="primary" bind:tap="goShop">去逛逛</van-button>
+  </view>
+</view>

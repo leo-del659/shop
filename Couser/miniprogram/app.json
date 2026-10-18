@@ -1,0 +1,53 @@
+{
+  "entryPagePath": "pages/home/home",
+  "pages": [
+    "pages/home/home",
+    "pages/login/login",
+    "pages/category/category",
+    "pages/goods-list/goods-list",
+    "pages/goods-detail/goods-detail",
+    "pages/cart/cart",
+    "pages/checkout/checkout",
+    "pages/order-list/order-list",
+    "pages/order-detail/order-detail",
+    "pages/review/review",
+    "pages/mine/mine",
+    "pages/address/address",
+    "pages/profile/profile",
+    "pages/refund-apply/refund-apply",
+    "pages/refund-list/refund-list",
+    "pages/refund-detail/refund-detail",
+    "pages/favorite/favorite",
+    "pages/footprint/footprint"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "",
+    "navigationBarBackgroundColor": "#ffffff",
+    "backgroundColor": "#f5f5f5"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#07c160",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      { "pagePath": "pages/home/home", "text": "首页", "iconPath": "images/tabbar/home_default.png", "selectedIconPath": "images/tabbar/home_selected.png" },
+      { "pagePath": "pages/category/category", "text": "分类", "iconPath": "images/tabbar/category_default.png", "selectedIconPath": "images/tabbar/category_selected.png" },
+      { "pagePath": "pages/cart/cart", "text": "购物车", "iconPath": "images/tabbar/cart_default.png", "selectedIconPath": "images/tabbar/cart_selected.png" },
+      { "pagePath": "pages/mine/mine", "text": "我的", "iconPath": "images/tabbar/mine_default.png", "selectedIconPath": "images/tabbar/mine_selected.png" }
+    ]
+  },
+  "usingComponents": {
+    "van-button": "@vant/weapp/button/index",
+    "van-field": "@vant/weapp/field/index",
+    "van-cell": "@vant/weapp/cell/index",
+    "van-cell-group": "@vant/weapp/cell-group/index",
+    "van-switch": "@vant/weapp/switch/index",
+    "van-icon": "@vant/weapp/icon/index",
+    "van-toast": "@vant/weapp/toast/index",
+    "van-dialog": "@vant/weapp/dialog/index"
+  },
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

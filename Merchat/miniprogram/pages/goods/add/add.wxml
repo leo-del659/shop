@@ -1,0 +1,59 @@
+<view class="add-page">
+  <view class="form-card">
+    <view class="form-item">
+      <text class="label required">商品名称</text>
+      <input class="input" type="text" value="{{form.name}}" data-field="name" bindinput="onInput" placeholder="请输入商品名称" maxlength="50" />
+    </view>
+    <view class="form-item">
+      <text class="label required">商品分类</text>
+      <picker class="picker" mode="selector" range="{{categories}}" range-key="name" value="{{categoryIndex}}" bindchange="onCategoryChange">
+        <view class="picker-text">{{categories[categoryIndex].name}}</view>
+      </picker>
+    </view>
+    <view class="form-item">
+      <text class="label required">售价</text>
+      <input class="input" type="digit" value="{{form.price}}" data-field="price" bindinput="onInput" placeholder="请输入售价" />
+    </view>
+    <view class="form-item">
+      <text class="label">市场价</text>
+      <input class="input" type="digit" value="{{form.marketPrice}}" data-field="marketPrice" bindinput="onInput" placeholder="不填则与售价相同" />
+    </view>
+    <view class="form-item">
+      <text class="label required">库存</text>
+      <input class="input" type="number" value="{{form.stock}}" data-field="stock" bindinput="onInput" placeholder="请输入库存数量" />
+    </view>
+    <view class="form-item">
+      <text class="label">单位</text>
+      <input class="input" type="text" value="{{form.unit}}" data-field="unit" bindinput="onInput" placeholder="如：份、斤、箱" maxlength="10" />
+    </view>
+    <view class="form-item">
+      <text class="label">规格</text>
+      <input class="input" type="text" value="{{form.spec}}" data-field="spec" bindinput="onInput" placeholder="如：500g/盒" maxlength="32" />
+    </view>
+
+    <view class="form-item upload-item">
+      <text class="label required">商品图片</text>
+      <view wx:if="{{!coverImg}}" class="upload-box {{uploadBoxDisabled}}" bindtap="chooseImage">
+        <text class="upload-ico">{{uploadIco}}</text>
+        <text class="upload-text">{{uploadText}}</text>
+      </view>
+      <view wx:else class="upload-preview" bindtap="previewImage">
+        <image class="preview-img" src="{{coverImgFull}}" mode="aspectFill" />
+        <view class="upload-mask">
+          <text class="upload-replace" catchtap="chooseImage">点击更换</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="form-item textarea-item">
+      <text class="label">商品描述</text>
+      <textarea class="textarea" value="{{form.description}}" data-field="description" bindinput="onInput" placeholder="请输入商品描述（选填）" maxlength="200" />
+    </view>
+  </view>
+
+  <view class="tips">{{tipsText}}</view>
+
+  <view class="footer">
+    <view class="save-btn {{saveDisabled}}" bindtap="save">{{saveBtnText}}</view>
+  </view>
+</view>

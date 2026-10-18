@@ -1,0 +1,8 @@
+{
+  "usingComponents": {
+    "van-icon": "@vant/weapp/icon/index",
+    "goods-card": "/components/goods-card/goods-card",
+    "sku-popup": "/components/sku-popup/sku-popup"
+  },
+  "navigationBarTitleText": ""
+}

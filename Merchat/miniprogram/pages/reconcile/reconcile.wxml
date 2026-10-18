@@ -1,0 +1,106 @@
+<view class="reconcile">
+  <!-- 顶部余额区 -->
+  <view class="header-section">
+    <view class="balance-card">
+      <view class="balance-header">
+        <text class="balance-label">可结算余额</text>
+        <view class="balance-action" bindtap="openWithdraw">提现</view>
+      </view>
+      <view class="balance-amount">¥{{available || 0}}</view>
+      <view class="balance-stats">
+        <view class="balance-stat">
+          <view class="bs-num">¥{{totalPaid}}</view>
+          <view class="bs-label">累计已结算</view>
+        </view>
+        <view class="balance-stat">
+          <view class="bs-num">¥{{withdrawn}}</view>
+          <view class="bs-label">累计已提现</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 主体内容白卡 -->
+  <view class="main-card">
+    <view class="month-bar">
+      <view class="section-title">对账明细</view>
+      <picker mode="selector" range="{{monthLabels}}" value="{{monthIndex}}" bindchange="onMonthChange">
+        <view class="month-picker">{{monthLabel}} ▾</view>
+      </picker>
+    </view>
+
+    <view class="stat-row">
+      <view class="stat-item">
+        <view class="stat-num">{{summaryRevenue}}</view>
+        <view class="stat-label">本月营收</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-num">{{summaryOrders}}</view>
+        <view class="stat-label">订单数</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-num">{{summaryPaid}}</view>
+        <view class="stat-label">已收款</view>
+      </view>
+    </view>
+
+    <view class="tabs">
+      <view class="tab {{tabOrders ? 'active' : ''}}" data-tab="orders" bindtap="setTab">订单明细</view>
+      <view class="tab {{tabPayments ? 'active' : ''}}" data-tab="payments" bindtap="setTab">收款记录</view>
+      <view wx:if="{{canWithdraw}}" class="tab {{tabWithdrawals ? 'active' : ''}}" data-tab="withdrawals" bindtap="setTab">提现记录</view>
+    </view>
+
+    <view class="list-body">
+      <view wx:if="{{tabOrders}}">
+        <view wx:for="{{orders}}" wx:key="id" class="row-card" data-id="{{item.id}}" bindtap="goOrder">
+          <view class="rc-head"><view class="rc-title">{{item.billNo}}</view><view class="tag {{item.oCls}}">{{item.oLabel}}</view></view>
+          <view class="rc-sub muted">{{item.merchantName}} · {{item.goodsName}} ×{{item.buyNum}}</view>
+          <view class="rc-sub muted">{{item.time}}</view>
+          <view class="rc-foot"><text class="rc-total">¥{{item.total}}</text></view>
+        </view>
+        <view wx:if="{{orders.length===0}}" class="empty">暂无订单记录</view>
+      </view>
+
+      <view wx:if="{{tabPayments}}">
+        <view wx:for="{{payments}}" wx:key="id" class="row-card">
+          <view class="rc-head"><view class="rc-title">订单 {{item.orderId}}</view><view class="rc-total plus">+¥{{item.amount}}</view></view>
+          <view class="rc-sub muted">{{item.time}} · {{item.method}}</view>
+        </view>
+        <view wx:if="{{payments.length===0}}" class="empty">本月暂无收款</view>
+      </view>
+
+      <view wx:if="{{tabWithdrawals}}">
+        <view wx:for="{{withdrawals}}" wx:key="id" class="row-card">
+          <view class="rc-head"><view class="rc-title">{{item.account}}</view><view class="tag {{item.wdCls}}">{{item.wdLabel}}</view></view>
+          <view class="rc-foot"><text class="rc-sub muted">{{item.time}} · {{item.remark}}</text><text class="rc-total minus">-¥{{item.amount}}</text></view>
+        </view>
+        <view wx:if="{{withdrawals.length===0}}" class="empty">暂无提现记录</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="page-pad-bottom"></view>
+
+  <view wx:if="{{showWithdraw}}" class="mask" bindtap="closeWithdraw">
+    <view class="dialog" catchtap="noop">
+      <view class="dialog-title">提现</view>
+      <view class="dialog-tip">可结算余额 ¥{{available}}</view>
+      <view class="dialog-field">
+        <view class="df-label">提现金额</view>
+        <input class="df-input" type="digit" placeholder="请输入金额" value="{{wdAmount}}" data-field="wdAmount" bindinput="onWdInput" />
+      </view>
+      <view class="dialog-field">
+        <view class="df-label">收款账户</view>
+        <view class="df-input readonly">{{wdAccount}}</view>
+      </view>
+      <view class="dialog-field">
+        <view class="df-label">备注</view>
+        <input class="df-input" placeholder="选填" value="{{wdRemark}}" data-field="wdRemark" bindinput="onWdInput" />
+      </view>
+      <view class="dialog-btns">
+        <view class="dialog-btn ghost" bindtap="closeWithdraw">取消</view>
+        <view class="dialog-btn primary" bindtap="confirmWithdraw">确认提现</view>
+      </view>
+    </view>
+  </view>
+</view>

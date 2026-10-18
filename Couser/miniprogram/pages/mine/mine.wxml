@@ -1,0 +1,100 @@
+<view class="mine">
+  <!-- 个人信息区 -->
+  <view class="header">
+    <view class="header-bg"></view>
+    <view class="user-row">
+      <view class="avatar-wrap" bindtap="{{logged ? '' : 'goLogin'}}">
+        <image wx:if="{{avatarUrl}}" class="avatar" src="{{avatarUrl}}" mode="aspectFill" />
+        <view wx:else class="avatar avatar-default">
+          <van-icon name="user-o" size="56rpx" color="#fa3534" />
+        </view>
+      </view>
+      <view class="user-info" bindtap="{{logged ? '' : 'goLogin'}}">
+        <view class="user-name">{{logged ? (name || '商户') : '点击登录'}}</view>
+        <view wx:if="{{!logged}}" class="user-sub">登录后可享受更多服务</view>
+      </view>
+      <view wx:if="{{logged}}" class="actions">
+        <view class="setting-btn" catchtap="goProfile">设置</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 收藏 / 足迹（图标入口，不显示数字；数字放到对应详情页头部） -->
+  <view class="block asset-block">
+    <view class="asset-item" bindtap="goFavorites">
+      <view class="asset-icon icon-fav-block">
+        <van-icon name="like-o" size="56rpx" color="#fa3534" />
+      </view>
+      <text class="asset-label">收藏</text>
+    </view>
+    <view class="asset-item" bindtap="goFootprint">
+      <view class="asset-icon icon-foot-block">
+        <van-icon name="browsing-history-o" size="56rpx" color="#1989fa" />
+      </view>
+      <text class="asset-label">足迹</text>
+    </view>
+  </view>
+
+  <!-- 我的订单 -->
+  <view class="block">
+    <view class="block-title">我的订单</view>
+    <view class="order-grid">
+      <view class="order-item" bindtap="goOrders" data-status="1">
+        <view class="order-icon order-pay" style="position:relative;">
+          <van-icon name="balance-pay" size="44rpx" color="#fff" />
+          <view wx:if="{{waitPayCount > 0}}" class="order-badge">{{waitPayCount > 99 ? '99+' : waitPayCount}}</view>
+        </view>
+        <text>待支付</text>
+      </view>
+      <view class="order-item" bindtap="goOrders" data-status="2">
+        <view class="order-icon order-delivery">
+          <van-icon name="logistics" size="44rpx" color="#fff" />
+        </view>
+        <text>待发货</text>
+      </view>
+      <view class="order-item" bindtap="goOrders" data-status="3">
+        <view class="order-icon order-receive">
+          <van-icon name="bag-o" size="44rpx" color="#fff" />
+        </view>
+        <text>待收货</text>
+      </view>
+      <view class="order-item" bindtap="goRefunds">
+        <view class="order-icon order-refund">
+          <van-icon name="after-sale" size="44rpx" color="#fff" />
+        </view>
+        <text>退款/售后</text>
+      </view>
+      <view class="order-item" bindtap="goOrders">
+        <view class="order-icon order-all">
+          <van-icon name="orders-o" size="44rpx" color="#fff" />
+        </view>
+        <text>全部订单</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 猜你喜欢（替换原服务功能模块） -->
+  <view class="block" wx:if="{{recommend.length}}">
+    <view class="block-title">
+      <van-icon name="like" color="#fa3534" size="32rpx" />
+      <text>猜你喜欢</text>
+    </view>
+    <view class="rec-grid">
+      <view wx:for="{{recommend}}" wx:key="id" class="rec-cell">
+        <goods-card goods="{{item}}" quantity="{{item._qty || 0}}" bind:tap="goDetail" bind:openSku="onOpenSku" bind:incCart="onIncCart" bind:decCart="onDecCart" />
+      </view>
+    </view>
+  </view>
+
+  <view class="footer-tip">集邻生活 · 微信小程序端</view>
+</view>
+
+<!-- SKU 规格选择弹窗（猜你喜欢加购复用） -->
+<sku-popup
+  visible="{{showSku}}"
+  goods="{{skuGoods}}"
+  action="{{skuAction}}"
+  initialQty="{{1}}"
+  bind:close="closeSku"
+  bind:confirm="onSkuConfirm"
+/>

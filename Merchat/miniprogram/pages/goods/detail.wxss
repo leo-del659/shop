@@ -1,0 +1,145 @@
+.detail {
+  padding-bottom: 20rpx;
+}
+.gallery {
+  height: 420rpx;
+  background: var(--surface-variant);
+}
+.gallery-img {
+  width: 100%;
+  height: 100%;
+}
+.gallery-emoji {
+  font-size: 200rpx;
+  text-align: center;
+  line-height: 420rpx;
+}
+.d-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.d-name {
+  font-size: 34rpx;
+  font-weight: 700;
+}
+.d-cat {
+  font-size: 24rpx;
+  margin-top: 8rpx;
+}
+.d-merchant {
+  font-size: 24rpx;
+  margin-top: 8rpx;
+  color: var(--muted);
+}
+.tag {
+  font-size: 22rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 8rpx;
+  background: var(--brand-light);
+  color: var(--brand);
+}
+.tag.disabled,
+.tag.draft {
+  background: var(--line);
+  color: var(--muted);
+}
+.d-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12rpx;
+  margin-top: 16rpx;
+}
+.d-price-label {
+  font-size: 24rpx;
+  color: var(--muted);
+  align-self: center;
+}
+.d-price {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: var(--danger);
+}
+.d-unit {
+  font-size: 22rpx;
+  font-weight: 400;
+  color: var(--muted);
+}
+.d-market {
+  font-size: 24rpx;
+}
+.d-stock {
+  font-size: 24rpx;
+  margin-top: 10rpx;
+}
+.d-desc {
+  font-size: 26rpx;
+  color: var(--text);
+  line-height: 1.6;
+  margin-top: 10rpx;
+}
+
+.info-card .info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid var(--line);
+}
+/* 销量行上方空出一排（与成本价之间留出视觉间隔） */
+.info-row--gap {
+  margin-top: 28rpx;
+}
+.info-row:last-child {
+  border-bottom: none;
+}
+.info-label {
+  font-size: 26rpx;
+  color: var(--muted);
+}
+.info-val {
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.footer-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  gap: 20rpx;
+  padding: 16rpx 20rpx;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  background: #fff;
+  box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.05);
+  z-index: 50;
+}
+.footer-btn {
+  flex: 1;
+  text-align: center;
+  padding: 20rpx 0;
+  border-radius: 40rpx;
+  font-size: 30rpx;
+}
+.footer-btn.primary {
+  background: var(--brand);
+  color: #fff;
+}
+.footer-btn.ghost {
+  background: #fff;
+  color: var(--brand);
+  border: 1rpx solid var(--brand);
+}
+
+/* 信息卡片：成本价行 */
+.info-val--cost {
+  color: var(--brand);
+  font-weight: 700;
+}
+.info-val-unit {
+  font-size: 22rpx;
+  font-weight: 400;
+  color: var(--muted);
+  margin-left: 4rpx;
+}
+

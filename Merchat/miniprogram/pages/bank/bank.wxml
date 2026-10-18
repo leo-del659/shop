@@ -1,0 +1,24 @@
+<view class="bank">
+  <view class="card">
+    <view class="dialog-field">
+      <view class="df-label">开户银行</view>
+      <input class="df-input" placeholder="如：招商银行xxx支行" value="{{bankName}}" data-field="bankName" bindinput="onInput" />
+    </view>
+    <view class="dialog-field">
+      <view class="df-label">银行账号</view>
+      <input class="df-input" placeholder="请输入银行卡号" value="{{bankAccount}}" data-field="bankAccount" bindinput="onInput" />
+    </view>
+    <view class="dialog-field">
+      <view class="df-label">开户名</view>
+      <input class="df-input" placeholder="请输入开户人姓名" value="{{accountName}}" data-field="accountName" bindinput="onInput" />
+    </view>
+  </view>
+
+  <view class="tip muted">提现款项将打入该账户，请确保信息准确。首次提现前需先绑定。</view>
+
+  <view class="card">
+    <view class="btn-primary" bindtap="save">{{saving ? '保存中...' : '保存账户'}}</view>
+  </view>
+
+  <view class="page-pad-bottom"></view>
+</view>

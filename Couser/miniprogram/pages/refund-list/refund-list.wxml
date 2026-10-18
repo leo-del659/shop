@@ -1,0 +1,27 @@
+<view class="refund-list">
+  <view wx:if="{{!loading && list.length === 0}}" class="empty">
+    <text>暂无退款记录</text>
+  </view>
+
+  <view wx:for="{{list}}" wx:key="id" class="r-card" data-id="{{item.id}}" bindtap="goDetail">
+    <view class="r-head">
+      <text class="r-no">{{item.orderNo || item.refundNo}}</text>
+      <text class="badge b{{item.refundStatus}}">{{item.statusText}}</text>
+    </view>
+    <view class="r-body">
+      <image class="r-thumb" src="{{item.cover}}" mode="aspectFill" wx:if="{{item.cover}}" />
+      <view class="r-thumb r-thumb-default" wx:else>退</view>
+      <view class="r-info">
+        <view class="r-name ellipsis">{{item.goodsName || '整单退款'}}</view>
+        <view class="r-meta">
+          <text class="tag">{{item.typeText}}</text>
+          <text class="muted">{{item.reasonText || item.refundReason}}</text>
+        </view>
+        <view class="r-amount">¥{{item.refundAmount}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading">加载中...</view>
+  <view wx:if="{{finished && list.length > 0}}" class="finished">没有更多了</view>
+</view>

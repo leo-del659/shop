@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>0fb63073-6d11-4ac1-a7e5-270c9c9b1def</UserSecretsId>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="IGeekFan.AspNetCore.Knife4jUI" Version="0.0.16" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
+    <PackageReference Include="StackExchange.Redis" Version="2.7.33" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ECommerce.Infrastructure.EFCore\ECommerce.Infrastructure.EFCore.csproj" />
+    <ProjectReference Include="..\ECommerce.Infrastructure.MQ\ECommerce.Infrastructure.MQ.csproj" />
+    <ProjectReference Include="..\ECommerce.Repository.Instance\ECommerce.Repository.Instance.csproj" />
+    <ProjectReference Include="..\ECommerce.Service.Instance\ECommerce.Service.Instance.csproj" />
+    <ProjectReference Include="..\ECommerce.Service.Interface\ECommerce.Service.Interface.csproj" />
+    <ProjectReference Include="..\ECommerce.Infrastructure.Pay\ECommerce.Infrastructure.Pay.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="uploads\" />
+  </ItemGroup>
+
+  <!--
+    Pre-build hook: kill any running ECommerce.Api.Admin backend before MSBuild
+    tries to copy its dependency DLLs (Infrastructure.Tools / Attributes / Dto
+    / EFCore) into bin\Debug\net8.0\. The running host holds OS file locks on
+    those DLLs; without this, build fails with MSB3027 / MSB3029.
+
+    Side effect: pressing Ctrl+B while debugging (F5 attached) will also stop
+    the backend. That's intentional: a re-build means a re-deploy, and VS
+    will start a fresh process when you next press F5.
+  -->
+  <Target Name="KillRunningBackend" BeforeTargets="BeforeBuild">
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildThisFileDirectory)..\..\..\kill-backend-locks.ps1&quot;" IgnoreExitCode="true" />
+  </Target>
+
+</Project>

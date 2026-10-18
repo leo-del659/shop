@@ -30,7 +30,6 @@ Logs/
 *.suo
 *.ntvs*
 *.njsproj
-*.sln
 *.sw?
 
 # ===================== 系统文件 =====================
@@ -46,10 +45,22 @@ project.private.config.json
 _code_bak*/
 **/_code_bak*/
 
-# ===================== .NET 产物（兜底，防后端被误带进来） =====================
-bin/
-obj/
+# ===================== .NET 构建产物 =====================
+[Bb]in/
+[Oo]bj/
 .vs/
+*.user
+*.userprefs
+*.cache
 
-# ===================== 后端单独维护，不在此仓库 =====================
-Api/
+# ===================== 密钥 / 含机密的配置（不进仓库） =====================
+# 后端 appsettings 里带 JWT 密钥、连接串等敏感信息，统一不提交；
+# 仓库只保留 appsettings.example.json 模板，真实配置留在本地。
+appsettings.json
+appsettings.*.json
+**/appsettings.json
+**/appsettings.*.json
+
+# 例外：脱敏模板要进仓库
+!appsettings.example.json
+!**/appsettings.example.json

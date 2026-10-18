@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ECommerce.Infrastructure.MQ\ECommerce.Infrastructure.MQ.csproj" />
+    <ProjectReference Include="..\ECommerce.Infrastructure.Pay\ECommerce.Infrastructure.Pay.csproj" />
+    <ProjectReference Include="..\ECommerce.Infrastructure.Tools\ECommerce.Infrastructure.Tools.csproj" />
+    <ProjectReference Include="..\ECommerce.Service.EFCore\ECommerce.Service.EFCore.csproj" />
+    <ProjectReference Include="..\ECommerce.Service.Interface\ECommerce.Service.Interface.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,14 @@
+﻿using ECommerce.Infrastructure.Attributes;
+using ECommerce.Infrastructure.EFCore;
+using ECommerce.Repository.Interface;
+
+namespace ECommerce.Service.EFCore
+{
+    [Provider_,Inject_]
+    public class AuditRecord_EFCore : Base_EFCore<AuditRecord>
+    {
+        public AuditRecord_EFCore(I_Repository<AuditRecord> repository) : base(repository)
+        {
+        }
+    }
+}

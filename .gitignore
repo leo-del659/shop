@@ -37,7 +37,7 @@ Logs/
 Thumbs.db
 
 # ===================== 微信开发者工具私有配置 =====================
-# 里面是本机相关设置，不同电脑不一样，没必要进仓库
+# 里面是本机相关设置，不同电脑不一样，没进仓库
 project.private.config.json
 **/project.private.config.json
 

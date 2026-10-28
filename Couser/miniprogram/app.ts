@@ -1,6 +1,7 @@
 // app.ts
 import { syncCartBadge } from './utils/cart'
 import { getClientProfile } from './api/auth'
+import { migrateLegacyCaches } from './utils/userScope'
 
 App({
   globalData: {},
@@ -10,6 +11,9 @@ App({
     // 商户端账号缓存与消费者端隔离，仍照常清理。
     wx.removeStorageSync('merchantAccount')
     wx.removeStorageSync('merchant')
+    // 旧版本把足迹/收藏/购物车/订单缓存存在全局 key 上（订单/地址还因键名不匹配
+    // 导致所有账号共用一份），启动时迁移到「按账号隔离」的 key，避免继续串数据
+    migrateLegacyCaches()
     // 启动时同步购物车 tabBar 角标（延迟确保 tabBar 已初始化）
     setTimeout(() => syncCartBadge(), 300)
     // 后台静默校验本地 token 是否仍有效：失效则清理登录态（不主动跳登录页，

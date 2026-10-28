@@ -90,7 +90,13 @@ namespace ECommerce.Infrastructure.Tools
                     ClockSkew = TimeSpan.Zero
                 }, out _);
 
-                userName = principal.FindFirst("unique_name")?.Value;
+                // JwtSecurityTokenHandler 会做「入站声明类型映射」：
+                // token 里的 "unique_name" 会被映射成 ClaimTypes.Name，
+                // 因此直接 FindFirst("unique_name") 取不到值，会把合法令牌误判为无效。
+                // 这里按 ClaimTypes.Name → unique_name → Identity.Name 的顺序兜底取值。
+                userName = principal.FindFirst(ClaimTypes.Name)?.Value
+                        ?? principal.FindFirst("unique_name")?.Value
+                        ?? principal.Identity?.Name;
                 return !string.IsNullOrWhiteSpace(userName);
             }
             catch

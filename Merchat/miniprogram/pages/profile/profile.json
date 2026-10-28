@@ -1,4 +1,6 @@
 {
-  "usingComponents": {},
+  "usingComponents": {
+    "merchant-avatar": "/components/merchant-avatar/index"
+  },
   "navigationStyle": "custom"
 }

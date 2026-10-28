@@ -6,6 +6,7 @@ import { resolveUrl } from '../../utils/request'
 import { camelCaseKeys, formatSoldCount } from '../../utils/util'
 import { toggleFavorite, isFavorite } from '../../utils/favorite'
 import { addFootprint } from '../../utils/footprint'
+import { setCheckoutItems } from '../../utils/checkoutItems'
 
 /** 评价筛选：档位(good/mid/bad) 或 标签(tag) 二选一
  * 标签集合必须与 pages/review/review.ts 的 TAG_OPTIONS 保持一致，
@@ -163,7 +164,7 @@ Page({
       wx.showToast({ title: '已加入购物车', icon: 'success' })
       this.setData({ showSku: false })
     } else {
-      wx.setStorageSync('checkout_items', [item])
+      setCheckoutItems([item])
       this.setData({ showSku: false })
       wx.navigateTo({ url: '/pages/checkout/checkout' })
     }

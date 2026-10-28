@@ -33,6 +33,8 @@ export interface OrderSummary {
   sellerMerchantName?: string
   /** 所属商户名称（后端联表 merchant.merchant_name 回填） */
   merchantName?: string
+  /** 所属商户ID（后端联表回填，联系商家聊天用） */
+  merchantId?: string
   /** 付款时间 */
   payTime?: string
   /** 发货时间 */

@@ -85,11 +85,11 @@
     <van-button type="primary" bind:tap="onPay">去支付</van-button>
     <text class="muted tip">订单待付款，请尽快完成支付</text>
   </view>
-  <!-- 已支付但商家尚未接单（orderStatus 仍为 1、payStatus=1）：直接退款 -->
+  <!-- 已支付但商家尚未接单（orderStatus 仍为 1、payStatus=1）：直接退款 / 联系商家 -->
   <view class="action-bar" wx:elif="{{order.orderStatus === 1 && order.payStatus === 1}}">
     <van-button type="default" bind:tap="onApplyRefund">直接退款</van-button>
+    <van-button type="info" bind:tap="onContactMerchant">联系商家</van-button>
     <van-button wx:if="{{freightPending}}" type="primary" bind:tap="onPayFreight">支付运费 {{freight.freightAmountText}}</van-button>
-    <text class="muted tip">{{freightPending ? '运费待支付' : '已支付，等待商家接单'}}</text>
   </view>
   <view class="action-bar" wx:elif="{{order.orderStatus === 2}}">
     <van-button type="default" bind:tap="onApplyRefund">直接退款</van-button>

@@ -43,6 +43,30 @@ namespace ECommerce.Infrastructure.Dto.Request.Mobile.Merchant
         public string? ImgList { get; set; }
         public int? IsOnSale { get; set; }
         public decimal? CostPrice { get; set; }
+
+        /// <summary>
+        /// 商品规格（多规格 SKU）。传入时：
+        /// 规格组写入 goods_spec，规格值写入 goods_sku，
+        /// 商品售价取规格最低价、库存取规格库存之和。
+        /// </summary>
+        public List<MerchantGoodsSkuDto>? Specs { get; set; }
+    }
+
+    /// <summary>
+    /// 商户自定义商品规格（SKU）
+    /// </summary>
+    public class MerchantGoodsSkuDto
+    {
+        /// <summary>规格组名称，如「规格」「重量」「包装」（默认「规格」）</summary>
+        public string? GroupName { get; set; }
+        /// <summary>规格值文本，如「500g/盒」「1kg/盒」</summary>
+        public string? SpecName { get; set; }
+        /// <summary>该规格售价</summary>
+        public decimal? Price { get; set; }
+        /// <summary>该规格库存</summary>
+        public int? Stock { get; set; }
+        /// <summary>该规格商家货号编码（可选）</summary>
+        public string? Code { get; set; }
     }
 
     /// <summary>更新商户资料</summary>

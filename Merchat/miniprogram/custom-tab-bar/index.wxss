@@ -1,15 +1,22 @@
-/* TabBar：与用户端一致 —— 白底 + 顶部细线 + 未选 var(--muted) + 选中品牌绿 */
+/* TabBar：蓝白玻璃悬浮导航（半透明 + 毛玻璃 + 圆角顶边 + 轻投影） */
 .tab-bar {
   position: fixed;
   bottom: 0;
-  left: 0;
-  right: 0;
+  left: 14rpx;
+  right: 14rpx;
   height: calc(110rpx + env(safe-area-inset-bottom));
-  background: #ffffff;
+  /* 玻璃表面：半透明白 + 毛玻璃模糊 + 顶部细高光描边 */
+  background: rgba(255, 255, 255, 0.70);
+  -webkit-backdrop-filter: blur(20rpx);
+  backdrop-filter: blur(20rpx);
+  border-top: 1rpx solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 -6rpx 26rpx rgba(43, 87, 190, 0.12);
+  /* 上浮 + 圆角顶边，呈现悬浮玻璃质感（左右留白避免贴边） */
+  border-radius: 30rpx 30rpx 0 0;
   display: flex;
   align-items: center;
-  border-top: 1rpx solid var(--line);
   padding-bottom: env(safe-area-inset-bottom);
+  box-sizing: border-box;
   z-index: 9999;
 }
 
@@ -22,11 +29,17 @@
   height: 110rpx;
   color: var(--muted);
   font-size: 22rpx;
-  transition: color 0.2s;
+  transition: color 0.2s ease, transform 0.15s ease;
 }
 
 .tab-bar-item.active {
   color: var(--brand);
+}
+
+/* 选中态高亮光晕（玻璃蓝调） */
+.tab-bar-item.active .tab-icon {
+  transform: translateY(-2rpx) scale(1.06);
+  filter: drop-shadow(0 4rpx 8rpx rgba(59, 111, 224, 0.35));
 }
 
 .tab-bar-item-hover {
@@ -37,6 +50,7 @@
   font-size: 40rpx;
   line-height: 1;
   margin-bottom: 6rpx;
+  transition: transform 0.2s ease, filter 0.2s ease;
 }
 
 .tab-text {

@@ -1,5 +1,6 @@
 import { sendSmsCode, smsLogin } from '../../api/auth'
 import { getAppToken, setAppToken } from '../../app'
+import { markCacheOwner, migrateLegacyCaches, adoptGuestCaches } from '../../utils/userScope'
 
 /** tabBar 页面不能用 reLaunch/navigateTo 直达，需走 switchTab */
 const TAB_PAGES = [
@@ -122,6 +123,11 @@ Page({
       setAppToken(res.token)
       // 缓存登录手机号，便于个人中心展示
       wx.setStorageSync('loginMobile', mobile)
+      // 切换缓存作用域：把游客期间的数据并入该账号 + 迁移旧版全局缓存，
+      // 保证「换号后看到别人的足迹/订单」这类串数据问题不再出现
+      markCacheOwner(mobile)
+      migrateLegacyCaches()
+      adoptGuestCaches(mobile)
       // 清理旧商户端缓存
       wx.removeStorageSync('merchantAccount')
       wx.removeStorageSync('merchant')

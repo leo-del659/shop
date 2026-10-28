@@ -4,6 +4,7 @@ import { getCart, updateCart, CartItem } from '../../utils/cart'
 import { requireLogin } from '../../app'
 import { getAddressList } from '../../api/address'
 import { resolveUrl } from '../../utils/request'
+import { getCheckoutItems, clearCheckoutItems } from '../../utils/checkoutItems'
 
 /** 页面实例附加字段：延迟跳转定时器句柄，卸载时清理，避免对已销毁页面 navigateBack/redirectTo 告警 */
 type CheckoutPageInstance = { backTimer?: ReturnType<typeof setTimeout> }
@@ -34,7 +35,7 @@ Page({
   },
 
   onLoad() {
-    const rawItems = (wx.getStorageSync('checkout_items') || []) as CartItem[]
+    const rawItems = getCheckoutItems<CartItem>()
     if (!rawItems.length) {
       wx.showToast({ title: '没有结算商品', icon: 'none' })
       const self = this as CheckoutPageInstance
@@ -182,7 +183,7 @@ Page({
         c => !this.data.items.some(it => it.goodsId === c.goodsId && (it.skuName || '') === (c.skuName || ''))
       )
       updateCart(remained)
-      wx.removeStorageSync('checkout_items')
+      clearCheckoutItems()
 
       const self = this as CheckoutPageInstance
       if (self.backTimer) clearTimeout(self.backTimer)

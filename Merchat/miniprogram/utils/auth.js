@@ -15,6 +15,9 @@ exports.logout = logout;
 const request_1 = require("./request");
 const TOKEN_KEY = 'auth_token';
 const MERCHANT_KEY = 'merchant_info';
+/** 地址页之间传递选中地址用的临时 key（切换商户后必须清理，否则会把上个商户的地址带过来） */
+const PICK_ADDRESS_KEY = '__gys_pick_address';
+const PICK_ADDRESS_RETURN_KEY = '__gys_pick_address_return';
 function getToken() {
     return wx.getStorageSync(TOKEN_KEY) || '';
 }
@@ -24,6 +27,9 @@ function setToken(t) {
 function clearAuth() {
     wx.removeStorageSync(TOKEN_KEY);
     wx.removeStorageSync(MERCHANT_KEY);
+    // 清理跨页面的地址传参残留
+    wx.removeStorageSync(PICK_ADDRESS_KEY);
+    wx.removeStorageSync(PICK_ADDRESS_RETURN_KEY);
 }
 function isLogin() {
     return !!getToken();
@@ -44,6 +50,9 @@ async function accountLogin(account, password) {
     setToken(res.token);
     if (res.merchant)
         setLocalMerchant(res.merchant);
+    // 切换商户时清理上个商户遗留的地址传参
+    wx.removeStorageSync(PICK_ADDRESS_KEY);
+    wx.removeStorageSync(PICK_ADDRESS_RETURN_KEY);
     return res;
 }
 // 发送短信验证码（type: 1-商户注册）。开发环境后端直接回传验证码，便于联调。

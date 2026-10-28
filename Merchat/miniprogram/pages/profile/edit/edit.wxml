@@ -4,8 +4,7 @@
     <view class="form-item" bindtap="chooseAvatar">
       <text class="label">头像</text>
       <view class="avatar-right">
-        <image wx:if="{{avatarUrl}}" class="avatar-img" src="{{avatarUrl}}" mode="aspectFill" />
-        <view wx:else class="avatar-img avatar-img--text">{{avatarText}}</view>
+        <merchant-avatar src="{{avatarUrl}}" text="{{avatarText}}" size="{{108}}" />
         <text class="avatar-arrow">{{uploading ? '上传中...' : '更换 ›'}}</text>
       </view>
     </view>

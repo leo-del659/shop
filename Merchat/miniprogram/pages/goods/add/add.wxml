@@ -12,7 +12,8 @@
     </view>
     <view class="form-item">
       <text class="label required">售价</text>
-      <input class="input" type="digit" value="{{form.price}}" data-field="price" bindinput="onInput" placeholder="请输入售价" />
+      <input class="input" type="digit" value="{{form.price}}" data-field="price" bindinput="onInput" placeholder="请输入售价" wx:if="{{!specEnabled}}" />
+      <text class="input input-readonly" wx:else>多规格价格见下方规格表</text>
     </view>
     <view class="form-item">
       <text class="label">市场价</text>
@@ -20,7 +21,8 @@
     </view>
     <view class="form-item">
       <text class="label required">库存</text>
-      <input class="input" type="number" value="{{form.stock}}" data-field="stock" bindinput="onInput" placeholder="请输入库存数量" />
+      <input class="input" type="number" value="{{form.stock}}" data-field="stock" bindinput="onInput" placeholder="请输入库存数量" wx:if="{{!specEnabled}}" />
+      <text class="input input-readonly" wx:else>多规格库存见下方规格表</text>
     </view>
     <view class="form-item">
       <text class="label">单位</text>
@@ -29,6 +31,70 @@
     <view class="form-item">
       <text class="label">规格</text>
       <input class="input" type="text" value="{{form.spec}}" data-field="spec" bindinput="onInput" placeholder="如：500g/盒" maxlength="32" />
+    </view>
+
+    <!-- 商品规格（多规格）：每个规格值独立定价与库存，买家下单时可选规格 -->
+    <view class="spec-block">
+      <view class="spec-head" bindtap="onToggleSpec" hover-class="spec-head-hover">
+        <view class="spec-head-left">
+          <text class="spec-head-title">商品规格</text>
+          <text class="spec-head-sub">{{specEnabled ? '已开启 · ' + specValues.length + ' 个规格值' : '开启后每个规格可单独定价与库存'}}</text>
+        </view>
+        <view class="spec-switch {{specEnabled ? 'on' : ''}}">{{specEnabled ? '关闭' : '+ 添加规格'}}</view>
+      </view>
+
+      <view wx:if="{{specEnabled}}" class="spec-body">
+        <!-- 规格组名称 -->
+        <view class="spec-field">
+          <text class="spec-field-label">规格组</text>
+          <input class="spec-field-input" value="{{specGroupName}}" placeholder="规格名称，如：规格 / 重量" bindinput="onSpecGroupInput" />
+        </view>
+
+        <!-- 规格值 -->
+        <view class="spec-field">
+          <text class="spec-field-label">规格值</text>
+          <view class="spec-values">
+            <view wx:for="{{specValues}}" wx:key="*this" class="spec-chip">
+              <text class="spec-chip-text">{{item}}</text>
+              <text class="spec-chip-x" data-name="{{item}}" catchtap="onRemoveSpecValue">✕</text>
+            </view>
+            <view wx:if="{{!specValues.length}}" class="spec-empty">还没有规格值，请在下方添加</view>
+          </view>
+        </view>
+
+        <view class="spec-add-row">
+          <input class="spec-add-input" value="{{specInput}}" placeholder="输入规格值，如 500g/盒" bindinput="onSpecInput" confirm-type="done" bindconfirm="onAddSpecValue" />
+          <view class="spec-add-btn" bindtap="onAddSpecValue">添加</view>
+        </view>
+
+        <!-- SKU 明细表 -->
+        <view wx:if="{{specSkus.length}}" class="sku-table">
+          <view class="sku-thead">
+            <text class="sku-th sku-th-name">规格值</text>
+            <text class="sku-th">售价</text>
+            <text class="sku-th">库存</text>
+            <text class="sku-th sku-th-code">编码</text>
+          </view>
+          <view class="sku-trow" wx:for="{{specSkus}}" wx:key="name">
+            <text class="sku-td sku-td-name">{{item.name}}</text>
+            <input class="sku-td-input" type="digit" value="{{item.price}}" data-index="{{index}}" data-field="price" bindinput="onSkuInput" placeholder="0.00" />
+            <input class="sku-td-input" type="number" value="{{item.stock}}" data-index="{{index}}" data-field="stock" bindinput="onSkuInput" placeholder="0" />
+            <input class="sku-td-input sku-td-input-code" value="{{item.code}}" data-index="{{index}}" data-field="code" bindinput="onSkuInput" placeholder="选填" />
+          </view>
+          <view class="sku-batch-btn" bindtap="onToggleBatch">批量设置价格/库存</view>
+        </view>
+
+        <!-- 批量设置面板 -->
+        <view wx:if="{{batchOpen}}" class="batch-panel">
+          <input class="batch-input" type="digit" value="{{batchPrice}}" placeholder="统一售价" bindinput="onBatchInput" data-field="price" />
+          <input class="batch-input" type="number" value="{{batchStock}}" placeholder="统一库存" bindinput="onBatchInput" data-field="stock" />
+          <view class="batch-apply" bindtap="onApplyBatch">应用</view>
+          <view class="batch-cancel" bindtap="onToggleBatch">取消</view>
+        </view>
+
+        <view class="spec-tip">启用多规格后，商品售价取规格最低价、库存取各规格库存之和；买家下单时可选具体规格。</view>
+        <view class="spec-clear" bindtap="onClearSpecs">清空规格</view>
+      </view>
     </view>
 
     <view class="form-item upload-item">

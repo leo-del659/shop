@@ -1,0 +1,36 @@
+<view class="msg-page">
+  <!-- 会话列表：聊过的历史商家 -->
+  <view wx:if="{{!loading && conversations.length}}">
+    <view
+      wx:for="{{conversations}}"
+      wx:key="peerId"
+      class="conv-item"
+      data-item="{{item}}"
+      bindtap="onEnterChat"
+      hover-class="conv-hover"
+    >
+      <!-- 商家头像（无头像回退名称首字） -->
+      <view class="conv-avatar-wrap">
+        <image wx:if="{{item.peerAvatar}}" class="conv-avatar" src="{{item.peerAvatar}}" mode="aspectFill" />
+        <view wx:else class="conv-avatar conv-avatar-default">{{item.peerName[0] || '商'}}</view>
+        <view wx:if="{{item.unread > 0}}" class="conv-badge">{{item.unread > 99 ? '99+' : item.unread}}</view>
+      </view>
+      <view class="conv-body">
+        <view class="conv-top">
+          <text class="conv-name">{{item.peerName}}</text>
+          <text class="conv-time">{{item.lastTimeText}}</text>
+        </view>
+        <view class="conv-bottom">
+          <text class="conv-last">{{item.lastContent || '暂无消息'}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:if="{{!loading && !conversations.length}}" class="empty">
+    <view class="empty-icon">💬</view>
+    <view class="empty-text">暂无消息</view>
+    <view class="empty-sub">下单后可在这里与商家沟通</view>
+  </view>
+</view>

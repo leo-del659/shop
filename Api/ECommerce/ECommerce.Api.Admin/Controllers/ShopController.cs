@@ -22,6 +22,7 @@ namespace ECommerce.Api.Admin.Controllers
         private readonly Good_EFCore _goodEFCore;
         private readonly GoodsCategory_EFCore _categoryEFCore;
         private readonly GoodsSku_EFCore _skuEFCore;
+        private readonly GoodsSpec_EFCore _specEFCore;
         private readonly ClientOrder_EFCore _clientOrderEFCore;
 
         /// <summary>
@@ -32,12 +33,14 @@ namespace ECommerce.Api.Admin.Controllers
             Good_EFCore goodEFCore,
             GoodsCategory_EFCore categoryEFCore,
             GoodsSku_EFCore skuEFCore,
+            GoodsSpec_EFCore specEFCore,
             ClientOrder_EFCore clientOrderEFCore)
         {
             _goodsService = goodsService;
             _goodEFCore = goodEFCore;
             _categoryEFCore = categoryEFCore;
             _skuEFCore = skuEFCore;
+            _specEFCore = specEFCore;
             _clientOrderEFCore = clientOrderEFCore;
         }
 
@@ -195,17 +198,21 @@ namespace ECommerce.Api.Admin.Controllers
                 .Select(url => new { imgUrl = url.Trim() })
                 .ToList();
             var skus = _skuEFCore.Query(s => s.GoodsId == id).ToList();
-            // 规格表 goods_spec 未创建：规格直接由 goods_sku 合成（spec_id 作为规格 id，sku_name 作为规格名）
-            var specs = skus
-                .Where(s => !string.IsNullOrEmpty(s.SpecId))
-                .GroupBy(s => s.SpecId)
-                .Select(g => new GoodsSpec
-                {
-                    Id = g.Key,
-                    GoodsId = id,
-                    SpecName = g.First().SkuName
-                })
-                .ToList();
+            // 规格组：优先取 goods_spec（商户端维护的规格组，如「重量」）；
+            // 老数据没有 goods_spec 时回退为「按 sku.spec_id 合成」，保证后台管理端创建的商品仍可展示规格
+            var specRows = _specEFCore.Query(s => s.GoodsId == id).ToList();
+            var specs = specRows.Count > 0
+                ? specRows
+                : skus
+                    .Where(s => !string.IsNullOrEmpty(s.SpecId))
+                    .GroupBy(s => s.SpecId)
+                    .Select(g => new GoodsSpec
+                    {
+                        Id = g.Key,
+                        GoodsId = id,
+                        SpecName = g.First().SkuName
+                    })
+                    .ToList();
 
             // 累计已售数量：统计「已支付(PayStatus = PayStatus.Paid)且未取消/未作废」订单中该商品的购买总件数。
             // 明细内联在 client_order.items_json，逐单解析并累加 goodsId 匹配项的 buyNum。

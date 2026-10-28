@@ -82,6 +82,7 @@ Page({
                 deliveryTime: o.shipTime ? String(o.shipTime).slice(0, 16).replace('T', ' ') : '',
                 remark: o.remark || '',
                 rejectReason: o.rejectReason || '',
+                clientId: o.clientId || '',
                 items,
                 logistics: (o.logistics || []).map((node) => ({
                     text: node.text || '',
@@ -123,6 +124,19 @@ Page({
             wx.navigateBack();
         else
             wx.switchTab({ url: '/pages/order/list' });
+    },
+    /** 联系买家：跳转到该订单买家的聊天界面 */
+    goChat() {
+        const bill = this.data.bill;
+        if (!bill || !bill.clientId) {
+            wx.showToast({ title: '未找到买家信息', icon: 'none' });
+            return;
+        }
+        const params = [
+            'clientId=' + bill.clientId,
+            'name=' + encodeURIComponent(bill.merchantContact || ''),
+        ].join('&');
+        wx.navigateTo({ url: '/pages/chat/chat?' + params });
     },
     /** 接单 / 拒单 / 发货 */
     async action(e) {

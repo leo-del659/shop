@@ -19,7 +19,10 @@
     "pages/withdraw/records",
     "pages/bank/bank",
     "pages/profile/address/list",
-    "pages/profile/address/edit"
+    "pages/profile/address/edit",
+    "pages/chat/list",
+    "pages/chat/chat",
+    "pages/chat/warning/warning"
   ],
   "window": {
     "navigationBarTextStyle": "black",

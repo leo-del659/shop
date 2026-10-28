@@ -9,6 +9,7 @@ using ECommerce.Service.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,7 @@ namespace ECommerce.Service.Instance
         private readonly SysMenu_EFCore _menu_EFCore;
         private readonly Client_Login_EFCore _client_Login_EFCore;
         private readonly IServiceProvider _serviceProvider;
+        private readonly ILogger<Login_Service> _logger;
 
         public Login_Service(
             IConfiguration configuration,
@@ -40,9 +42,11 @@ namespace ECommerce.Service.Instance
             SysDeptRoleMenu_EFCore deptRoleMenu_EFCore,
             SysMenu_EFCore menu_EFCore,
             Client_Login_EFCore client_Login_EFCore,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            ILogger<Login_Service> logger)
         {
             _sys_User_EFCore = sys_User_EFCore;
+            _logger = logger;
             _configuration = configuration;
             _sys_Login_Log_EFCore = sys_Login_Log_EFCore;
             _sms_Code_EFCore = sms_Code_EFCore;
@@ -350,7 +354,7 @@ namespace ECommerce.Service.Instance
             catch (Exception ex)
             {
                 // 同步 client_login 失败不阻断登录主流程，仅告警
-                Console.WriteLine($"[WARN] 同步 client_login 失败（手机号 {mobile}）：{ex.Message}");
+                _logger.LogWarning(ex, "同步 client_login 失败（手机号 {Mobile}）", mobile);
             }
         }
 
@@ -525,12 +529,12 @@ namespace ECommerce.Service.Instance
                 var migrated = orderService.ConsolidateLegacyOwnersByMobileAsync(mobile).GetAwaiter().GetResult();
                 if (migrated > 0)
                 {
-                    Console.WriteLine($"[INFO] 历史 owner 迁移：手机号 {mobile} 已收敛 {migrated} 条孤儿记录到规范账号");
+                    _logger.LogInformation("历史 owner 迁移：手机号 {Mobile} 已收敛 {Count} 条孤儿记录到规范账号", mobile, migrated);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[WARN] 历史 owner 迁移失败（手机号 {mobile}）：{ex.Message}");
+                _logger.LogWarning(ex, "历史 owner 迁移失败（手机号 {Mobile}）", mobile);
             }
         }
 

@@ -1,6 +1,6 @@
 .goods-page {
   min-height: 100vh;
-  background: var(--bg);
+  background: var(--page-bg);
   padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
 }
 
@@ -15,14 +15,17 @@
   min-width: 0;
   display: flex;
   align-items: center;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.72);
   border-radius: 36rpx;
   padding: 16rpx 24rpx;
-  border: 1rpx solid var(--line);
-  transition: border-color 0.2s ease;
+  border: 1rpx solid rgba(255, 255, 255, 0.6);
+  -webkit-backdrop-filter: blur(10rpx);
+  backdrop-filter: blur(10rpx);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .search-box:focus-within {
   border-color: var(--brand);
+  box-shadow: 0 0 0 3rpx rgba(59, 111, 224, 0.12);
 }
 .search-ico {
   font-size: 28rpx;
@@ -97,13 +100,14 @@
   flex: none;
   margin-left: auto;
   padding: 10rpx 28rpx;
-  background: linear-gradient(135deg, var(--brand), var(--brand));
+  background: linear-gradient(135deg, var(--brand), var(--brand-dark));
   color: #fff;
   border-radius: 40rpx;
   font-size: 24rpx;
   font-weight: 600;
   white-space: nowrap;
-  box-shadow: 0 6rpx 18rpx rgba(46, 125, 110, 0.3);
+  border: 1rpx solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 8rpx 24rpx rgba(43, 87, 190, 0.30);
 }
 .btn-add-text:active { opacity: 0.85; transform: scale(0.96); }
 
@@ -115,11 +119,12 @@
 }
 .stat-item {
   flex: 1;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.72);
   border-radius: 16rpx;
   padding: 20rpx 0;
   text-align: center;
-  border: 1rpx solid var(--line);
+  border: 1rpx solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 4rpx 16rpx rgba(43, 87, 190, 0.08);
 }
 .stat-num {
   font-size: 34rpx;
@@ -153,11 +158,11 @@
 .filter-tag {
   flex: none;
   padding: 10rpx 22rpx;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.7);
   border-radius: 40rpx;
   font-size: 24rpx;
   color: var(--muted);
-  border: 1rpx solid var(--line-strong);
+  border: 1rpx solid rgba(59, 111, 224, 0.18);
   display: flex;
   align-items: center;
   gap: 6rpx;
@@ -194,10 +199,11 @@
   margin-top: 16rpx;
 }
 .product-item {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.74);
   border-radius: 24rpx;
   padding: 24rpx 28rpx;
-  border: 1rpx solid var(--line);
+  border: 1rpx solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 4rpx 18rpx rgba(43, 87, 190, 0.08);
   display: flex;
   gap: 24rpx;
   align-items: center;
@@ -247,6 +253,15 @@
 }
 .product-item .meta .stock.normal {
   color: var(--brand);
+}
+/* 多规格标签 */
+.product-item .meta .spec-badge {
+  padding: 2rpx 12rpx;
+  font-size: 20rpx;
+  color: var(--brand-dark);
+  background: var(--brand-light);
+  border: 1rpx solid rgba(59, 111, 224, 0.25);
+  border-radius: 6rpx;
 }
 .restock-history {
   font-size: 22rpx;
@@ -338,7 +353,10 @@
 }
 .dialog {
   width: 560rpx;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.92);
+  -webkit-backdrop-filter: blur(20rpx);
+  backdrop-filter: blur(20rpx);
+  border: 1rpx solid rgba(255, 255, 255, 0.7);
   border-radius: 24rpx;
   padding: 40rpx 36rpx;
 }

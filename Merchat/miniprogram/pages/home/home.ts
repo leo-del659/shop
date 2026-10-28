@@ -1,4 +1,4 @@
-import { getHome, getBalance, getOrderList } from '../../utils/api'
+import { getHome, getOrderList, getUnreadCount } from '../../utils/api'
 import { isLogin } from '../../utils/auth'
 import { resolveUrl } from '../../utils/request'
 import type { HomeNotice, Order } from '../../utils/types'
@@ -18,12 +18,25 @@ const NOTICE_TYPE_TEXT: Record<number, string> = { 1: '公告', 2: '通知', 3: 
 // 通知滚动计时器句柄（模块级，单页场景安全）
 let noticeTimer: any = null
 
-function greetingByHour(h: number): string {
-  if (h < 6) return '夜深了'
-  if (h < 11) return '早上好'
-  if (h < 13) return '中午好'
-  if (h < 18) return '下午好'
-  return '晚上好'
+/**
+ * 通知条展示文本：优先显示通知内容（content），为空时回退标题。
+ * 内容过长时条内做横向滚动（noticeScroll）。
+ */
+function noticeTextOf(n: HomeNotice | undefined): string {
+  if (!n) return ''
+  const content = (n.content || '').trim()
+  if (content) return content
+  return (n.title || '').trim()
+}
+
+/**
+ * 是否需要条内横向滚动：仅「只有一条通知」且内容明显超出可视宽度时启用。
+ * 多条通知时改为按间隔轮播切换（此时横向动画会因内容重绘而重置，体验反而更差）。
+ * 粗略估算：中文按 24rpx 字号折算，容器可视宽度约 20 个字。
+ */
+function needScroll(text: string, total: number): boolean {
+  if (total > 1) return false
+  return text.length > 18
 }
 
 /** "2026-10-18T14:30:00" / "2026-10-18 14:30:00" → "10-18 14:30" */
@@ -35,28 +48,32 @@ function shortTime(t: string): string {
 
 Page({
   data: {
-    greeting: '你好',
     // 顶部商户信息（仅首页展示）
     merchantName: '',
     merchantAvatar: '',
     avatarChar: '',
     merchantLevel: '',
     shopStatus: '营业中',
+    /** 右上角操作区位置：距顶部(px)，与胶囊右边缘对齐(px) */
+    actionsTop: 48,
+    actionsRight: 15,
     // 今日数据（含昨日对比）
     todayOrders: 0,
     todayRevenue: '0.00',
     yesterdayOrders: 0,
     yesterdayRevenue: '0.00',
     kpiPending: 0,
-    // 资金账户
-    balanceAvailable: '0.00',
-    balanceTotalPaid: '0.00',
-    balanceWithdrawn: '0.00',
+    /** 消息按钮红点：聊天未读 + 通知未读 */
+    unreadTotal: 0,
     // 公告通知
     notices: [] as HomeNotice[],
     // 动态通知滚动状态
     noticeIndex: 0,
     noticeAnim: '',
+    /** 当前展示的通知内容 */
+    noticeText: '',
+    /** 内容过长时条内横向滚动 */
+    noticeScroll: false,
     // 最新订单（取前 3 条）
     recentOrders: [] as RecentOrderItem[],
     // 在售商品
@@ -67,11 +84,47 @@ Page({
     loadError: '',
   },
 
+  onLoad() {
+    this.setupNav()
+  },
+
   onShow() {
     const tabBar = this.getTabBar() as any
     if (tabBar) tabBar.setData({ selected: 0 })
-    this.setData({ greeting: greetingByHour(new Date().getHours()) })
     this.load()
+    this.loadUnread()
+  },
+
+  /**
+   * 顶部布局适配（自定义导航栏 navigationStyle: custom）：
+   * 用胶囊按钮的真实位置，把「消息」放到胶囊正下方并右对齐。
+   * 按钮是绝对定位，不占布局空间，页面其他元素的位置保持不变。
+   */
+  setupNav() {
+    try {
+      const wxAny = wx as any
+      const win = wxAny.getWindowInfo ? wxAny.getWindowInfo() : wx.getSystemInfoSync()
+      const menu = wx.getMenuButtonBoundingClientRect()
+      const winWidth = win.windowWidth || 375
+      // 操作区顶部 = 胶囊底部 + 2px（在 -3 基础上再下移 5px，仅按钮自身位移）
+      const actionsTop = menu.bottom + 2
+      // 右边缘与胶囊右边缘对齐
+      const actionsRight = Math.max(winWidth - menu.right, 10)
+      this.setData({ actionsTop, actionsRight })
+    } catch (e) {
+      // 取不到胶囊信息时用兜底值
+      this.setData({ actionsTop: 48, actionsRight: 15 })
+    }
+  },
+
+  /** 拉取未读数（聊天 + 库存预警通知），用于消息按钮红点 */
+  async loadUnread() {
+    try {
+      const res = await getUnreadCount()
+      this.setData({ unreadTotal: (res && res.total) || 0 })
+    } catch (e) {
+      // 拉取失败不显示红点
+    }
   },
 
   onHide() {
@@ -89,10 +142,9 @@ Page({
     }
     this.setData({ loading: true, loadError: '' })
     try {
-      // 三个数据源并行；余额/订单失败时降级为默认值，不阻塞主内容
-      const [home, balance, orders] = await Promise.all([
+      // 首页数据源并行；订单失败时降级为空，不阻塞主内容
+      const [home, orders] = await Promise.all([
         getHome(),
-        getBalance().catch(() => null),
         getOrderList('all').catch(() => [] as Order[]),
       ])
 
@@ -136,12 +188,11 @@ Page({
         yesterdayOrders: Number(t.yesterdayOrders || 0),
         yesterdayRevenue: Number(t.yesterdayRevenue || 0).toFixed(2),
         kpiPending: Number((home.kpi && home.kpi.pending) || 0),
-        balanceAvailable: Number((balance && balance.available) || 0).toFixed(2),
-        balanceTotalPaid: Number((balance && balance.totalPaid) || 0).toFixed(2),
-        balanceWithdrawn: Number((balance && balance.withdrawn) || 0).toFixed(2),
         notices,
         noticeIndex: 0,
         noticeAnim: '',
+        noticeText: noticeTextOf(notices[0]),
+        noticeScroll: needScroll(noticeTextOf(notices[0]), notices.length),
         recentOrders,
         products,
         goodsSectionTitle: '在售商品',
@@ -153,19 +204,6 @@ Page({
         loadError: (e && e.message) || '加载失败，请稍后重试',
       })
     }
-  },
-
-  // 公告列表点击：弹窗查看全文
-  onNoticeTap(e: any) {
-    const idx = e.currentTarget.dataset.index
-    const n = this.data.notices[idx]
-    if (!n) return
-    wx.showModal({
-      title: n.title || n.typeText,
-      content: n.content || '',
-      showCancel: false,
-      confirmText: '知道了',
-    })
   },
 
   // 顶部通知条点击：查看当前这条全文
@@ -193,14 +231,20 @@ Page({
     }
   },
 
-  // 纵向滚到下一条：先滑出，换内容后从下方滑入
+  // 滚动到下一条：先淡出，换内容后淡入（横向滚动与淡出动画互不冲突）
   rollNotice() {
     if (this.data.noticeAnim) return
     const total = this.data.notices.length
     this.setData({ noticeAnim: 'out' })
     setTimeout(() => {
       const next = (this.data.noticeIndex + 1) % total
-      this.setData({ noticeIndex: next, noticeAnim: 'in' })
+      const text = noticeTextOf(this.data.notices[next])
+      this.setData({
+        noticeIndex: next,
+        noticeAnim: 'in',
+        noticeText: text,
+        noticeScroll: needScroll(text, this.data.notices.length),
+      })
       setTimeout(() => this.setData({ noticeAnim: '' }), 30)
     }, 360)
   },
@@ -225,6 +269,10 @@ Page({
   },
   goQualification() {
     wx.navigateTo({ url: '/pages/profile/qualification/qualification' })
+  },
+  /** 消息中心：与买家的聊天会话列表 */
+  goChatList() {
+    wx.navigateTo({ url: '/pages/chat/list' })
   },
   goGoodsDetail(e: any) {
     wx.navigateTo({ url: '/pages/goods/detail?id=' + e.currentTarget.dataset.id })

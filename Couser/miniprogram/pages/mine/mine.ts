@@ -6,6 +6,7 @@ import { resolveCategoryTree } from '../../utils/tree'
 import { camelCaseKeys } from '../../utils/util'
 import { syncCartBadge, getCartQuantity, addToCart, incCartItem, decCartItem } from '../../utils/cart'
 import { favoriteCount } from '../../utils/favorite'
+import { setCheckoutItems, clearCheckoutItems } from '../../utils/checkoutItems'
 import { footprintCount } from '../../utils/footprint'
 import { getOrders, ORDER_STATUS } from '../../api/order'
 
@@ -136,6 +137,8 @@ Page({
         if (!r.confirm) return
         clearAppToken()
         wx.removeStorageSync('loginMobile')
+        // 结算临时勾选项属于「上一位用户」的上下文，退出时清掉，避免下个账号误带入
+        clearCheckoutItems()
         this.setData({ logged: false, mobile: '', name: '', avatarUrl: '' })
         wx.showToast({ title: '已退出登录', icon: 'none' })
       }
@@ -144,6 +147,11 @@ Page({
 
   goProfile() {
     wx.navigateTo({ url: '/pages/profile/profile' })
+  },
+
+  /** 消息中心：与商家的聊天会话列表 */
+  goMessages() {
+    wx.navigateTo({ url: '/pages/message/message' })
   },
 
   goOrders(e?: any) {
@@ -217,7 +225,7 @@ Page({
       this.refreshQty()
       wx.showToast({ title: '已加入购物车', icon: 'success' })
     } else {
-      wx.setStorageSync('checkout_items', [item])
+      setCheckoutItems([item])
       this.setData({ showSku: false })
       wx.navigateTo({ url: '/pages/checkout/checkout' })
     }

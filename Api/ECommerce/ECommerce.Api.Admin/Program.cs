@@ -274,6 +274,9 @@ builder.Services.AddSingleton<IdempotencyStore>(sp =>
     return new IdempotencyStore(ro.Redis);
 });
 
+// 聊天 WebSocket 连接管理器（单例）：维护在线连接，实时推送买卖家消息
+builder.Services.AddSingleton<ECommerce.Service.Interface.WebSockets.ChatWebSocketManager>();
+
 
 
 //配置跨域选项
@@ -367,6 +370,17 @@ if (app.Environment.IsDevelopment())
 }
 
 
+
+// 启用 WebSocket（聊天实时通信）：保活 120s，避免运营商/NAT 过早回收连接
+// 注意：必须注册在 Swagger / Knife4UI 之前——Knife4UI 的 RoutePrefix 被设为空字符串，
+// 会拦截所有非 /api 开头的路径并直接返回 404，导致 /ws/chat 握手根本到不了聊天中间件。
+// 聊天中间件内部自带 JWT 鉴权（query 传 token），不依赖框架的 UseAuthentication/UseAuthorization。
+app.UseWebSockets(new Microsoft.AspNetCore.Builder.WebSocketOptions
+{
+    KeepAliveInterval = TimeSpan.FromSeconds(120)
+});
+// 聊天 WebSocket 中间件（仅匹配 /ws/chat，其余请求放行给后续管道）
+app.UseMiddleware<ECommerce.Api.Admin.WebSockets.ChatWebSocketMiddleware>();
 
 //开发 生产
 

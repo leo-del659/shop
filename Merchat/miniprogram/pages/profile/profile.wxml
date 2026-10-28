@@ -3,14 +3,11 @@
   <view class="hero">
     <view class="hero-bg"></view>
     <view class="hero-row">
-      <image wx:if="{{avatarUrl}}" class="avatar-img" src="{{avatarUrl}}" mode="aspectFill" />
-      <view wx:else class="avatar">{{avatarText}}</view>
+      <merchant-avatar src="{{avatarUrl}}" text="{{avatarText}}" size="{{120}}" />
       <view class="hero-info">
         <view class="hero-name">{{displayName || '商户名称'}}</view>
-        <view class="hero-sub">{{subLine || '负责人'}}</view>
         <view wx:if="{{phone}}" class="hero-phone">📞 {{phone}}</view>
       </view>
-      <view class="setting-btn" hover-class="btn-press" bindtap="onEditProfile">编辑资料</view>
     </view>
   </view>
 
@@ -41,11 +38,11 @@
   <view class="card menu-section">
     <view class="section-title">常用功能</view>
     <view class="menu-list">
-      <view class="menu-item" data-key="address" bindtap="onMenu" hover-class="menu-hover">
-        <view class="icon icon-brand">📍</view>
+      <view class="menu-item" data-key="profile" bindtap="onMenu" hover-class="menu-hover">
+        <view class="icon icon-brand">👤</view>
         <view class="content">
-          <view class="title">收货地址</view>
-          <view class="desc">管理收货地址</view>
+          <view class="title">个人资料</view>
+          <view class="desc">店铺信息 · 头像昵称</view>
         </view>
         <view class="arrow">›</view>
       </view>

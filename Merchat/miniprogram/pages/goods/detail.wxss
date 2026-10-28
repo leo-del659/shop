@@ -1,5 +1,16 @@
 .detail {
+  min-height: 100vh;
+  background: var(--page-bg);
   padding-bottom: 20rpx;
+}
+/* 详情卡片：毛玻璃面板（覆盖全局 .card 的白底） */
+.detail .card {
+  background: rgba(255, 255, 255, 0.74);
+  -webkit-backdrop-filter: blur(20rpx);
+  backdrop-filter: blur(20rpx);
+  border: 1rpx solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 6rpx 24rpx rgba(43, 87, 190, 0.10);
+  border-radius: 20rpx;
 }
 .gallery {
   height: 420rpx;
@@ -110,8 +121,12 @@
   gap: 20rpx;
   padding: 16rpx 20rpx;
   padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
-  background: #fff;
-  box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.05);
+  /* 玻璃悬浮操作栏 */
+  background: rgba(255, 255, 255, 0.72);
+  border-top: 1rpx solid rgba(255, 255, 255, 0.7);
+  -webkit-backdrop-filter: blur(20rpx);
+  backdrop-filter: blur(20rpx);
+  box-shadow: 0 -6rpx 26rpx rgba(43, 87, 190, 0.10);
   z-index: 50;
 }
 .footer-btn {
@@ -143,3 +158,74 @@
   margin-left: 4rpx;
 }
 
+
+/* ============ 商品规格（多规格明细） ============ */
+.spec-count {
+  font-size: 24rpx;
+  color: var(--muted);
+}
+.spec-table {
+  margin-top: 20rpx;
+  border: 1rpx solid var(--line);
+  border-radius: 12rpx;
+  overflow: hidden;
+}
+.spec-thead,
+.spec-trow {
+  display: flex;
+  align-items: center;
+}
+.spec-thead {
+  background: #fafbfc;
+  padding: 14rpx 16rpx;
+  border-bottom: 1rpx solid var(--line);
+}
+.spec-th {
+  flex: 1;
+  font-size: 22rpx;
+  color: var(--muted);
+  text-align: center;
+}
+.spec-th-name {
+  flex: 1.3;
+  text-align: left;
+}
+.spec-th-code {
+  flex: 1;
+}
+.spec-trow {
+  padding: 16rpx;
+  border-bottom: 1rpx solid var(--line);
+}
+.spec-trow:last-child {
+  border-bottom: none;
+}
+.spec-td {
+  flex: 1;
+  font-size: 25rpx;
+  color: var(--text);
+  text-align: center;
+}
+.spec-td-name {
+  flex: 1.3;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.spec-td-code {
+  flex: 1;
+  font-size: 22rpx;
+  color: var(--muted);
+}
+.spec-td.warn {
+  color: var(--warning);
+}
+.spec-td.danger {
+  color: var(--danger);
+}
+.spec-sum {
+  margin-top: 16rpx;
+  font-size: 22rpx;
+  color: var(--muted);
+}

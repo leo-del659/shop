@@ -3,6 +3,7 @@ using ECommerce.Service.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace ECommerce.Api.Admin.Controllers
 {
@@ -17,10 +18,14 @@ namespace ECommerce.Api.Admin.Controllers
     public class MerchantMiniController : ControllerBase
     {
         private readonly IMerchantMiniService _service;
+        private readonly IChatService _chatService;
+        private readonly IMerchantNoticeService _noticeService;
 
-        public MerchantMiniController(IMerchantMiniService service)
+        public MerchantMiniController(IMerchantMiniService service, IChatService chatService, IMerchantNoticeService noticeService)
         {
             _service = service;
+            _chatService = chatService;
+            _noticeService = noticeService;
         }
 
         private string? GetMerchantId()
@@ -142,6 +147,16 @@ namespace ECommerce.Api.Admin.Controllers
             var merchantId = GetMerchantId();
             if (string.IsNullOrWhiteSpace(merchantId)) return Unauthorized();
             return Ok(_service.GetGoodsDetail(merchantId, id));
+        }
+
+        /// <summary>商品规格（多规格 SKU 编辑页用）</summary>
+        [HttpGet("goods/{id}/specs")]
+        [Authorize]
+        public IActionResult GoodsSpecs(string id)
+        {
+            var merchantId = GetMerchantId();
+            if (string.IsNullOrWhiteSpace(merchantId)) return Unauthorized();
+            return Ok(_service.GetGoodsSpecs(merchantId, id));
         }
 
         /// <summary>新增商品</summary>
@@ -328,5 +343,81 @@ namespace ECommerce.Api.Admin.Controllers
 
         #endregion
 
+        #region 聊天（与用户端小程序消息互通）
+
+        /// <summary>会话列表：聊过的买家（含最后一条消息与未读数）</summary>
+        [HttpGet("chat/conversations")]
+        public async Task<IActionResult> ChatConversations()
+        {
+            var id = GetMerchantId();
+            if (string.IsNullOrWhiteSpace(id)) return Unauthorized();
+            return Ok(await _chatService.MerchantConversations(id));
+        }
+
+        /// <summary>
+        /// 拉取与某买家的消息（最近 50 条，升序返回）
+        /// after：传最后一条消息的 createTime 做增量轮询，只返回该时间之后的新消息
+        /// </summary>
+        [HttpGet("chat/clients/{clientId}/messages")]
+        public async Task<IActionResult> ChatMessages(string clientId, [FromQuery] string? after, [FromQuery] int pageSize = 50)
+        {
+            var id = GetMerchantId();
+            if (string.IsNullOrWhiteSpace(id)) return Unauthorized();
+            return Ok(await _chatService.MerchantMessages(id, clientId, after, pageSize));
+        }
+
+        /// <summary>发送消息给买家</summary>
+        [HttpPost("chat/clients/{clientId}/messages")]
+        public async Task<IActionResult> ChatSend(string clientId, [FromBody] MerchantChatSendDto dto)
+        {
+            var id = GetMerchantId();
+            if (string.IsNullOrWhiteSpace(id)) return Unauthorized();
+            return Ok(await _chatService.MerchantSend(id, clientId, dto?.Content));
+        }
+
+        /// <summary>
+        /// 未读数汇总（首页消息按钮红点）：聊天未读 + 通知未读
+        /// </summary>
+        [HttpGet("chat/unread")]
+        public async Task<IActionResult> ChatUnread()
+        {
+            var id = GetMerchantId();
+            if (string.IsNullOrWhiteSpace(id)) return Unauthorized();
+            return Ok(await _noticeService.UnreadCount(id));
+        }
+
+        #endregion
+
+        #region 商户通知（库存预警等系统消息）
+
+        /// <summary>
+        /// 通知列表：进入消息中心时调用——先扫描库存自动生成库存预警，再返回通知列表
+        /// </summary>
+        [HttpGet("notices")]
+        public async Task<IActionResult> Notices()
+        {
+            var id = GetMerchantId();
+            if (string.IsNullOrWhiteSpace(id)) return Unauthorized();
+            return Ok(await _noticeService.MerchantNotices(id));
+        }
+
+        /// <summary>把该商户所有未读通知标记为已读</summary>
+        [HttpPost("notices/read")]
+        public async Task<IActionResult> ReadNotices()
+        {
+            var id = GetMerchantId();
+            if (string.IsNullOrWhiteSpace(id)) return Unauthorized();
+            return Ok(await _noticeService.ReadAll(id));
+        }
+
+        #endregion
+
     }
+}
+
+/// <summary>商户端发送消息请求体</summary>
+public class MerchantChatSendDto
+{
+    /// <summary>消息文本内容</summary>
+    public string? Content { get; set; }
 }

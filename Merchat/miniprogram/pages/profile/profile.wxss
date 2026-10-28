@@ -1,9 +1,17 @@
 /* 我的 · 设计令牌引用自 app.wxss */
 .profile-page {
   min-height: 100vh;
-  background: var(--bg);
+  background: var(--page-bg);
   padding-bottom: 40rpx;
   box-sizing: border-box;
+}
+/* 我的页卡片：毛玻璃面板（覆盖全局 .card 的白底） */
+.profile-page .card {
+  background: rgba(255, 255, 255, 0.74);
+  -webkit-backdrop-filter: blur(20rpx);
+  backdrop-filter: blur(20rpx);
+  border: 1rpx solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 6rpx 24rpx rgba(43, 87, 190, 0.10);
 }
 
 /* 浅色品牌页头（与用户端「我的」同款） */
@@ -27,25 +35,8 @@
   display: flex;
   align-items: center;
   gap: 24rpx;
-  margin-top: 48rpx;
-}
-.avatar,
-.avatar-img {
-  width: 120rpx;
-  height: 120rpx;
-  border-radius: 50%;
-  border: 4rpx solid rgba(59, 111, 224, 0.12);
-  background: #ffffff;
-  flex-shrink: 0;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.avatar {
-  color: var(--brand-dark);
-  font-size: 48rpx;
-  font-weight: 700;
+  /* 页头内容整体下移 15px（48rpx + 30rpx） */
+  margin-top: 78rpx;
 }
 .hero-info {
   flex: 1;
@@ -63,21 +54,9 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.hero-sub {
-  font-size: 24rpx;
-  color: var(--muted);
-}
 .hero-phone {
   font-size: 24rpx;
   color: var(--muted);
-}
-.setting-btn {
-  flex-shrink: 0;
-  padding: 12rpx 28rpx;
-  font-size: 26rpx;
-  color: #fff;
-  background: var(--brand);
-  border-radius: 32rpx;
 }
 .btn-press {
   opacity: 0.85;
@@ -131,7 +110,8 @@
   margin-bottom: 16rpx;
 }
 .menu-list {
-  background: var(--surface-variant);
+  background: rgba(255, 255, 255, 0.45);
+  border: 1rpx solid rgba(255, 255, 255, 0.55);
   border-radius: 16rpx;
   overflow: hidden;
 }

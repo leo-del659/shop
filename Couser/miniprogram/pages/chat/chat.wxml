@@ -1,0 +1,47 @@
+<view class="chat-page">
+  <!-- 消息区域 -->
+  <scroll-view
+    class="chat-scroll"
+    scroll-y
+    scroll-into-view="{{scrollInto}}"
+    scroll-with-animation
+    style="height: {{scrollHeight}}px;"
+  >
+    <view wx:if="{{!loading && !messages.length}}" class="chat-empty">
+      <view>暂无消息，发条消息问问商家吧</view>
+    </view>
+
+    <view wx:for="{{messages}}" wx:key="id" id="msg-{{item.id}}" class="msg-row {{item.self ? 'msg-row-self' : ''}}">
+      <!-- 时间分隔 -->
+      <view wx:if="{{item.showTime}}" class="msg-time">{{item.timeText}}</view>
+
+      <view class="msg-line">
+        <!-- 商家头像（对方消息在左侧） -->
+        <view wx:if="{{!item.self}}" class="msg-avatar-wrap">
+          <image wx:if="{{merchantAvatar}}" class="msg-avatar" src="{{merchantAvatar}}" mode="aspectFill" />
+          <view wx:else class="msg-avatar msg-avatar-default">{{avatarChar}}</view>
+        </view>
+
+        <view class="bubble {{item.self ? 'bubble-self' : 'bubble-other'}}">{{item.content}}</view>
+      </view>
+    </view>
+
+    <view id="chat-bottom" style="height: 20rpx;"></view>
+  </scroll-view>
+
+  <!-- 底部输入栏 -->
+  <view class="chat-input-bar" style="padding-bottom: {{safeBottom}}px;">
+    <input
+      class="chat-input"
+      value="{{input}}"
+      placeholder="输入消息..."
+      confirm-type="send"
+      confirm-hold
+      bindinput="onInput"
+      bindconfirm="onSend"
+      adjust-position="{{true}}"
+      cursor-spacing="16"
+    />
+    <view class="chat-send {{canSend ? 'chat-send-active' : ''}}" bindtap="onSend">发送</view>
+  </view>
+</view>

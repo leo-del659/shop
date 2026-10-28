@@ -1,0 +1,8 @@
+<view
+  class="m-avatar {{bordered ? 'm-avatar--bordered' : ''}}"
+  style="width: {{size}}rpx; height: {{size}}rpx;"
+  aria-label="商户头像"
+>
+  <image wx:if="{{src && !imgErr}}" class="m-avatar-img" src="{{src}}" mode="aspectFill" binderror="onImgError" />
+  <text wx:else class="m-avatar-text" style="font-size: {{size * 0.4}}rpx;">{{text}}</text>
+</view>

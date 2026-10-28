@@ -18,9 +18,13 @@ namespace ECommerce.Infrastructure.EFCore
         /// </summary>
         public string? SpecId { get; set; }
         /// <summary>
-        /// SKU名称
+        /// SKU名称（规格值文本，如：500g/盒）
         /// </summary>
         public string? SkuName { get; set; }
+        /// <summary>
+        /// SKU编码（商家自定义货号）
+        /// </summary>
+        public string? SkuCode { get; set; }
         /// <summary>
         /// SKU价格
         /// </summary>
@@ -29,6 +33,10 @@ namespace ECommerce.Infrastructure.EFCore
         /// SKU库存
         /// </summary>
         public int Stock { get; set; }
+        /// <summary>
+        /// 排序
+        /// </summary>
+        public int Sort { get; set; }
         public DateTime? CreateTime { get; set; }
     }
 }

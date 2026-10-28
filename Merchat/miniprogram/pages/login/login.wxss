@@ -1,15 +1,17 @@
-/* 页面：浅色背景，与用户端登录页统一 */
+/* 登录页：蓝白玻璃风 —— 整页蓝渐变 + 毛玻璃卡片 */
 page {
-  background: var(--bg);
+  background: transparent;
 }
 
 .login {
   min-height: 100vh;
   padding-bottom: 80rpx;
   box-sizing: border-box;
+  /* 整页蓝渐变，毛玻璃卡片透出蓝调 */
+  background: linear-gradient(180deg, #2f5fcf 0%, #4f82e8 42%, #bcd2f7 72%, #eaf1fd 100%);
 }
 
-/* 顶部品牌区 */
+/* 顶部品牌区（去掉独立蓝底，由页面渐变承载；保留白色光环装饰） */
 .header {
   position: relative;
   padding: 80rpx 40rpx 120rpx;
@@ -21,13 +23,12 @@ page {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(180deg, #3b6fe0 0%, #5b8def 100%);
-  border-radius: 0 0 80rpx 80rpx;
+  background: transparent;
 }
 .decor {
   position: absolute;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.10);
 }
 .decor-1 {
   width: 320rpx;
@@ -60,23 +61,26 @@ page {
   font-weight: 800;
   color: #fff;
   letter-spacing: 4rpx;
-  text-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+  text-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.12);
 }
 .logo-sub {
   font-size: 26rpx;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.88);
   letter-spacing: 2rpx;
 }
 
-/* 登录卡片 */
+/* 登录卡片：毛玻璃面板（半透明白 + 模糊 + 高光描边） */
 .card {
   position: relative;
   z-index: 2;
   margin: -80rpx 40rpx 0;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.55);
+  -webkit-backdrop-filter: blur(24rpx);
+  backdrop-filter: blur(24rpx);
+  border: 1rpx solid rgba(255, 255, 255, 0.65);
   border-radius: 44rpx;
   padding: 48rpx 40rpx 56rpx;
-  box-shadow: 0 20rpx 60rpx rgba(0, 0, 0, 0.08);
+  box-shadow: 0 24rpx 60rpx rgba(43, 87, 190, 0.22);
 }
 .card-title {
   text-align: center;
@@ -86,15 +90,19 @@ page {
   margin-bottom: 40rpx;
 }
 
-/* 输入行：下划线风格 */
+/* 输入行：玻璃蓝下划线 */
 .input-group {
   margin-top: 16rpx;
 }
 .input-row {
   display: flex;
   align-items: center;
-  padding: 28rpx 0;
-  border-bottom: 1rpx solid var(--line);
+  padding: 28rpx 8rpx;
+  border-bottom: 1rpx solid rgba(59, 111, 224, 0.18);
+  transition: border-color 0.2s ease;
+}
+.input-row:focus-within {
+  border-bottom-color: var(--brand);
 }
 .input-icon {
   margin-right: 20rpx;
@@ -125,16 +133,16 @@ page {
   text-align: center;
 }
 
-/* 登录按钮：品牌蓝渐变 */
+/* 登录按钮：玻璃蓝（带高光描边 + 蓝调投影） */
 .login-btn {
   margin-top: 40rpx;
   height: 96rpx;
   line-height: 96rpx;
   background: linear-gradient(135deg, #3b6fe0 0%, #5b8def 100%) !important;
   color: #fff !important;
-  border: none !important;
+  border: 1rpx solid rgba(255, 255, 255, 0.35) !important;
   border-radius: 48rpx !important;
-  box-shadow: 0 16rpx 40rpx rgba(59, 111, 224, 0.28);
+  box-shadow: 0 16rpx 40rpx rgba(43, 87, 190, 0.32);
   font-size: 32rpx !important;
   font-weight: 600;
   letter-spacing: 4rpx;
@@ -143,7 +151,7 @@ page {
   border: none;
 }
 .login-btn:active {
-  opacity: 0.9;
+  opacity: 0.92;
   transform: translateY(2rpx);
 }
 .login-btn[disabled] {
@@ -159,8 +167,9 @@ page {
 }
 .register-link {
   font-size: 26rpx;
-  color: var(--brand);
+  color: var(--brand-dark);
   padding: 8rpx 16rpx;
+  font-weight: 500;
 }
 .register-link:active {
   opacity: 0.7;

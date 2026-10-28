@@ -3,9 +3,16 @@ import { addToCart, buildCartItem, getCartQuantity, incCartItem, decCartItem, sy
 import { resolveUrl } from '../../utils/request'
 import { requireLogin } from '../../app'
 import { camelCaseKeys } from '../../utils/util'
+import { scopedKey } from '../../utils/userScope'
+import { setCheckoutItems } from '../../utils/checkoutItems'
 
-const HISTORY_KEY = 'search_history'
+const HISTORY_KEY_BASE = 'search_history'
 const MAX_HISTORY = 10
+
+/** 搜索历史按登录账号隔离（key = search_history__<手机号>） */
+function historyKey(): string {
+  return scopedKey(HISTORY_KEY_BASE)
+}
 
 Page({
   data: {
@@ -34,7 +41,7 @@ Page({
   onShow() {
     this.loadHistory()
     // 进入搜索页时，把搜索栏预填为最近一次搜索词
-    const hist: string[] = this.data.historyList || wx.getStorageSync(HISTORY_KEY) || []
+    const hist: string[] = this.data.historyList || wx.getStorageSync(historyKey()) || []
     if (hist.length && !this.data.searching) {
       this.setData({ keyword: hist[0] })
     }
@@ -45,23 +52,23 @@ Page({
   /* ========== 搜索历史 ========== */
 
   loadHistory() {
-    const list: string[] = wx.getStorageSync(HISTORY_KEY) || []
+    const list: string[] = wx.getStorageSync(historyKey()) || []
     this.setData({ historyList: list })
   },
 
   saveHistory(kw: string) {
     const clean = kw.trim()
     if (!clean) return
-    let list: string[] = wx.getStorageSync(HISTORY_KEY) || []
+    let list: string[] = wx.getStorageSync(historyKey()) || []
     list = list.filter((item: string) => item !== clean)
     list.unshift(clean)
     if (list.length > MAX_HISTORY) list = list.slice(0, MAX_HISTORY)
-    wx.setStorageSync(HISTORY_KEY, list)
+    wx.setStorageSync(historyKey(), list)
     this.setData({ historyList: list })
   },
 
   clearHistory() {
-    wx.removeStorageSync(HISTORY_KEY)
+    wx.removeStorageSync(historyKey())
     this.setData({ historyList: [] })
     wx.showToast({ title: '已清空', icon: 'none' })
   },
@@ -269,7 +276,7 @@ Page({
       this.refreshQty()
       wx.showToast({ title: '已加入购物车', icon: 'success' })
     } else {
-      wx.setStorageSync('checkout_items', [item])
+      setCheckoutItems([item])
       this.setData({ showSku: false })
       wx.navigateTo({ url: '/pages/checkout/checkout' })
     }

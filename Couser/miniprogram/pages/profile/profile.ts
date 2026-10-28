@@ -1,6 +1,7 @@
 import { getClientProfile, updateClientProfile } from '../../api/auth'
 import { getAppToken, clearAppToken } from '../../app'
 import { uploadFile, resolveUrl } from '../../utils/request'
+import { clearCheckoutItems } from '../../utils/checkoutItems'
 
 interface ClientProfile {
   account: string
@@ -121,6 +122,8 @@ Page({
         if (!r.confirm) return
         clearAppToken()
         wx.removeStorageSync('loginMobile')
+        // 结算临时勾选项属于「上一位用户」的上下文，退出时清掉，避免下个账号误带入
+        clearCheckoutItems()
         this.setData({ logged: false, profile: { account: '', name: '', avatar: '' }, avatarUrl: '' })
         wx.showToast({ title: '已退出登录', icon: 'none' })
         // 回到上一页（个人中心）

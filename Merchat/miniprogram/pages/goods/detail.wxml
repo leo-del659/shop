@@ -18,6 +18,29 @@
     <view class="d-stock stock {{goods.stockClass}}">{{goods.stockLabel}} · 库存 {{goods.stock}} {{goods.unit}}</view>
   </view>
 
+  <!-- 商品规格（多规格明细） -->
+  <view class="card" wx:if="{{goods.skuRows && goods.skuRows.length}}">
+    <view class="d-top">
+      <view class="d-name">商品规格</view>
+      <text class="spec-count">{{goods.skuRows.length}} 个规格 · ¥{{goods.specPriceText}}</text>
+    </view>
+    <view class="spec-table">
+      <view class="spec-thead">
+        <text class="spec-th spec-th-name">{{goods.specGroupName}}</text>
+        <text class="spec-th">售价</text>
+        <text class="spec-th">库存</text>
+        <text class="spec-th spec-th-code">编码</text>
+      </view>
+      <view class="spec-trow" wx:for="{{goods.skuRows}}" wx:key="name">
+        <text class="spec-td spec-td-name">{{item.name}}</text>
+        <text class="spec-td">¥{{item.priceText}}</text>
+        <text class="spec-td {{item.stockCls}}">{{item.stockText}}</text>
+        <text class="spec-td spec-td-code">{{item.code || '—'}}</text>
+      </view>
+    </view>
+    <view class="spec-sum">商品库存 {{goods.stock}} {{goods.unit}}（各规格库存之和）</view>
+  </view>
+
   <view class="card info-card">
     <view class="info-row" wx:if="{{goods.merchant}}">
       <view class="info-label">所属商户</view>

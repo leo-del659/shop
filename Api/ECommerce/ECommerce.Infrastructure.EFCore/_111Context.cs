@@ -293,6 +293,16 @@ namespace ECommerce.Infrastructure.EFCore
                     .HasColumnName("sku_name")
                     .HasComment("SKU名称");
 
+                entity.Property(e => e.SkuCode)
+                    .HasMaxLength(64)
+                    .HasColumnName("sku_code")
+                    .HasComment("SKU编码");
+
+                entity.Property(e => e.Sort)
+                    .HasColumnName("sort")
+                    .HasDefaultValueSql("'0'")
+                    .HasComment("排序");
+
                 entity.Property(e => e.SpecId)
                     .HasMaxLength(50)
                     .HasColumnName("spec_id")
@@ -327,7 +337,12 @@ namespace ECommerce.Infrastructure.EFCore
                 entity.Property(e => e.SpecName)
                     .HasMaxLength(128)
                     .HasColumnName("spec_name")
-                    .HasComment("规格名称 如：500g/份");
+                    .HasComment("规格组名称 如：规格/重量/包装");
+
+                entity.Property(e => e.Sort)
+                    .HasColumnName("sort")
+                    .HasDefaultValueSql("'0'")
+                    .HasComment("排序");
             });
 
             modelBuilder.Entity<GoodsReview>(entity =>

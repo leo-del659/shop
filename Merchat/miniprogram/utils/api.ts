@@ -195,10 +195,21 @@ function adaptGoods(raw: any, orderIndex?: number): Goods {
           id: s.id != null ? String(s.id) : '',
           specId: s.specId != null ? String(s.specId) : undefined,
           skuName: s.skuName || s.sku_name || '',
+          skuCode: s.skuCode || s.sku_code || '',
           price: Number(s.price ?? 0),
           stock: Number(s.stock ?? 0),
         }))
       : undefined,
+    specs: Array.isArray(raw.specs)
+      ? raw.specs.map((s: any) => ({
+          id: s.id != null ? String(s.id) : '',
+          specName: s.specName || s.spec_name || '',
+          sort: Number(s.sort ?? 0),
+        }))
+      : undefined,
+    skuCount: Number(raw.skuCount ?? (Array.isArray(raw.skus) ? raw.skus.length : 0)),
+    priceMin: Number(raw.priceMin ?? raw.price ?? 0),
+    priceMax: Number(raw.priceMax ?? raw.salePrice ?? raw.price ?? 0),
   }
 }
 
@@ -230,6 +241,7 @@ function adaptOrder(raw: any): Order {
     merchantPhone: raw.merchantPhone || '',
     merchantAddress: raw.merchantAddress || '',
     merchantId: raw.merchantId || '',
+    clientId: raw.clientId || '',
     status,
     rawStatus: Number(raw.orderStatus ?? raw.order_status ?? 0),
     payStatus,
@@ -381,6 +393,26 @@ export interface AddGoodsPayload {
   coverImg: string
   isOnSale: number
   merchantId: string
+  /** 多规格：规格组 + 规格值（每个规格值独立价格/库存） */
+  specs?: GoodsSpecPayload[]
+}
+
+/** 提交给后端的商品规格（对应后端 MerchantGoodsSkuDto） */
+export interface GoodsSpecPayload {
+  /** 规格组名称，如「规格」「重量」 */
+  groupName: string
+  /** 规格值，如「500g/盒」 */
+  specName: string
+  price: number
+  stock: number
+  /** 商家货号（可选） */
+  code?: string
+}
+
+/** 查询商品规格（编辑多规格商品时回填） */
+export async function getGoodsSpecs(id: number | string): Promise<{ specs: any[]; skus: any[] }> {
+  const raw = await request<any>({ path: '/api/merchant/goods/' + id + '/specs', method: 'GET' })
+  return { specs: (raw && raw.specs) || [], skus: (raw && raw.skus) || [] }
 }
 
 export async function addGoods(data: AddGoodsPayload): Promise<Goods> {
@@ -672,3 +704,103 @@ export async function setDefaultAddress(id: string): Promise<{ ok: boolean }> {
   return request<{ ok: boolean }>({ path: '/api/Address/SetDefault', method: 'POST', data: { id } })
 }
 
+
+// ---------- 聊天消息（与用户端小程序互通，后端 /api/merchant/chat/*） ----------
+
+export interface ChatMessageItem {
+  id: string
+  clientId?: string
+  merchantId?: string
+  /** 发送方：1 买家 2 商户 */
+  senderType: number
+  content: string
+  /** yyyy-MM-dd HH:mm:ss */
+  createTime: string
+}
+
+export interface ChatPeer {
+  peerId: string
+  peerName: string
+  peerAvatar: string
+}
+
+export interface ChatConversation {
+  peerId: string
+  peerName: string
+  peerAvatar: string
+  lastContent: string
+  lastTime: string
+  unread: number
+}
+
+/** 会话列表：聊过的买家（含最后一条消息与未读数） */
+export async function getChatConversations(): Promise<ChatConversation[]> {
+  return request<ChatConversation[]>({ path: '/api/merchant/chat/conversations', method: 'GET' })
+}
+
+/**
+ * 拉取与某买家的消息（最近 50 条，升序返回）
+ * @param after 最后一条消息的 createTime，用于增量轮询
+ */
+export async function getChatMessages(clientId: string, after?: string, pageSize = 50): Promise<{ peer: ChatPeer; messages: ChatMessageItem[] }> {
+  const data: Record<string, unknown> = { pageSize }
+  if (after) data.after = after
+  return request<{ peer: ChatPeer; messages: ChatMessageItem[] }>({
+    path: '/api/merchant/chat/clients/' + clientId + '/messages',
+    method: 'GET',
+    data,
+  })
+}
+
+/** 发送消息给买家 */
+export async function sendChatMessage(clientId: string, content: string): Promise<ChatMessageItem> {
+  return request<ChatMessageItem>({
+    path: '/api/merchant/chat/clients/' + clientId + '/messages',
+    method: 'POST',
+    data: { content },
+  })
+}
+
+// ---------- 商户通知（库存预警等系统消息，后端 /api/merchant/notices） ----------
+
+export interface MerchantNoticeItem {
+  id: string
+  /** 通知类型：1 库存预警 2 订单提醒 3 其他 */
+  noticeType: number
+  /** 类型文案 */
+  typeText: string
+  title: string
+  content: string
+  /** 关联商品ID */
+  relatedId: string
+  /** 预警时的库存 */
+  stock: number
+  /** 0 未读 1 已读 */
+  isRead: number
+  /** yyyy-MM-dd HH:mm:ss */
+  createTime: string
+}
+
+/**
+ * 通知列表（进入消息中心时调用）
+ * 后端会先扫描该商户在售商品，把低库存商品自动生成库存预警，再返回列表。
+ */
+export async function getMerchantNotices(): Promise<{ notices: MerchantNoticeItem[]; unread: number }> {
+  return request<{ notices: MerchantNoticeItem[]; unread: number }>({
+    path: '/api/merchant/notices',
+    method: 'GET',
+  })
+}
+
+/** 全部标记已读 */
+export async function readMerchantNotices(): Promise<{ updated: number }> {
+  return request<{ updated: number }>({ path: '/api/merchant/notices/read', method: 'POST' })
+}
+
+/** 未读数汇总（首页消息按钮红点）：聊天未读 + 通知未读 */
+export async function getUnreadCount(): Promise<{ chat: number; notice: number; total: number }> {
+  return request<{ chat: number; notice: number; total: number }>({
+    path: '/api/merchant/chat/unread',
+    method: 'GET',
+  })
+}

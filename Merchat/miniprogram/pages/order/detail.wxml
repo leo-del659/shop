@@ -91,6 +91,7 @@
 
   <!-- 底部操作栏 -->
   <view class="action-bar">
+    <view wx:if="{{bill.clientId}}" class="action-btn btn-outline" style="flex:1;" bindtap="goChat">联系买家</view>
     <block wx:if="{{bill.canAccept}}">
       <view class="action-btn btn-outline" style="flex:1;" bindtap="goBack">返回</view>
       <view class="action-btn btn-reject" style="flex:1;" catchtap="action" data-op="reject" data-id="{{bill.id}}">拒单</view>

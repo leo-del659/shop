@@ -2,6 +2,7 @@ import { getCart, updateCart, CartItem, syncCartBadge } from '../../utils/cart'
 import { getGoodsList, GoodsItem } from '../../api/shop'
 import { resolveUrl } from '../../utils/request'
 import { requireLogin } from '../../app'
+import { setCheckoutItems } from '../../utils/checkoutItems'
 
 Page({
   data: {
@@ -66,7 +67,7 @@ Page({
       return
     }
     if (!requireLogin()) return
-    wx.setStorageSync('checkout_items', this.data.items)
+    setCheckoutItems(this.data.items)
     wx.navigateTo({ url: '/pages/checkout/checkout' })
   },
 

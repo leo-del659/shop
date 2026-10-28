@@ -4,6 +4,10 @@ import { Merchant } from './types'
 const TOKEN_KEY = 'auth_token'
 const MERCHANT_KEY = 'merchant_info'
 
+/** 地址页之间传递选中地址用的临时 key（切换商户后必须清理，否则会把上个商户的地址带过来） */
+const PICK_ADDRESS_KEY = '__gys_pick_address'
+const PICK_ADDRESS_RETURN_KEY = '__gys_pick_address_return'
+
 export type Role = 'merchant'
 
 export function getToken(): string {
@@ -17,6 +21,9 @@ export function setToken(t: string): void {
 export function clearAuth(): void {
   wx.removeStorageSync(TOKEN_KEY)
   wx.removeStorageSync(MERCHANT_KEY)
+  // 清理跨页面的地址传参残留
+  wx.removeStorageSync(PICK_ADDRESS_KEY)
+  wx.removeStorageSync(PICK_ADDRESS_RETURN_KEY)
 }
 
 export function isLogin(): boolean {
@@ -41,6 +48,9 @@ export async function accountLogin(
   })
   setToken(res.token)
   if (res.merchant) setLocalMerchant(res.merchant)
+  // 切换商户时清理上个商户遗留的地址传参
+  wx.removeStorageSync(PICK_ADDRESS_KEY)
+  wx.removeStorageSync(PICK_ADDRESS_RETURN_KEY)
   return res
 }
 

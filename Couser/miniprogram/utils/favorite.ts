@@ -1,4 +1,6 @@
 // 本地收藏（storage 持久化）
+// 按登录账号隔离（key = favorites__<手机号>），避免换号后看到上一个账号的收藏
+import { scopedKey } from './userScope'
 
 export interface FavoriteItem {
   goodsId: string
@@ -8,14 +10,18 @@ export interface FavoriteItem {
   createTime: number
 }
 
-const KEY = 'favorites'
+const KEY_BASE = 'favorites'
+
+function key(): string {
+  return scopedKey(KEY_BASE)
+}
 
 export function getFavorites(): FavoriteItem[] {
-  return wx.getStorageSync(KEY) || []
+  return wx.getStorageSync(key()) || []
 }
 
 export function saveFavorites(list: FavoriteItem[]) {
-  wx.setStorageSync(KEY, list)
+  wx.setStorageSync(key(), list)
 }
 
 /** 是否已收藏 */

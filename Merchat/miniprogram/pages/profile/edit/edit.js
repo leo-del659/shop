@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const api_1 = require("../../../utils/api");
 const request_1 = require("../../../utils/request");
 const util_1 = require("../../../utils/util");
+const auth_1 = require("../../../utils/auth");
 Page({
     data: {
         saving: false,
@@ -81,6 +82,15 @@ Page({
         this.setData({ saving: true, saveBtnText: '保存中...' });
         try {
             await (0, api_1.updateProfile)({ merchantName, avatar: this.data.avatarFile || '' });
+            // 同步本地缓存：避免依赖缓存的页面仍显示旧头像/旧名称
+            const local = (0, auth_1.getLocalMerchant)();
+            if (local) {
+                (0, auth_1.setLocalMerchant)({
+                    ...local,
+                    merchantName,
+                    avatar: this.data.avatarFile || local.avatar,
+                });
+            }
             (0, util_1.toast)('保存成功');
             setTimeout(() => wx.navigateBack(), 600);
         }

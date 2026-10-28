@@ -252,6 +252,22 @@ Page({
     })
   },
 
+  /** 联系商家：跳转到商品所属商户的聊天界面 */
+  onContactMerchant() {
+    const order = this.data.order
+    if (!order) return
+    const merchantId = order.merchantId || order.sellerMerchantId
+    if (!merchantId) {
+      wx.showToast({ title: '未找到所属商家', icon: 'none' })
+      return
+    }
+    const params = [
+      'merchantId=' + merchantId,
+      'name=' + encodeURIComponent(order.merchantName || '')
+    ].join('&')
+    wx.navigateTo({ url: '/pages/chat/chat?' + params })
+  },
+
   /** 删除订单：二次确认后逻辑删除并退出详情页 */
   onDelete() {
     wx.showModal({

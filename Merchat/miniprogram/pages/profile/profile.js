@@ -7,7 +7,6 @@ const request_1 = require("../../utils/request");
 Page({
     data: {
         displayName: '',
-        subLine: '',
         phone: '',
         address: '',
         avatarText: '',
@@ -32,7 +31,6 @@ Page({
         const s = d.merchant;
         this.setData({
             displayName: s.merchantName,
-            subLine: s.merchantNo || s.id || '',
             phone: s.account ? String(s.account).replace(/^(\d{3})\d{4}(\d{4})$/, '$1****$2') : (s.phone ? String(s.phone).replace(/^(\d{3})\d{4}(\d{4})$/, '$1****$2') : ''),
             address: s.address || '',
             avatarText: (s.merchantName || '商').charAt(0),
@@ -64,12 +62,9 @@ Page({
     goDashboard() {
         wx.switchTab({ url: '/pages/home/home' });
     },
-    onEditProfile() {
-        wx.navigateTo({ url: '/pages/profile/edit/edit' });
-    },
     onMenu(e) {
         const urls = {
-            address: '/pages/profile/address/list',
+            profile: '/pages/profile/edit/edit',
             security: '/pages/profile/security/security',
             bind: '/pages/profile/bind/bind',
             qualification: '/pages/profile/qualification/qualification',

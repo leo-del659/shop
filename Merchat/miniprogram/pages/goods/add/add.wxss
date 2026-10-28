@@ -1,15 +1,18 @@
 .add-page {
   min-height: 100vh;
-  background: var(--bg);
+  background: var(--page-bg);
   padding-bottom: calc(140rpx + env(safe-area-inset-bottom));
 }
 
 .form-card {
-  margin: -60rpx 24rpx 24rpx;
-  background: #fff;
+  /* 毛玻璃表单卡：半透明白 + 模糊 + 高光描边 */
+  margin: 24rpx;
+  background: rgba(255, 255, 255, 0.72);
+  -webkit-backdrop-filter: blur(20rpx);
+  backdrop-filter: blur(20rpx);
   border-radius: 28rpx;
-  border: 1rpx solid var(--line);
-  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.04);
+  border: 1rpx solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 8rpx 30rpx rgba(43, 87, 190, 0.10);
   padding: 0 28rpx;
   position: relative;
   z-index: 2;
@@ -43,6 +46,265 @@
 }
 .input::placeholder {
   color: var(--muted);
+}
+.input-readonly {
+  color: var(--muted);
+  font-size: 26rpx;
+  text-align: right;
+}
+
+/* ============ 商品规格（多规格） ============ */
+.spec-block {
+  padding: 28rpx 0;
+  border-bottom: 1rpx solid var(--line);
+}
+.spec-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+.spec-head-hover {
+  opacity: 0.7;
+}
+.spec-head-left {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+.spec-head-title {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: var(--text);
+}
+.spec-head-sub {
+  font-size: 22rpx;
+  color: var(--muted);
+}
+.spec-switch {
+  flex-shrink: 0;
+  padding: 10rpx 24rpx;
+  font-size: 24rpx;
+  color: var(--brand);
+  background: var(--brand-light);
+  border-radius: 28rpx;
+}
+.spec-switch.on {
+  color: var(--muted);
+  background: var(--surface-variant);
+}
+.spec-body {
+  margin-top: 24rpx;
+  padding: 24rpx;
+  background: rgba(235, 241, 253, 0.7);
+  border: 1rpx solid rgba(255, 255, 255, 0.6);
+  border-radius: 16rpx;
+}
+.spec-field {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+}
+.spec-field-label {
+  width: 120rpx;
+  flex-shrink: 0;
+  font-size: 26rpx;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.spec-field-input {
+  flex: 1;
+  height: 64rpx;
+  padding: 0 20rpx;
+  font-size: 26rpx;
+  background: #fff;
+  border-radius: 12rpx;
+  border: 1rpx solid var(--line);
+}
+.spec-values {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+.spec-chip {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  padding: 10rpx 16rpx;
+  font-size: 24rpx;
+  color: var(--brand-dark);
+  background: var(--brand-light);
+  border-radius: 10rpx;
+}
+.spec-chip-text {
+  max-width: 260rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.spec-chip-x {
+  font-size: 22rpx;
+  color: #9aa3af;
+  padding: 0 4rpx;
+}
+.spec-empty {
+  font-size: 24rpx;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.spec-add-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 20rpx;
+}
+.spec-add-input {
+  flex: 1;
+  height: 64rpx;
+  padding: 0 20rpx;
+  font-size: 26rpx;
+  background: #fff;
+  border-radius: 12rpx;
+  border: 1rpx solid var(--line);
+}
+.spec-add-btn {
+  flex-shrink: 0;
+  padding: 0 26rpx;
+  height: 64rpx;
+  line-height: 64rpx;
+  font-size: 26rpx;
+  color: #fff;
+  background: var(--brand);
+  border-radius: 12rpx;
+}
+
+/* 规格表 */
+.sku-table {
+  background: #fff;
+  border-radius: 12rpx;
+  overflow: hidden;
+  border: 1rpx solid var(--line);
+}
+.sku-thead,
+.sku-trow {
+  display: flex;
+  align-items: center;
+}
+.sku-thead {
+  background: #fafbfc;
+  padding: 16rpx 16rpx;
+  border-bottom: 1rpx solid var(--line);
+}
+.sku-th {
+  flex: 1;
+  font-size: 22rpx;
+  color: var(--muted);
+  text-align: center;
+}
+.sku-th-name {
+  flex: 1.4;
+  text-align: left;
+}
+.sku-th-code {
+  flex: 0.9;
+}
+.sku-trow {
+  padding: 12rpx 16rpx;
+  border-bottom: 1rpx solid var(--line);
+}
+.sku-trow:last-child {
+  border-bottom: none;
+}
+.sku-td {
+  flex: 1;
+  font-size: 25rpx;
+  color: var(--text);
+  text-align: center;
+}
+.sku-td-name {
+  flex: 1.4;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sku-td-input {
+  flex: 1;
+  height: 56rpx;
+  margin: 0 6rpx;
+  padding: 0 10rpx;
+  font-size: 25rpx;
+  text-align: center;
+  background: var(--surface-variant);
+  border-radius: 10rpx;
+}
+.sku-td-input-code {
+  flex: 0.9;
+  font-size: 22rpx;
+}
+.sku-batch-btn {
+  padding: 18rpx 0;
+  text-align: center;
+  font-size: 24rpx;
+  color: var(--brand);
+  background: #fafbfc;
+}
+
+/* 批量设置面板 */
+.batch-panel {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-top: 20rpx;
+  padding: 20rpx;
+  background: #fff;
+  border-radius: 12rpx;
+  border: 1rpx solid var(--line);
+}
+.batch-input {
+  flex: 1;
+  min-width: 180rpx;
+  height: 60rpx;
+  padding: 0 18rpx;
+  font-size: 25rpx;
+  background: var(--surface-variant);
+  border-radius: 10rpx;
+}
+.batch-apply {
+  padding: 0 26rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+  font-size: 25rpx;
+  color: #fff;
+  background: var(--brand);
+  border-radius: 10rpx;
+}
+.batch-cancel {
+  padding: 0 20rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+  font-size: 25rpx;
+  color: var(--muted);
+}
+
+.spec-tip {
+  margin-top: 18rpx;
+  font-size: 22rpx;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.spec-clear {
+  margin-top: 16rpx;
+  text-align: center;
+  font-size: 24rpx;
+  color: var(--danger);
+  padding: 12rpx 0;
 }
 .picker {
   flex: 1;
@@ -144,8 +406,12 @@
   right: 0;
   padding: 16rpx 24rpx 40rpx;
   padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
-  background: #fff;
-  box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.05);
+  /* 玻璃悬浮操作栏 */
+  background: rgba(255, 255, 255, 0.72);
+  border-top: 1rpx solid rgba(255, 255, 255, 0.7);
+  -webkit-backdrop-filter: blur(20rpx);
+  backdrop-filter: blur(20rpx);
+  box-shadow: 0 -6rpx 26rpx rgba(43, 87, 190, 0.10);
   z-index: 50;
 }
 .save-btn {
@@ -156,6 +422,8 @@
   border-radius: 30rpx;
   font-size: 30rpx;
   font-weight: 600;
+  border: 1rpx solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 12rpx 30rpx rgba(43, 87, 190, 0.28);
 }
 .save-btn.disabled {
   opacity: 0.6;

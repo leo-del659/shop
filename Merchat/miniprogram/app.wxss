@@ -29,6 +29,10 @@ page {
   /* 弱化品牌色 */
   --brand-soft: rgba(59, 111, 224, 0.3);
   --surface-variant: #f7f8fa;
+
+  /* 蓝白玻璃风页面背景：顶部浅蓝渐变，向下过渡到近白，衬出白色卡片 */
+  --page-bg: linear-gradient(180deg, #e9f0fd 0%, #f2f7fe 42%, #f7faff 100%);
+
   background: var(--bg);
   color: var(--text);
   font-size: 28rpx;
@@ -211,3 +215,14 @@ page {
   border-radius: 30rpx;
 }
 .filter-tab.active { color: #fff; background: var(--brand); font-weight: 600; }
+
+
+/* =========================================================
+ * 性能约定（全局生效，配合 lazyCodeLoading）
+ * 1) 长列表 item 用轻量半透明白（不叠加 backdrop-filter），避免滚动掉帧
+ * 2) 图片统一 lazy-load + 占位灰底，减少首屏阻塞
+ * 3) 固定/悬浮元素才使用 backdrop-filter（毛玻璃），数量少、开销可控
+ * ========================================================= */
+.img-ph {
+  background: linear-gradient(135deg, var(--surface-variant), var(--line));
+}

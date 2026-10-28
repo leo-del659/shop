@@ -12,6 +12,8 @@
     "pages/order-detail/order-detail",
     "pages/review/review",
     "pages/mine/mine",
+    "pages/message/message",
+    "pages/chat/chat",
     "pages/address/address",
     "pages/profile/profile",
     "pages/refund-apply/refund-apply",

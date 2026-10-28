@@ -30,6 +30,8 @@ namespace ECommerce.Service.Interface
         Api_Response GetGoodsDetail(string merchantId, string id);
         Api_Response AddGoods(string merchantId, MerchantGoodsSaveDto dto);
         Api_Response UpdateGoods(string merchantId, string id, MerchantGoodsSaveDto dto);
+        /// <summary>查询商品规格（规格组 + SKU 明细），供商户端编辑多规格商品</summary>
+        Api_Response GetGoodsSpecs(string merchantId, string goodsId);
         Api_Response ToggleGoods(string merchantId, string id);
         Api_Response RestockGoods(string merchantId, string id, int qty);
 

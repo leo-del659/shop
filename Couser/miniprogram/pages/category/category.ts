@@ -4,6 +4,7 @@ import { resolveCategoryTree, DisplayCategory, normalizeDisplayCategories } from
 import { requireLogin } from '../../app'
 import { camelCaseKeys } from '../../utils/util'
 import { resolveUrl } from '../../utils/request'
+import { setCheckoutItems } from '../../utils/checkoutItems'
 
 Page({
   data: {
@@ -168,7 +169,7 @@ Page({
       skuName,
       specName: ''
     }
-    wx.setStorageSync('checkout_items', [item])
+    setCheckoutItems([item])
     this.setData({ showSku: false })
     wx.navigateTo({ url: '/pages/checkout/checkout' })
   },

@@ -1,0 +1,114 @@
+.msg-page {
+  min-height: 100vh;
+  background: #f6f7f9;
+  padding-bottom: 40rpx;
+}
+
+/* 会话项 */
+.conv-item {
+  display: flex;
+  align-items: center;
+  gap: 22rpx;
+  padding: 26rpx 30rpx;
+  background: #fff;
+  border-bottom: 1rpx solid #f2f3f5;
+}
+.conv-item:first-child {
+  border-top: 1rpx solid #f2f3f5;
+}
+.conv-hover {
+  background: #f7f8fa;
+}
+.conv-avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+.conv-avatar {
+  display: block;
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  background: #f2f3f5;
+  overflow: hidden;
+}
+.conv-avatar-default {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #07c160;
+  background: #e8f8ee;
+}
+/* 未读角标 */
+.conv-badge {
+  position: absolute;
+  top: -6rpx;
+  right: -6rpx;
+  min-width: 34rpx;
+  height: 34rpx;
+  line-height: 34rpx;
+  padding: 0 8rpx;
+  background: #fa3534;
+  color: #fff;
+  font-size: 20rpx;
+  text-align: center;
+  border-radius: 18rpx;
+  box-sizing: border-box;
+}
+.conv-body {
+  flex: 1;
+  min-width: 0;
+}
+.conv-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+.conv-name {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #1a1a1a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.conv-time {
+  flex-shrink: 0;
+  font-size: 22rpx;
+  color: #b0b3b8;
+}
+.conv-bottom {
+  margin-top: 10rpx;
+}
+.conv-last {
+  display: block;
+  font-size: 26rpx;
+  color: #909499;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 空状态 */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 220rpx;
+}
+.empty-icon {
+  font-size: 96rpx;
+  opacity: 0.5;
+}
+.empty-text {
+  margin-top: 24rpx;
+  font-size: 30rpx;
+  color: #666;
+}
+.empty-sub {
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  color: #b0b3b8;
+}

@@ -182,7 +182,8 @@ Page({
       success: (res) => {
         if (res.confirm) {
           // 原行为仅保留死代码，wxml 不再触发
-          // wx.removeStorageSync('favorites')
+          // 清空全部收藏（收藏已按账号隔离，见 utils/favorite.ts）
+          // wx.removeStorageSync(scopedKey('favorites'))
           this.load()
           wx.showToast({ title: '已清空', icon: 'none' })
         }

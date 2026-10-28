@@ -1,6 +1,7 @@
 import { getProfile, updateProfile } from '../../../utils/api'
 import { uploadFile, resolveUrl } from '../../../utils/request'
 import { toast } from '../../../utils/util'
+import { getLocalMerchant, setLocalMerchant } from '../../../utils/auth'
 
 Page({
   data: {
@@ -75,6 +76,15 @@ Page({
     this.setData({ saving: true, saveBtnText: '保存中...' })
     try {
       await updateProfile({ merchantName, avatar: this.data.avatarFile || '' })
+      // 同步本地缓存：避免依赖缓存的页面仍显示旧头像/旧名称
+      const local = getLocalMerchant()
+      if (local) {
+        setLocalMerchant({
+          ...local,
+          merchantName,
+          avatar: this.data.avatarFile || local.avatar,
+        })
+      }
       toast('保存成功')
       setTimeout(() => wx.navigateBack(), 600)
     } catch (err: any) {

@@ -57,6 +57,21 @@ export interface Goods {
   images?: GoodsImage[]
   /** 真实规格 SKU 列表（数据库 goods_sku 表） */
   skus?: GoodsSku[]
+  /** 规格组（数据库 goods_spec 表），如「重量」 */
+  specs?: GoodsSpec[]
+  /** SKU 数量（>1 表示多规格商品） */
+  skuCount?: number
+  /** 多规格最低价（列表展示价格区间用） */
+  priceMin?: number
+  /** 多规格最高价 */
+  priceMax?: number
+}
+
+/** 商品规格组（对应数据库 goods_spec 表） */
+export interface GoodsSpec {
+  id: string
+  specName?: string
+  sort?: number
 }
 
 /** 商品规格 SKU（对应数据库 goods_sku 表） */
@@ -64,6 +79,8 @@ export interface GoodsSku {
   id: string
   specId?: string
   skuName?: string
+  /** 商家自定义货号 */
+  skuCode?: string
   price: number
   stock: number
 }
@@ -95,6 +112,7 @@ export interface Order {
   merchantPhone?: string
   merchantAddress?: string
   merchantId?: string     // 订单所属商户 id（跨商户列表用于判断操作权限）
+  clientId?: string       // 买家用户ID（sys_users.u_id，联系买家聊天用）
   status: OrderStatus
   rawStatus?: number     // 后端原始 order_status 数值（区分 shipping 子状态 2/3）
   payStatus: PayStatus

@@ -111,17 +111,20 @@ namespace ECommerce.Service.Instance
             var good = _good_EFCore.Find(id);
             if (good == null) return Task.FromResult(Fail("商品不存在"));
             var skus = _sku_EFCore.Query(s => s.GoodsId == id).ToList();
-            // 规格表 goods_spec 未创建：规格由 goods_sku 合成（spec_id 作为规格 id，sku_name 作为规格名）
-            var specs = skus
-                .Where(s => !string.IsNullOrEmpty(s.SpecId))
-                .GroupBy(s => s.SpecId)
-                .Select(g => new GoodsSpec
-                {
-                    Id = g.Key,
-                    GoodsId = id,
-                    SpecName = g.First().SkuName
-                })
-                .ToList();
+            // 规格组：优先取 goods_spec（商户端维护的规格组）；老数据回退为「按 sku.spec_id 合成」
+            var specRows = _db.GoodsSpecs.Where(s => s.GoodsId == id).OrderBy(s => s.Sort).ToList();
+            var specs = specRows.Count > 0
+                ? specRows
+                : skus
+                    .Where(s => !string.IsNullOrEmpty(s.SpecId))
+                    .GroupBy(s => s.SpecId)
+                    .Select(g => new GoodsSpec
+                    {
+                        Id = g.Key,
+                        GoodsId = id,
+                        SpecName = g.First().SkuName
+                    })
+                    .ToList();
             var merchant = _merchantGoods_EFCore.Query(sg => sg.GoodsId == id).FirstOrDefault();
             var merchantName = merchant?.MerchantId != null
                 ? _db.Merchants.FirstOrDefault(s => s.Id == merchant.MerchantId)?.MerchantName
@@ -160,7 +163,7 @@ namespace ECommerce.Service.Instance
                 foreach (var sku in dto.skus)
                 {
                     var specId = Config.NewSequentialGuid();
-                    // 规格只落 goods_sku（goods_spec 表未创建，读取时由 sku 合成）
+                    // 为每个 SKU 生成独立 SpecId；规格组名由商户端维护于 goods_spec 表，读取时若该表为空则按 SpecId 合成
                     _sku_EFCore.Add(new GoodsSku
                     {
                         Id = Config.NewSequentialGuid(),
@@ -213,7 +216,7 @@ namespace ECommerce.Service.Instance
                 foreach (var sku in dto.skus)
                 {
                     var specId = Config.NewSequentialGuid();
-                    // 规格只落 goods_sku（goods_spec 表未创建，读取时由 sku 合成）
+                    // 为每个 SKU 生成独立 SpecId；规格组名由商户端维护于 goods_spec 表，读取时若该表为空则按 SpecId 合成
                     _sku_EFCore.Add(new GoodsSku
                     {
                         Id = Config.NewSequentialGuid(),

@@ -1,0 +1,58 @@
+<view class="msg-page">
+  <!-- 库存预警：与买家会话同级的聊天入口，点击进入聊天气泡界面查看全部预警 -->
+  <view
+    wx:if="{{notices.length}}"
+    class="conv-item conv-item-notice"
+    bindtap="onNoticeTap"
+    hover-class="conv-hover"
+  >
+    <view class="conv-avatar-wrap">
+      <view class="conv-avatar conv-avatar-system">📢</view>
+      <view wx:if="{{noticeUnread > 0}}" class="conv-badge">{{noticeUnread > 99 ? '99+' : noticeUnread}}</view>
+    </view>
+    <view class="conv-body">
+      <view class="conv-top">
+        <text class="conv-name">库存预警</text>
+        <text class="conv-time">{{noticeTimeText}}</text>
+      </view>
+      <view class="conv-bottom">
+        <text class="conv-last">{{noticePreview}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 会话列表：聊过的买家 -->
+  <view wx:if="{{conversations.length}}">
+    <view
+      wx:for="{{conversations}}"
+      wx:key="peerId"
+      class="conv-item"
+      data-item="{{item}}"
+      bindtap="onEnterChat"
+      hover-class="conv-hover"
+    >
+      <!-- 买家头像（无头像回退名称首字） -->
+      <view class="conv-avatar-wrap">
+        <image wx:if="{{item.avatar}}" class="conv-avatar" src="{{item.avatar}}" mode="aspectFill" />
+        <view wx:else class="conv-avatar conv-avatar-default">{{item.peerName[0] || '买'}}</view>
+        <view wx:if="{{item.unread > 0}}" class="conv-badge">{{item.unread > 99 ? '99+' : item.unread}}</view>
+      </view>
+      <view class="conv-body">
+        <view class="conv-top">
+          <text class="conv-name">{{item.peerName}}</text>
+          <text class="conv-time">{{item.lastTimeText}}</text>
+        </view>
+        <view class="conv-bottom">
+          <text class="conv-last">{{item.lastContent || '暂无消息'}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:if="{{!conversations.length && !notices.length}}" class="empty">
+    <view class="empty-icon">💬</view>
+    <view class="empty-text">暂无消息</view>
+    <view class="empty-sub">买家联系你后会显示在这里</view>
+  </view>
+</view>

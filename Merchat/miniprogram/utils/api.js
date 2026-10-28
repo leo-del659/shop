@@ -9,6 +9,7 @@ exports.getGoodsDetail = getGoodsDetail;
 exports.toggleGoodsStatus = toggleGoodsStatus;
 exports.restockGoods = restockGoods;
 exports.updateGoods = updateGoods;
+exports.getGoodsSpecs = getGoodsSpecs;
 exports.addGoods = addGoods;
 exports.getOrderList = getOrderList;
 exports.getBillList = getBillList;
@@ -32,6 +33,12 @@ exports.getAddress = getAddress;
 exports.saveAddress = saveAddress;
 exports.removeAddress = removeAddress;
 exports.setDefaultAddress = setDefaultAddress;
+exports.getChatConversations = getChatConversations;
+exports.getChatMessages = getChatMessages;
+exports.sendChatMessage = sendChatMessage;
+exports.getMerchantNotices = getMerchantNotices;
+exports.readMerchantNotices = readMerchantNotices;
+exports.getUnreadCount = getUnreadCount;
 const config_1 = require("./config");
 const request_1 = require("./request");
 const util_1 = require("./util");
@@ -205,10 +212,21 @@ function adaptGoods(raw, orderIndex) {
                 id: s.id != null ? String(s.id) : '',
                 specId: s.specId != null ? String(s.specId) : undefined,
                 skuName: s.skuName || s.sku_name || '',
+                skuCode: s.skuCode || s.sku_code || '',
                 price: Number(s.price ?? 0),
                 stock: Number(s.stock ?? 0),
             }))
             : undefined,
+        specs: Array.isArray(raw.specs)
+            ? raw.specs.map((s) => ({
+                id: s.id != null ? String(s.id) : '',
+                specName: s.specName || s.spec_name || '',
+                sort: Number(s.sort ?? 0),
+            }))
+            : undefined,
+        skuCount: Number(raw.skuCount ?? (Array.isArray(raw.skus) ? raw.skus.length : 0)),
+        priceMin: Number(raw.priceMin ?? raw.price ?? 0),
+        priceMax: Number(raw.priceMax ?? raw.salePrice ?? raw.price ?? 0),
     };
 }
 function adaptOrderItem(raw) {
@@ -238,6 +256,7 @@ function adaptOrder(raw) {
         merchantPhone: raw.merchantPhone || '',
         merchantAddress: raw.merchantAddress || '',
         merchantId: raw.merchantId || '',
+        clientId: raw.clientId || '',
         status,
         rawStatus: Number(raw.orderStatus ?? raw.order_status ?? 0),
         payStatus,
@@ -366,6 +385,11 @@ async function restockGoods(id, qty) {
 async function updateGoods(id, data) {
     const raw = await (0, request_1.request)({ path: '/api/merchant/goods/' + id, method: 'POST', data: data });
     return adaptGoods(raw);
+}
+/** 查询商品规格（编辑多规格商品时回填） */
+async function getGoodsSpecs(id) {
+    const raw = await (0, request_1.request)({ path: '/api/merchant/goods/' + id + '/specs', method: 'GET' });
+    return { specs: (raw && raw.specs) || [], skus: (raw && raw.skus) || [] };
 }
 async function addGoods(data) {
     const raw = await (0, request_1.request)({ path: '/api/merchant/goods', method: 'POST', data: data });
@@ -586,4 +610,51 @@ async function removeAddress(id) {
 }
 async function setDefaultAddress(id) {
     return (0, request_1.request)({ path: '/api/Address/SetDefault', method: 'POST', data: { id } });
+}
+/** 会话列表：聊过的买家（含最后一条消息与未读数） */
+async function getChatConversations() {
+    return (0, request_1.request)({ path: '/api/merchant/chat/conversations', method: 'GET' });
+}
+/**
+ * 拉取与某买家的消息（最近 50 条，升序返回）
+ * @param after 最后一条消息的 createTime，用于增量轮询
+ */
+async function getChatMessages(clientId, after, pageSize = 50) {
+    const data = { pageSize };
+    if (after)
+        data.after = after;
+    return (0, request_1.request)({
+        path: '/api/merchant/chat/clients/' + clientId + '/messages',
+        method: 'GET',
+        data,
+    });
+}
+/** 发送消息给买家 */
+async function sendChatMessage(clientId, content) {
+    return (0, request_1.request)({
+        path: '/api/merchant/chat/clients/' + clientId + '/messages',
+        method: 'POST',
+        data: { content },
+    });
+}
+/**
+ * 通知列表（进入消息中心时调用）
+ * 后端会先扫描该商户在售商品，把低库存商品自动生成库存预警，再返回列表。
+ */
+async function getMerchantNotices() {
+    return (0, request_1.request)({
+        path: '/api/merchant/notices',
+        method: 'GET',
+    });
+}
+/** 全部标记已读 */
+async function readMerchantNotices() {
+    return (0, request_1.request)({ path: '/api/merchant/notices/read', method: 'POST' });
+}
+/** 未读数汇总（首页消息按钮红点）：聊天未读 + 通知未读 */
+async function getUnreadCount() {
+    return (0, request_1.request)({
+        path: '/api/merchant/chat/unread',
+        method: 'GET',
+    });
 }

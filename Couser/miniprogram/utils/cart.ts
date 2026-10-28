@@ -1,5 +1,7 @@
 // 本地购物车（storage 持久化）
+// 按登录账号隔离（key = cart__<手机号>），避免换号后把上一个账号的购物车带过来
 import { GoodsItem } from '../api/shop'
+import { scopedKey } from './userScope'
 
 export interface CartItem {
   goodsId: string
@@ -14,7 +16,11 @@ export interface CartItem {
   stock?: number
 }
 
-const KEY = 'cart'
+const KEY_BASE = 'cart'
+
+function key(): string {
+  return scopedKey(KEY_BASE)
+}
 
 /**
  * 购物车「去重键」：商品 + 规格。
@@ -26,14 +32,14 @@ function sameCartLine(c: CartItem, goodsId: string, skuName = ''): boolean {
 }
 
 export function getCart(): CartItem[] {
-  return wx.getStorageSync(KEY) || []
+  return wx.getStorageSync(key()) || []
 }
 
 /** 购物车 tab 在 app.json tabBar.list 中的索引（0:首页 1:分类 2:购物车 3:我的） */
 const CART_TAB_INDEX = 2
 
 export function saveCart(list: CartItem[]) {
-  wx.setStorageSync(KEY, list)
+  wx.setStorageSync(key(), list)
   syncCartBadge()
 }
 

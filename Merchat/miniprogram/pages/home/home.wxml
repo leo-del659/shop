@@ -1,206 +1,144 @@
 <view class="home">
-  <!-- 商户信息页头 -->
-  <view class="hero">
-    <view class="hero-bg"></view>
+  <!-- 顶部浅蓝区域 -->
+  <view class="top-area">
+    <!-- 消息按钮：独立容器，绝对定位在胶囊正下方，与商户信息/经营数据完全隔离 -->
+    <view class="top-actions" style="top: {{actionsTop}}px; right: {{actionsRight}}px">
+      <view class="hero-action hero-action-msg" hover-class="hero-action-hover" bindtap="goChatList">
+        <image class="hero-action-img" src="/images/msg-icon.png" mode="aspectFit" />
+        <view class="hero-action-text">消息</view>
+        <view wx:if="{{unreadTotal > 0}}" class="hero-action-badge">{{unreadTotal > 99 ? '99+' : unreadTotal}}</view>
+      </view>
+    </view>
+
+    <!-- 商户信息 + 经营数据 -->
+    <view class="merchant-panel">
     <view class="hero-row">
-      <image wx:if="{{merchantAvatar}}" class="avatar-img" src="{{merchantAvatar}}" mode="aspectFill" />
-      <view wx:else class="avatar">{{avatarChar}}</view>
+      <merchant-avatar src="{{merchantAvatar}}" text="{{avatarChar}}" size="{{120}}" />
       <view class="hero-info">
-        <view class="hero-greeting">{{greeting}}</view>
-        <view class="hero-name">{{merchantName}}</view>
-        <view class="hero-chips">
-          <text wx:if="{{merchantLevel}}" class="chip chip-level">{{merchantLevel}}</text>
-          <text class="chip chip-status">{{shopStatus}}</text>
+          <view class="hero-name">{{merchantName}}</view>
+          <view class="hero-chips">
+            <text wx:if="{{merchantLevel}}" class="chip chip-level">{{merchantLevel}}</text>
+            <text class="chip chip-status">{{shopStatus}}</text>
+          </view>
         </view>
       </view>
-    </view>
-  </view>
 
-  <!-- 经营数据 + 资金账户 -->
-  <view class="card kpi-card" wx:if="{{!loading && !loadError}}">
-    <view class="kpi-grid">
-      <view class="kpi-item" hover-class="kpi-hover" bindtap="goOrders">
-        <view class="kpi-label">今日订单</view>
-        <view class="kpi-num">{{todayOrders}}</view>
-        <view class="kpi-sub">昨日 {{yesterdayOrders}}</view>
-      </view>
-      <view class="kpi-divider"></view>
-      <view class="kpi-item">
-        <view class="kpi-label">今日交易额</view>
-        <view class="kpi-num">¥{{todayRevenue}}</view>
-        <view class="kpi-sub">昨日 ¥{{yesterdayRevenue}}</view>
-      </view>
-      <view class="kpi-divider"></view>
-      <view class="kpi-item" hover-class="kpi-hover" bindtap="goOrders">
-        <view class="kpi-label">待处理</view>
-        <view class="kpi-num {{kpiPending > 0 ? 'warn' : ''}}">{{kpiPending}}</view>
-        <view class="kpi-sub">待接单订单</view>
-      </view>
-    </view>
-    <view class="divider-h"></view>
-    <view class="balance-row">
-      <view class="balance-info">
-        <view class="balance-label">可提现余额（元）</view>
-        <view class="balance-num">¥{{balanceAvailable}}</view>
-        <view class="balance-sub">累计结算 ¥{{balanceTotalPaid}} · 已提现 ¥{{balanceWithdrawn}}</view>
-      </view>
-    </view>
-  </view>
-
-  <!-- 加载骨架 -->
-  <view class="card kpi-card" wx:elif="{{loading}}">
-    <view class="kpi-grid">
-      <view class="kpi-item">
-        <view class="sk sk-label"></view>
-        <view class="sk sk-num"></view>
-      </view>
-      <view class="kpi-item">
-        <view class="sk sk-label"></view>
-        <view class="sk sk-num"></view>
-      </view>
-      <view class="kpi-item">
-        <view class="sk sk-label"></view>
-        <view class="sk sk-num"></view>
-      </view>
-    </view>
-    <view class="divider-h"></view>
-    <view class="balance-row">
-      <view class="balance-info">
-        <view class="sk sk-label"></view>
-        <view class="sk sk-num"></view>
-      </view>
-    </view>
-  </view>
-
-  <!-- 加载失败 -->
-  <view class="card error-card" wx:else>
-    <view class="error-text">{{loadError}}</view>
-    <view class="btn-retry" hover-class="btn-press" bindtap="onRetry">重新加载</view>
-  </view>
-
-  <!-- 动态通知：多条时纵向循环滚动 -->
-  <view class="notice-marquee" wx:if="{{notices.length > 0}}" bindtap="onMarqueeTap">
-    <text class="nm-icon">📢</text>
-    <view class="nm-viewport">
-      <view class="nm-text {{noticeAnim}}">{{notices[noticeIndex].title}}</view>
-    </view>
-    <text class="nm-count" wx:if="{{notices.length > 1}}">{{noticeIndex + 1}}/{{notices.length}}</text>
-  </view>
-
-  <!-- 待办行动条 -->
-  <view class="todo-banner" wx:if="{{kpiPending > 0}}">
-    <text class="todo-icon">🔔</text>
-    <view class="todo-text">您有 {{kpiPending}} 笔订单待接单</view>
-    <view class="todo-btn" hover-class="btn-press" bindtap="goOrders">去处理</view>
-  </view>
-
-  <!-- 快捷入口 -->
-  <view class="card entry-card">
-    <view class="entry-grid">
-      <view class="entry-item" hover-class="entry-hover" bindtap="goGoodsAdd">
-        <view class="entry-icon icon-brand">➕</view>
-        <view class="entry-text">发布商品</view>
-      </view>
-      <view class="entry-item" hover-class="entry-hover" bindtap="goOrders">
-        <view class="entry-icon icon-blue">📋</view>
-        <view class="entry-text">订单管理</view>
-      </view>
-      <view class="entry-item" hover-class="entry-hover" bindtap="goGoods">
-        <view class="entry-icon icon-brand">📦</view>
-        <view class="entry-text">商品管理</view>
-      </view>
-      <view class="entry-item" hover-class="entry-hover" bindtap="goReconcile">
-        <view class="entry-icon icon-gold">💰</view>
-        <view class="entry-text">对账</view>
-      </view>
-      <view class="entry-item" hover-class="entry-hover" bindtap="goBill">
-        <view class="entry-icon icon-purple">🧾</view>
-        <view class="entry-text">账单</view>
-      </view>
-      <view class="entry-item" hover-class="entry-hover" bindtap="goAddress">
-        <view class="entry-icon icon-brand">📍</view>
-        <view class="entry-text">收货地址</view>
-      </view>
-      <view class="entry-item" hover-class="entry-hover" bindtap="goQualification">
-        <view class="entry-icon icon-blue">📄</view>
-        <view class="entry-text">我的资质</view>
-      </view>
-    </view>
-  </view>
-
-  <!-- 最新订单 -->
-  <view class="card">
-    <view class="row-between">
-      <view class="section-title">最新订单</view>
-      <view class="more" hover-class="more-hover" bindtap="goOrders">查看全部 ›</view>
-    </view>
-    <view wx:if="{{recentOrders.length > 0}}" class="order-list">
-      <view
-        class="order-item"
-        wx:for="{{recentOrders}}"
-        wx:key="id"
-        data-id="{{item.id}}"
-        bindtap="goOrderDetail"
-        hover-class="order-hover"
-      >
-        <view class="order-main">
-          <view class="order-no">{{item.orderNo}}</view>
-          <view class="order-time">{{item.time}}</view>
-        </view>
-        <view class="order-side">
-          <view class="order-amount">¥{{item.total}}</view>
-          <view class="tag {{item.statusCls}}">{{item.statusLabel}}</view>
+      <!-- 经营数据：无卡片样式，直接置于浅蓝背景上 -->
+      <view class="kpi-block" wx:if="{{!loading && !loadError}}">
+        <view class="kpi-grid">
+          <view class="kpi-item" hover-class="kpi-hover" bindtap="goOrders">
+            <view class="kpi-label">今日订单</view>
+            <view class="kpi-num">{{todayOrders}}</view>
+            <view class="kpi-sub">昨日 {{yesterdayOrders}}</view>
+          </view>
+          <view class="kpi-divider"></view>
+          <view class="kpi-item">
+            <view class="kpi-label">今日交易额</view>
+            <view class="kpi-num">¥{{todayRevenue}}</view>
+            <view class="kpi-sub">昨日 ¥{{yesterdayRevenue}}</view>
+          </view>
+          <view class="kpi-divider"></view>
+          <view class="kpi-item" hover-class="kpi-hover" bindtap="goOrders">
+            <view class="kpi-label">待处理</view>
+            <view class="kpi-num {{kpiPending > 0 ? 'warn' : ''}}">{{kpiPending}}</view>
+            <view class="kpi-sub">待接单订单</view>
+          </view>
         </view>
       </view>
-    </view>
-    <view wx:else class="empty">暂无订单，先去发布商品吧</view>
-  </view>
 
-  <!-- 在售商品 -->
-  <view class="card">
-    <view class="row-between">
-      <view class="section-title">{{goodsSectionTitle}}</view>
-      <view class="more" hover-class="more-hover" bindtap="goGoods">查看全部 ›</view>
-    </view>
-    <scroll-view scroll-x class="goods-scroll" enable-flex wx:if="{{products.length > 0}}">
-      <view wx:for="{{products}}" wx:key="id" class="goods-card" data-id="{{item.id}}" bindtap="goGoodsDetail">
-        <image
-          wx:if="{{item.hasImage}}"
-          class="goods-img"
-          src="{{item.coverImg}}"
-          mode="aspectFill"
-          lazy-load
-          webp
-          data-index="{{index}}"
-          binderror="onImageError"
-        ></image>
-        <view wx:else class="goods-emoji">{{item.emoji || item.defaultEmoji}}</view>
-        <view class="goods-name">{{item.name}}</view>
-        <view class="goods-price">¥{{item.price}}</view>
-        <view class="goods-stock">库存 {{item.stock}}</view>
+      <!-- 加载骨架 -->
+      <view class="kpi-block" wx:elif="{{loading}}">
+        <view class="kpi-grid">
+          <view class="kpi-item">
+            <view class="sk sk-label"></view>
+            <view class="sk sk-num"></view>
+          </view>
+          <view class="kpi-item">
+            <view class="sk sk-label"></view>
+            <view class="sk sk-num"></view>
+          </view>
+          <view class="kpi-item">
+            <view class="sk sk-label"></view>
+            <view class="sk sk-num"></view>
+          </view>
+        </view>
       </view>
-    </scroll-view>
-    <view wx:else class="empty">暂无在售商品，快去发布吧</view>
-  </view>
 
-  <!-- 公告通知 -->
-  <view class="card notice-card" wx:if="{{notices.length > 0}}">
-    <view class="row-between">
-      <view class="section-title">公告通知</view>
-    </view>
-    <view
-      class="notice-row"
-      wx:for="{{notices}}"
-      wx:key="id"
-      data-index="{{index}}"
-      bindtap="onNoticeTap"
-      hover-class="order-hover"
-    >
-      <text class="notice-tag t{{item.type}}">{{item.typeText}}</text>
-      <text class="notice-title">{{item.title}}</text>
-      <text class="notice-arrow">›</text>
+      <!-- 加载失败 -->
+      <view class="kpi-block kpi-error" wx:else>
+        <view class="error-text">{{loadError}}</view>
+        <view class="btn-retry" hover-class="btn-press" bindtap="onRetry">重新加载</view>
+      </view>
     </view>
   </view>
 
-  <view class="page-pad-bottom"></view>
+  <!-- 下方大卡片：公告 + 最新订单 + 在售商品（合并为一张，占满下方区域） -->
+  <view class="main-card">
+    <!-- 公告 -->
+    <view class="main-sec notice-sec" wx:if="{{notices.length > 0}}" bindtap="onMarqueeTap">
+      <text class="nm-icon">📢</text>
+      <view class="nm-viewport">
+        <view class="nm-text {{noticeAnim}} {{noticeScroll ? 'scroll' : ''}}">{{noticeText}}</view>
+      </view>
+      <text class="nm-count" wx:if="{{notices.length > 1}}">{{noticeIndex + 1}}/{{notices.length}}</text>
+    </view>
+    <view class="main-divider" wx:if="{{notices.length > 0}}"></view>
+
+    <!-- 最新订单 -->
+    <view class="main-sec">
+      <view class="row-between">
+        <view class="section-title">最新订单</view>
+        <view class="more" hover-class="more-hover" bindtap="goOrders">查看全部 ›</view>
+      </view>
+      <view wx:if="{{recentOrders.length > 0}}" class="order-list">
+        <view
+          class="order-item"
+          wx:for="{{recentOrders}}"
+          wx:key="id"
+          data-id="{{item.id}}"
+          bindtap="goOrderDetail"
+          hover-class="order-hover"
+        >
+          <view class="order-main">
+            <view class="order-no">{{item.orderNo}}</view>
+            <view class="order-time">{{item.time}}</view>
+          </view>
+          <view class="order-side">
+            <view class="order-amount">¥{{item.total}}</view>
+            <view class="tag {{item.statusCls}}">{{item.statusLabel}}</view>
+          </view>
+        </view>
+      </view>
+      <view wx:else class="empty">暂无订单，先去发布商品吧</view>
+    </view>
+
+    <view class="main-divider"></view>
+
+    <!-- 在售商品 -->
+    <view class="main-sec">
+      <view class="row-between">
+        <view class="section-title">{{goodsSectionTitle}}</view>
+        <view class="more" hover-class="more-hover" bindtap="goGoods">查看全部 ›</view>
+      </view>
+      <scroll-view scroll-x class="goods-scroll" enable-flex wx:if="{{products.length > 0}}">
+        <view wx:for="{{products}}" wx:key="id" class="goods-card" data-id="{{item.id}}" bindtap="goGoodsDetail">
+          <image
+            wx:if="{{item.hasImage}}"
+            class="goods-img"
+            src="{{item.coverImg}}"
+            mode="aspectFill"
+            lazy-load
+            webp
+            data-index="{{index}}"
+            binderror="onImageError"
+          ></image>
+          <view wx:else class="goods-emoji">{{item.emoji || item.defaultEmoji}}</view>
+          <view class="goods-name">{{item.name}}</view>
+          <view class="goods-price">¥{{item.price}}</view>
+          <view class="goods-stock">库存 {{item.stock}}</view>
+        </view>
+      </scroll-view>
+      <view wx:else class="empty">暂无在售商品，快去发布吧</view>
+    </view>
+  </view>
 </view>

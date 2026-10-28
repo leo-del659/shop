@@ -293,9 +293,116 @@ namespace ECommerce.Infrastructure.EFCore
 				.HasColumnType("datetime")
 				.HasColumnName("create_time");
 
-			entity.Property(e => e.UpdateTime)
+		entity.Property(e => e.UpdateTime)
+			.HasColumnType("datetime")
+			.HasColumnName("update_time");
+		});
+
+		// 买卖家聊天消息（用户端小程序 ↔ 商户端小程序）
+		modelBuilder.Entity<ChatMessage>(entity =>
+		{
+			entity.ToTable("chat_message");
+
+			entity.HasComment("买卖家聊天消息（用户端与商户端互通）");
+
+			entity.HasIndex(e => e.ClientId, "idx_chat_client");
+
+			entity.HasIndex(e => e.MerchantId, "idx_chat_merchant");
+
+			entity.HasIndex(e => new { e.ClientId, e.MerchantId, e.CreateTime }, "idx_chat_pair_time");
+
+			entity.Property(e => e.Id)
+				.HasMaxLength(50)
+				.HasColumnName("id");
+
+			entity.Property(e => e.ClientId)
+				.HasMaxLength(50)
+				.HasColumnName("client_id")
+				.HasComment("买家用户ID（sys_users.u_id）");
+
+			entity.Property(e => e.MerchantId)
+				.HasMaxLength(50)
+				.HasColumnName("merchant_id")
+				.HasComment("商户ID（merchant.id）");
+
+			entity.Property(e => e.SenderType)
+				.HasColumnName("sender_type")
+				.HasDefaultValueSql("'1'")
+				.HasComment("发送方类型：1买家 2商户");
+
+			entity.Property(e => e.Content)
+				.HasMaxLength(500)
+				.HasColumnName("content")
+				.HasComment("消息文本内容");
+
+			entity.Property(e => e.ClientRead)
+				.HasColumnName("client_read")
+				.HasDefaultValueSql("'0'")
+				.HasComment("买家是否已读：0未读 1已读");
+
+			entity.Property(e => e.MerchantRead)
+				.HasColumnName("merchant_read")
+				.HasDefaultValueSql("'0'")
+				.HasComment("商户是否已读：0未读 1已读");
+
+			entity.Property(e => e.CreateTime)
 				.HasColumnType("datetime")
-				.HasColumnName("update_time");
+				.HasColumnName("create_time");
+		});
+
+		// 商户通知（库存预警等系统消息）
+		modelBuilder.Entity<MerchantNotice>(entity =>
+		{
+			entity.ToTable("merchant_notice");
+
+			entity.HasComment("商户通知（库存预警等系统消息）");
+
+			entity.HasIndex(e => e.MerchantId, "idx_notice_merchant");
+
+			entity.HasIndex(e => new { e.MerchantId, e.NoticeType, e.CreateTime }, "idx_notice_type_time");
+
+			entity.Property(e => e.Id)
+				.HasMaxLength(50)
+				.HasColumnName("id");
+
+			entity.Property(e => e.MerchantId)
+				.HasMaxLength(50)
+				.HasColumnName("merchant_id")
+				.HasComment("商户ID（merchant.merchant_id）");
+
+			entity.Property(e => e.NoticeType)
+				.HasColumnName("notice_type")
+				.HasDefaultValueSql("'1'")
+				.HasComment("通知类型：1库存预警 2订单提醒 3其他");
+
+			entity.Property(e => e.Title)
+				.HasMaxLength(128)
+				.HasColumnName("title")
+				.HasComment("通知标题");
+
+			entity.Property(e => e.Content)
+				.HasMaxLength(500)
+				.HasColumnName("content")
+				.HasComment("通知内容");
+
+			entity.Property(e => e.RelatedId)
+				.HasMaxLength(50)
+				.HasColumnName("related_id")
+				.HasComment("关联业务ID（库存预警为商品ID）");
+
+			entity.Property(e => e.StockSnapshot)
+				.HasColumnName("stock_snapshot")
+				.HasDefaultValueSql("'0'")
+				.HasComment("预警时的库存快照（去重用）");
+
+			entity.Property(e => e.IsRead)
+				.HasColumnName("is_read")
+				.HasDefaultValueSql("'0'")
+				.HasComment("是否已读：0未读 1已读");
+
+			entity.Property(e => e.CreateTime)
+				.HasColumnType("datetime")
+				.HasColumnName("create_time");
 		});
 	}
 }

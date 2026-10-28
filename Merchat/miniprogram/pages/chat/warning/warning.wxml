@@ -1,0 +1,39 @@
+<view class="chat-page">
+  <!-- 消息区域：库存预警以聊天气泡形式展示（与买家聊天界面一致） -->
+  <scroll-view
+    class="chat-scroll"
+    scroll-y
+    scroll-into-view="{{scrollInto}}"
+    scroll-with-animation
+    style="height: {{scrollHeight}}px;"
+  >
+    <view wx:if="{{!loading && !messages.length}}" class="chat-empty">
+      <view>暂无库存预警，商品库存充足</view>
+    </view>
+
+    <view wx:for="{{messages}}" wx:key="id" id="msg-{{item.id}}" class="msg-row">
+      <!-- 时间分隔 -->
+      <view wx:if="{{item.showTime}}" class="msg-time">{{item.timeText}}</view>
+
+      <view class="msg-line">
+        <!-- 系统头像 -->
+        <view class="msg-avatar-wrap">
+          <view class="msg-avatar msg-avatar-system">📢</view>
+        </view>
+
+        <view class="bubble bubble-other bubble-notice">
+          <view class="bubble-title">{{item.title || item.typeText}}</view>
+          <view class="bubble-text">{{item.content}}</view>
+          <view wx:if="{{item.stock > 0}}" class="bubble-stock">预警时库存：{{item.stock}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view id="chat-bottom" style="height: 20rpx;"></view>
+  </scroll-view>
+
+  <!-- 底部提示栏：系统通知不支持回复 -->
+  <view class="chat-input-bar">
+    <view class="chat-tip">库存预警由系统自动生成，如需处理请直接调整商品库存</view>
+  </view>
+</view>

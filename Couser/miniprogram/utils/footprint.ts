@@ -1,4 +1,6 @@
 // 本地足迹（浏览记录，storage 持久化）
+// 按登录账号隔离（key = footprints__<手机号>），避免换号后看到上一个账号的足迹
+import { scopedKey } from './userScope'
 
 export interface FootprintItem {
   goodsId: string
@@ -8,15 +10,19 @@ export interface FootprintItem {
   viewTime: number
 }
 
-const KEY = 'footprints'
+const KEY_BASE = 'footprints'
 const MAX = 50 // 最多保留最近 50 条
 
+function key(): string {
+  return scopedKey(KEY_BASE)
+}
+
 export function getFootprints(): FootprintItem[] {
-  return wx.getStorageSync(KEY) || []
+  return wx.getStorageSync(key()) || []
 }
 
 export function saveFootprints(list: FootprintItem[]) {
-  wx.setStorageSync(KEY, list)
+  wx.setStorageSync(key(), list)
 }
 
 /** 记录一条足迹：去重并放在最前，超出上限移除最旧 */

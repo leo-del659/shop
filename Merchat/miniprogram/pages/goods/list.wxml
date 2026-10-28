@@ -65,7 +65,8 @@
       <view class="info">
         <view class="name">{{item.name}}</view>
         <view class="meta">
-          <text class="price">¥{{item.price}}/{{item.unit}}</text>
+          <text class="price">¥{{item.priceText}}/{{item.unit}}</text>
+          <text wx:if="{{item.multiSpec}}" class="spec-badge">多规格 · {{item.skuCount}}款</text>
           <text class="stock {{item.stockCls}}">{{item.stockEmoji}} {{item.stock}} 件</text>
         </view>
       </view>

@@ -24,6 +24,8 @@ Page({
         defaultEmoji: '\u{1F4E6}',
     },
     _searchTimer: 0,
+    /** 是否已展示过（区分首次进入与从新增/编辑页返回） */
+    _shown: false,
     onLoad() {
         this.setData({
             canManage: true,
@@ -35,6 +37,14 @@ Page({
         const tabBar = this.getTabBar();
         if (tabBar)
             tabBar.setData({ selected: 2 });
+        // 从新增/编辑商品页返回时刷新列表，保证库存、规格、价格区间等数据实时更新
+        // （首次进入 onLoad 已加载过，这里跳过避免重复请求）
+        if (this._shown) {
+            this.load();
+        }
+        else {
+            this._shown = true;
+        }
     },
     async load() {
         if (!(0, auth_1.isLogin)()) {
@@ -52,6 +62,14 @@ Page({
         const list = raw.map((g) => {
             const isLow = g.stock < 50;
             const isPub = g.status === 'published';
+            // 多规格：展示价格区间与规格数量
+            const skuCount = g.skuCount || (g.skus ? g.skus.length : 0);
+            const multiSpec = skuCount > 1;
+            const priceMin = Number(g.priceMin ?? g.price ?? 0);
+            const priceMax = Number(g.priceMax ?? g.price ?? 0);
+            const priceText = multiSpec && priceMax > priceMin
+                ? priceMin.toFixed(2) + '-' + priceMax.toFixed(2)
+                : priceMin.toFixed(2);
             return {
                 ...g,
                 coverImgFull: g.coverImg || '',
@@ -61,6 +79,9 @@ Page({
                 statusText: isPub ? '已上架' : g.status === 'draft' ? '待审核' : '已下架',
                 stockCls: isLow ? 'low' : 'normal',
                 defaultEmoji: '\u{1F4E6}',
+                priceText,
+                multiSpec,
+                skuCount,
             };
         });
         this.setData({

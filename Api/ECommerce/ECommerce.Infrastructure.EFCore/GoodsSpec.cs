@@ -14,9 +14,13 @@ namespace ECommerce.Infrastructure.EFCore
         /// </summary>
         public string GoodsId { get; set; } = null!;
         /// <summary>
-        /// 规格名称 如：500g/份
+        /// 规格组名称 如：规格/重量/包装
         /// </summary>
         public string? SpecName { get; set; }
+        /// <summary>
+        /// 排序
+        /// </summary>
+        public int Sort { get; set; }
         public DateTime? CreateTime { get; set; }
     }
 }

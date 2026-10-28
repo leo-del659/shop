@@ -11,7 +11,7 @@
  Target Server Version : 80046 (8.0.46)
  File Encoding         : 65001
 
- Date: 18/10/2026 18:06:18
+ Date: 28/10/2026 15:25:01
 */
 
 SET NAMES utf8mb4;
@@ -82,6 +82,34 @@ INSERT INTO `audit_record` VALUES ('eeb9910fbbcd44f7b7bec98ddacb880e', 'good', '
 INSERT INTO `audit_record` VALUES ('f0f593df91cf453a8ee12f9b497c44a1', 'good', 'd6ffca2b2738481cb7b2fe47d638be7d', 2, '1', 'admin', '2026-08-11 15:53:32');
 
 -- ----------------------------
+-- Table structure for chat_message
+-- ----------------------------
+DROP TABLE IF EXISTS `chat_message`;
+CREATE TABLE `chat_message`  (
+  `id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '主键（顺序GUID）',
+  `client_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '买家用户ID（sys_users.u_id）',
+  `merchant_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '商户ID（merchant.id）',
+  `sender_type` int NOT NULL DEFAULT 1 COMMENT '发送方类型：1买家 2商户',
+  `content` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '消息文本内容',
+  `client_read` int NOT NULL DEFAULT 0 COMMENT '买家是否已读：0未读 1已读',
+  `merchant_read` int NOT NULL DEFAULT 0 COMMENT '商户是否已读：0未读 1已读',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_chat_client`(`client_id` ASC) USING BTREE,
+  INDEX `idx_chat_merchant`(`merchant_id` ASC) USING BTREE,
+  INDEX `idx_chat_pair_time`(`client_id` ASC, `merchant_id` ASC, `create_time` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '买卖家聊天消息（用户端与商户端互通）' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of chat_message
+-- ----------------------------
+INSERT INTO `chat_message` VALUES ('42e674e8e32e465a8581602b4f86f539', '278cf671e8ee4740801ff050570ad6c5', 'sp_0001', 1, '你好商户，我是买家', 1, 0, '2026-10-27 18:57:04');
+INSERT INTO `chat_message` VALUES ('49c3c95739864a47b6931b365ff0488c', '278cf671e8ee4740801ff050570ad6c5', 'f3fa7fc87c25486bb95de19e1c579d5d', 1, '买家消息-实时互通测试', 1, 1, '2026-10-27 19:01:58');
+INSERT INTO `chat_message` VALUES ('a830eaa18cca4bad988455f839bbb171', '278cf671e8ee4740801ff050570ad6c5', 'f3fa7fc87c25486bb95de19e1c579d5d', 2, '商户回复-实时互通测试', 1, 1, '2026-10-27 19:06:24');
+INSERT INTO `chat_message` VALUES ('a96bccc66b1d4be09fda43f8abd114e3', '278cf671e8ee4740801ff050570ad6c5', 'f3fa7fc87c25486bb95de19e1c579d5d', 2, '商户回复-实时互通测试', 1, 1, '2026-10-27 19:04:03');
+INSERT INTO `chat_message` VALUES ('b8b72f6da0484a0bb0855bea078fbcb0', '278cf671e8ee4740801ff050570ad6c5', 'f3fa7fc87c25486bb95de19e1c579d5d', 1, '买家消息-实时互通测试', 1, 1, '2026-10-27 19:04:01');
+
+-- ----------------------------
 -- Table structure for client_login
 -- ----------------------------
 DROP TABLE IF EXISTS `client_login`;
@@ -95,7 +123,7 @@ CREATE TABLE `client_login`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uk_client_login_account`(`account` ASC) USING BTREE,
   INDEX `idx_client_login_client`(`client_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户端登录账号（消费者手机号验证码登录）' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户端登录账号（消费者手机号验证码登录）' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of client_login
@@ -105,8 +133,8 @@ INSERT INTO `client_login` VALUES (2, '0fb5a2f052614b42afb3732cee812919', '13800
 INSERT INTO `client_login` VALUES (3, '4ae99d2f4d194ffca171be252f68e8f9', '19332405533', '19332405533', NULL, '2026-10-17 09:12:56');
 INSERT INTO `client_login` VALUES (4, '59fcb930d17a4b4b919ef2ca5fc0df58', '13800003333', '张三', '/api/file/617ca11645b042ef9e1ba35e5b94eb32.png', '2026-10-17 09:39:53');
 INSERT INTO `client_login` VALUES (5, 'd4436e1517404f72b0ccc95a3f09fae5', '13583395459', '13583395459', NULL, '2026-10-17 09:44:55');
-INSERT INTO `client_login` VALUES (7, '9432473ed28b4126b2e274e373d53a0c', '13800009999', '冒烟买家', '', '2026-10-17 14:02:25');
 INSERT INTO `client_login` VALUES (8, '479b927d83d14267bc4b8840297d638b', '13800000099', '13800000099', NULL, '2026-10-17 15:16:31');
+INSERT INTO `client_login` VALUES (10, '278cf671e8ee4740801ff050570ad6c5', '13800138000', '13800138000', NULL, '2026-10-27 18:47:45');
 
 -- ----------------------------
 -- Table structure for clientorders
@@ -144,16 +172,9 @@ CREATE TABLE `clientorders`  (
 -- Records of clientorders
 -- ----------------------------
 INSERT INTO `clientorders` VALUES ('0c3ae3c7a2b747389a603daefa817847', 'm_0001', 'ORD2609160002', 299, 4, 1, '泰国金枕头榴莲×10', NULL, '', '广东省 深圳市 南山区 科技园南路1号', 0, '2026-09-16 08:45:19', '2026-09-16 09:28:54', '[{\"id\":\"daab70f7cb7d4516b2916796f49bd254\",\"goodsId\":\"g003\",\"specId\":\"6048a94b442a41d2b662ab2806384148\",\"goodsName\":\"\\u6CF0\\u56FD\\u91D1\\u6795\\u5934\\u69B4\\u83B2\",\"specName\":\"\\u6574\\u4E2A\",\"goodsImg\":\"/api/file/9681bad1404545daa14b2a931a9a5a7d.webp\",\"buyPrice\":29.9,\"buyNum\":10,\"subAmount\":299,\"isBan\":0,\"createTime\":\"2026-09-16T08:45:18\",\"updateTime\":\"2026-09-16T08:45:18\"}]', 'sp_0001', '张三', '13800000001', '2026-09-16 08:45:19', '2026-09-16 09:28:52', '2026-09-16 09:28:54');
-INSERT INTO `clientorders` VALUES ('30a374d1fe9f4c618c7366b4cab4398c', 'm_0001', 'ORD2610140006', 9.9, 9, 0, '海南金煌芒果×1', NULL, '超时未支付，系统自动取消', NULL, 0, '2026-10-14 11:12:59', '2026-10-14 11:13:59', '[{\"id\":\"2fd5d259e04a4628a2852e1d2806b3e4\",\"goodsId\":\"g005\",\"specId\":null,\"goodsName\":\"\\u6D77\\u5357\\u91D1\\u714C\\u8292\\u679C\",\"specName\":null,\"goodsImg\":\"/api/file/9e28bd418f844cca8fc8882d76177cc5.webp\",\"buyPrice\":9.9,\"buyNum\":1,\"subAmount\":9.9,\"isBan\":0,\"createTime\":\"2026-10-14T11:12:58\",\"updateTime\":\"2026-10-14T11:12:58\"}]', 'sp_0001', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `clientorders` VALUES ('3bc5dc22b5584d6987f1de03ecdf7ca9', 'm_0001', 'ORD2610140007', 98.9, 4, 1, '挪威三文鱼刺身×1', NULL, 'fallback-test-1791947971', NULL, 0, '2026-10-14 11:19:36', '2026-10-14 11:25:07', '[{\"id\":\"b94f82a9f8f24c2c95b26791be4b82b6\",\"goodsId\":\"g015\",\"specId\":null,\"goodsName\":\"\\u632A\\u5A01\\u4E09\\u6587\\u9C7C\\u523A\\u8EAB\",\"specName\":null,\"goodsImg\":\"/api/file/2212c656d5b440cd921e730f7722e418.webp\",\"buyPrice\":98.9,\"buyNum\":1,\"subAmount\":98.9,\"isBan\":0,\"createTime\":\"2026-10-14T11:19:36\",\"updateTime\":\"2026-10-14T11:19:36\"}]', 'sp_0001', NULL, NULL, '2026-10-14 11:20:20', '2026-10-14 11:25:07', '2026-10-14 11:25:07');
-INSERT INTO `clientorders` VALUES ('45fe1edffc1e4af7b98273d67844105a', 'm_0001', 'ORD2610140003', 98.9, 2, 1, '挪威三文鱼刺身×1', NULL, NULL, NULL, 0, '2026-10-14 11:03:47', '2026-10-17 10:49:14', '[{\"id\":\"82aebcbf4825457a9fd0d2ab30335258\",\"goodsId\":\"g015\",\"specId\":null,\"goodsName\":\"\\u632A\\u5A01\\u4E09\\u6587\\u9C7C\\u523A\\u8EAB\",\"specName\":null,\"goodsImg\":\"/api/file/2212c656d5b440cd921e730f7722e418.webp\",\"buyPrice\":98.9,\"buyNum\":1,\"subAmount\":98.9,\"isBan\":0,\"createTime\":\"2026-10-14T11:03:47\",\"updateTime\":\"2026-10-14T11:03:47\"}]', 'sp_0001', NULL, NULL, '2026-10-17 10:49:14', NULL, NULL);
-INSERT INTO `clientorders` VALUES ('5c3733cd5efe46508aa2a22305887514', 'm_0001', 'ORD2610140004', 69.9, 1, 0, '智利进口车厘子 JJ级×1', NULL, NULL, NULL, 0, '2026-10-14 11:07:57', '2026-10-14 11:07:57', '[{\"id\":\"920260dca4014d5f8a3e5f2312608314\",\"goodsId\":\"g004\",\"specId\":null,\"goodsName\":\"\\u667A\\u5229\\u8FDB\\u53E3\\u8F66\\u5398\\u5B50 JJ\\u7EA7\",\"specName\":null,\"goodsImg\":\"/api/file/28afffcc6ae74fc18ddc086a1ff47efd.webp\",\"buyPrice\":69.9,\"buyNum\":1,\"subAmount\":69.9,\"isBan\":0,\"createTime\":\"2026-10-14T11:07:56\",\"updateTime\":\"2026-10-14T11:07:56\"}]', 'sp_0001', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `clientorders` VALUES ('69f8800f693348dc8da50667017a4ca9', 'm_0001', 'ORD2610140005', 9.9, 1, 0, '海南金煌芒果×1', NULL, NULL, NULL, 0, '2026-10-14 11:09:09', '2026-10-14 16:42:36', '[{\"id\":\"de90403e7efe429ba0ea471854dd1d9f\",\"goodsId\":\"g005\",\"specId\":null,\"goodsName\":\"\\u6D77\\u5357\\u91D1\\u714C\\u8292\\u679C\",\"specName\":null,\"goodsImg\":\"/api/file/9e28bd418f844cca8fc8882d76177cc5.webp\",\"buyPrice\":9.9,\"buyNum\":1,\"subAmount\":9.9,\"isBan\":0,\"createTime\":\"2026-10-14T11:09:09\",\"updateTime\":\"2026-10-14T11:09:09\"}]', 'sp_0001', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `clientorders` VALUES ('743e4810a92845c98de8aad67a42bd7b', 'm_0001', 'ORD2610140002', 12.9, 2, 1, '云南高原红富士苹果×1', NULL, NULL, NULL, 0, '2026-10-14 11:03:47', '2026-10-17 14:02:26', '[{\"id\":\"232bc11b6f6f4783a36105a176f76c38\",\"goodsId\":\"g001\",\"specId\":null,\"goodsName\":\"\\u4E91\\u5357\\u9AD8\\u539F\\u7EA2\\u5BCC\\u58EB\\u82F9\\u679C\",\"specName\":null,\"goodsImg\":\"/api/file/11843cbeafb341d58ec6effd478038ee.webp\",\"buyPrice\":12.9,\"buyNum\":1,\"subAmount\":12.9,\"isBan\":0,\"createTime\":\"2026-10-14T11:03:47\",\"updateTime\":\"2026-10-14T11:03:47\"}]', 'sp_0001', NULL, NULL, '2026-10-17 14:02:26', NULL, NULL);
-INSERT INTO `clientorders` VALUES ('79fda0d10c28424db318863fb41bbdac', 'm_0001', 'ORD2610140001', 25.8, 4, 1, '云南高原红富士苹果×2', NULL, NULL, '测试地址', 0, '2026-10-14 11:03:37', '2026-10-14 11:03:44', '[{\"id\":\"db1dddd42196497084125c6e94b56444\",\"goodsId\":\"g001\",\"specId\":null,\"goodsName\":\"\\u4E91\\u5357\\u9AD8\\u539F\\u7EA2\\u5BCC\\u58EB\\u82F9\\u679C\",\"specName\":null,\"goodsImg\":\"/api/file/11843cbeafb341d58ec6effd478038ee.webp\",\"buyPrice\":12.9,\"buyNum\":2,\"subAmount\":25.8,\"isBan\":0,\"createTime\":\"2026-10-14T11:03:36\",\"updateTime\":\"2026-10-14T11:03:36\"}]', 'sp_0001', '冒烟测试', '13800138000', '2026-10-14 11:03:42', '2026-10-14 11:03:44', '2026-10-14 11:03:44');
-INSERT INTO `clientorders` VALUES ('a92484fae614486991750697e3142cd8', 'm_0001', 'ORD2609160005', 25.8, 2, 1, '云南高原红富士苹果×2', NULL, '运费联调', '广东省 深圳市 南山区 科技园南路1号', 0, '2026-09-16 11:39:03', '2026-10-17 10:47:55', '[{\"id\":\"bedae293e52049febdf5c945d6850c49\",\"goodsId\":\"g001\",\"specId\":null,\"goodsName\":\"\\u4E91\\u5357\\u9AD8\\u539F\\u7EA2\\u5BCC\\u58EB\\u82F9\\u679C\",\"specName\":null,\"goodsImg\":\"/api/file/11843cbeafb341d58ec6effd478038ee.webp\",\"buyPrice\":12.9,\"buyNum\":2,\"subAmount\":25.8,\"isBan\":0,\"createTime\":\"2026-09-16T11:39:02\",\"updateTime\":\"2026-09-16T11:39:02\"}]', 'sp_0001', '张三', '13800000001', '2026-10-17 10:46:55', NULL, NULL);
 INSERT INTO `clientorders` VALUES ('ad5ec527f72e4eb9a95fd2d66271aa6e', 'm_0001', 'ORD2609150003', 9.9, 4, 1, '海南金煌芒果×1', NULL, '', '广东省 深圳市 南山区 科技园南路1号', 0, '2026-09-15 18:40:10', '2026-09-16 08:40:22', '[{\"id\":\"03d1d86edea2470bbb22943739c913fb\",\"goodsId\":\"g005\",\"specId\":\"1d91e28bd2a24ff58821e26f87885b88\",\"goodsName\":\"\\u6D77\\u5357\\u91D1\\u714C\\u8292\\u679C\",\"specName\":\"500g/\\u65A4\",\"goodsImg\":\"/api/file/9e28bd418f844cca8fc8882d76177cc5.webp\",\"buyPrice\":9.9,\"buyNum\":1,\"subAmount\":9.9,\"isBan\":0,\"createTime\":\"2026-09-15T18:40:09\",\"updateTime\":\"2026-09-15T18:40:09\"}]', 'sp_0001', '张三', '13800000001', '2026-09-15 18:40:10', '2026-09-16 08:40:20', '2026-09-16 08:40:22');
 INSERT INTO `clientorders` VALUES ('c34c684fda284ef5913fde432bbb4ff0', 'm_0001', 'ORD2609160003', 345, 9, 1, '智利进口车厘子 JJ级×1', NULL, '', '广东省 深圳市 南山区 科技园南路1号', 0, '2026-09-16 11:02:40', '2026-09-16 11:20:15', '[{\"id\":\"eebc24bc09204ec4ab063a1225120754\",\"goodsId\":\"g004\",\"specId\":\"2d2282cc55ab4dc484d93e8dd128168f\",\"goodsName\":\"\\u667A\\u5229\\u8FDB\\u53E3\\u8F66\\u5398\\u5B50 JJ\\u7EA7\",\"specName\":\"5\\u65A4\\u88C5(J\\u7EA7)\",\"goodsImg\":\"/api/file/28afffcc6ae74fc18ddc086a1ff47efd.webp\",\"buyPrice\":345,\"buyNum\":1,\"subAmount\":345,\"isBan\":0,\"createTime\":\"2026-09-16T11:02:40\",\"updateTime\":\"2026-09-16T11:02:40\"}]', 'sp_0001', '张三', '13800000001', '2026-09-16 11:02:40', NULL, NULL);
+INSERT INTO `clientorders` VALUES ('d90b72df1132495498486485d7393418', '59fcb930d17a4b4b919ef2ca5fc0df58', 'ORD2610270002', 12.9, 1, 1, '云南高原红富士苹果×1', NULL, '', '广东省 深圳市 南山区 科技园南路1号', 0, '2026-10-27 19:25:15', '2026-10-27 19:25:15', '[{\"id\":\"44edd5054f8349bfa7a19172621eb161\",\"goodsId\":\"g001\",\"specId\":\"e655f0768f7c4473b7d471970a453c7b\",\"goodsName\":\"\\u4E91\\u5357\\u9AD8\\u539F\\u7EA2\\u5BCC\\u58EB\\u82F9\\u679C\",\"specName\":\"500g/\\u4EFD\",\"goodsImg\":\"/api/file/11843cbeafb341d58ec6effd478038ee.webp\",\"buyPrice\":12.9,\"buyNum\":1,\"subAmount\":12.9,\"isBan\":0,\"createTime\":\"2026-10-27T19:25:14\",\"updateTime\":\"2026-10-27T19:25:14\"}]', 'sp_0001', '张三', '13800000001', '2026-10-27 19:25:15', NULL, NULL);
 INSERT INTO `clientorders` VALUES ('db146285c4474093ad311b140dfc8cac', 'm_0001', 'ORD2609150002', 12.9, 4, 1, '云南高原红富士苹果×1', NULL, '', '广东省 深圳市 南山区 科技园南路1号', 0, '2026-09-15 11:21:39', '2026-09-15 18:36:32', '[{\"id\":\"1b976c1e16e74679885554e82168d88a\",\"goodsId\":\"g001\",\"specId\":\"8957151f6fde45dea240caecb42b7b1f\",\"goodsName\":\"\\u4E91\\u5357\\u9AD8\\u539F\\u7EA2\\u5BCC\\u58EB\\u82F9\\u679C\",\"specName\":\"500g/\\u4EFD\",\"goodsImg\":\"/api/file/11843cbeafb341d58ec6effd478038ee.webp\",\"buyPrice\":12.9,\"buyNum\":1,\"subAmount\":12.9,\"isBan\":0,\"createTime\":\"2026-09-15T11:21:38\",\"updateTime\":\"2026-09-15T11:21:38\"}]', 'sp_0001', NULL, NULL, NULL, NULL, '2026-09-15 18:36:32');
 INSERT INTO `clientorders` VALUES ('f1d226eb5ed744049bd3848df2444575', 'm_0001', 'ORD2609160004', 345, 9, 1, '智利进口车厘子 JJ级×1', NULL, '', '广东省 深圳市 南山区 科技园南路1号', 0, '2026-09-16 11:22:14', '2026-09-16 11:22:18', '[{\"id\":\"bd36914fb0d5477d9db4f2ffb6c90ae4\",\"goodsId\":\"g004\",\"specId\":\"2d2282cc55ab4dc484d93e8dd128168f\",\"goodsName\":\"\\u667A\\u5229\\u8FDB\\u53E3\\u8F66\\u5398\\u5B50 JJ\\u7EA7\",\"specName\":\"5\\u65A4\\u88C5(J\\u7EA7)\",\"goodsImg\":\"/api/file/28afffcc6ae74fc18ddc086a1ff47efd.webp\",\"buyPrice\":345,\"buyNum\":1,\"subAmount\":345,\"isBan\":0,\"createTime\":\"2026-09-16T11:22:14\",\"updateTime\":\"2026-09-16T11:22:14\"}]', 'sp_0001', '张三', '13800000001', '2026-09-16 11:22:14', NULL, NULL);
 
@@ -185,7 +206,7 @@ CREATE TABLE `good`  (
 -- ----------------------------
 -- Records of good
 -- ----------------------------
-INSERT INTO `good` VALUES ('g001', 'cat00101', '云南高原红富士苹果', 18.80, 12.90, 356, '/api/file/11843cbeafb341d58ec6effd478038ee.webp', '/api/file/11843cbeafb341d58ec6effd478038ee.webp', '份', 1, 'c1b62d49681543b5ace35cee19ef787a', 1, '2026-07-30 10:46:42', '2026-10-16 11:19:39');
+INSERT INTO `good` VALUES ('g001', 'cat00101', '云南高原红富士苹果', 12.90, 12.90, 35, 'http://localhost:6001/api/file/img?name=11843cbeafb341d58ec6effd478038ee.webp', '/api/file/11843cbeafb341d58ec6effd478038ee.webp', '份', 1, 'c1b62d49681543b5ace35cee19ef787a', 0, '2026-07-30 10:46:42', '2026-10-28 14:50:12');
 INSERT INTO `good` VALUES ('g003', 'cat00101', '泰国金枕头榴莲', 39.90, 29.90, 257, '/api/file/9681bad1404545daa14b2a931a9a5a7d.webp', NULL, '份', 1, 'e31f16719475497385b7141a22cb5d87', 1, '2026-07-30 10:46:42', '2026-09-08 19:06:01');
 INSERT INTO `good` VALUES ('g004', 'cat00101', '智利进口车厘子 JJ级', 89.90, 69.90, 148, '/api/file/28afffcc6ae74fc18ddc086a1ff47efd.webp', NULL, '份', 1, 'ac31cdf8c5084f30ba103c8fe9a77675', 1, '2026-07-30 10:46:42', '2026-09-16 11:22:18');
 INSERT INTO `good` VALUES ('g005', 'cat00101', '海南金煌芒果', 15.80, 9.90, 295, '/api/file/9e28bd418f844cca8fc8882d76177cc5.webp', NULL, '份', 1, '6badd9273548401bb1e339d2294e38f3', 1, '2026-07-30 10:46:42', '2026-10-14 11:13:59');
@@ -459,8 +480,10 @@ CREATE TABLE `goods_sku`  (
   `goods_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '商品ID(good.id)',
   `spec_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '规格ID(goods_spec.id)',
   `sku_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'SKU名称',
+  `sku_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'SKU编码',
   `price` decimal(18, 2) NOT NULL COMMENT 'SKU价格',
   `stock` int NOT NULL COMMENT 'SKU库存',
+  `sort` int NOT NULL DEFAULT 0 COMMENT '排序',
   `create_time` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_sku_goods`(`goods_id` ASC) USING BTREE,
@@ -470,54 +493,73 @@ CREATE TABLE `goods_sku`  (
 -- ----------------------------
 -- Records of goods_sku
 -- ----------------------------
-INSERT INTO `goods_sku` VALUES ('06b33c4573f7498d99e9c7f140233e32', 'g013', '55c7284584ad4635ad390e730e4eaf55', '整只', 35.90, 60, '2026-08-06 09:03:16');
-INSERT INTO `goods_sku` VALUES ('13f8c9a8bdd74e9b94c914eb7b7c1f7c', 'g035', 'e98477eefa54469fb8cb5a05b469a86b', '个', 8.90, 100, '2026-08-06 09:03:16');
-INSERT INTO `goods_sku` VALUES ('199ab09e4f384431a8e73435c6a3d17e', 'g027', '0579ef3b3b604fe1a231e64e99233a2d', '5L/桶', 129.00, 78, '2026-08-06 09:03:16');
-INSERT INTO `goods_sku` VALUES ('1d91e28bd2a24ff58821e26f87885b88', 'g005', '5c61bade22144a2080343e1b5a61fde4', '500g/斤', 9.90, 298, '2026-08-06 09:03:16');
-INSERT INTO `goods_sku` VALUES ('1ffa675f398642c091c8cd4f58dd642c', 'g016', '867728ac52c542d99ffbbdf4f5df8826', '10枚装', 16.90, 120, '2026-08-05 14:08:22');
-INSERT INTO `goods_sku` VALUES ('2c8be24b3008466f8b9508cb6ff34f7c', 'g009', '4f217fd870c540c2a60a8106f37b12d5', '4个/盒', 7.90, 260, '2026-08-06 09:03:16');
-INSERT INTO `goods_sku` VALUES ('2d015bdad7cf425da8caec5f1500da29', 'g029', 'ccb813fff7784577be360fdfad87d608', '520g', 13.90, 300, '2026-08-06 09:03:16');
-INSERT INTO `goods_sku` VALUES ('2d2282cc55ab4dc484d93e8dd128168f', 'g004', '1b3a5725557049ef8c932ecfa79e3e76', '5斤装(J级)', 345.00, 4, '2026-08-06 09:34:05');
-INSERT INTO `goods_sku` VALUES ('3a57a01cf8d94478a74f5ffea4fd7df8', 'g023', '705655dd2240456ba7f8bd2f911ce740', '瓶装 500ml×12瓶', 39.90, 100, '2026-08-05 14:10:37');
-INSERT INTO `goods_sku` VALUES ('3af3e4513a224cb5b4cc45655cc3fa45', 'g030', 'b17423fe016b4026911240e359aac034', '3kg/瓶', 34.90, 150, '2026-08-06 09:03:16');
-INSERT INTO `goods_sku` VALUES ('3b52081bd3cb410a9dd0bfea9cf4f505', 'g008', '1dd1a910c12346c9bab6742efbc1b946', '500g/份', 8.90, 180, '2026-08-06 09:03:16');
-INSERT INTO `goods_sku` VALUES ('3bfa3524ca684949a18eac291fe43076', 'g016', '29761165bd4d49d696840b44fb812171', '60枚装', 18.00, 80, '2026-08-05 14:08:22');
-INSERT INTO `goods_sku` VALUES ('544a297605d14f9aa481d6df5d93060e', 'g010', 'efb6bdef90754b9ab5efdd520d59046f', '500g/份', 11.90, 220, '2026-08-06 09:03:16');
-INSERT INTO `goods_sku` VALUES ('554963271e7b459abbd5a4f47d37213a', 'g022', '7e58203f61104d7994595a37fa6dfbbe', '98g/盒', 24.90, 180, '2026-08-06 09:03:16');
-INSERT INTO `goods_sku` VALUES ('5a9c90fd02a143138e07c0efe8776ae9', 'g016', 'cad2590605814f55ad9e2b57f8e88712', '30枚装', 8.00, 100, '2026-08-05 14:08:22');
-INSERT INTO `goods_sku` VALUES ('5b713929da2c42ecbc2e35edd72b7760', 'g011', '53ef0353d11b4cc5b01e42279ccfb199', '五花肉（肥瘦相间）', 29.90, 50, '2026-08-05 14:06:23');
-INSERT INTO `goods_sku` VALUES ('5fc175a0c6094a9e8fd8de7525e03b5e', 'g020', 'b29884855df54892a69160ab7b600640', '家庭款 1350g（54包）', 20.00, 20, '2026-08-05 14:09:38');
-INSERT INTO `goods_sku` VALUES ('6048a94b442a41d2b662ab2806384148', 'g003', 'ad6e96a25bd44af1bd1e69a8269056d1', '整个', 29.90, 257, '2026-08-06 09:03:16');
-INSERT INTO `goods_sku` VALUES ('69e4266e15644d668cdf5b4827960cc1', 'g031', '2983afd2e6544a76a8b4c848512704e1', '1.5kg', 13.90, 280, '2026-08-06 09:03:16');
-INSERT INTO `goods_sku` VALUES ('6fceed5ca1c7423482b23b5939fae823', 'g020', '016763fbdf804973ab9988257d7888ea', '经典款 750g（30包）', 29.90, 120, '2026-08-05 14:09:38');
-INSERT INTO `goods_sku` VALUES ('812cdab052894ec39a8db68a261c90a5', 'g032', '09064954542f418889e5c3429775faf8', '24包/提', 36.90, 180, '2026-08-06 09:03:16');
-INSERT INTO `goods_sku` VALUES ('844ea6dcadf44a7c838bd3fedaf5540c', 'g028', 'eb908fbd7295409db83a3ab26dd8d82e', '1L 家庭装', 5.00, 130, '2026-08-05 14:12:01');
-INSERT INTO `goods_sku` VALUES ('8501de8f61f74b3a9697400cf64092b7', 'g021', '1278dad8bdeb4c8d8ea1fa8eb44d4e07', '97g/包', 11.90, 400, '2026-08-06 09:03:16');
-INSERT INTO `goods_sku` VALUES ('873cc221327a4fe0a64c6a7f1b8a8c68', 'g020', '0589f9592114473badd79f6ff5008b27', '升级款 900g（36包）', 8.00, 60, '2026-08-05 14:09:38');
-INSERT INTO `goods_sku` VALUES ('8c800e7404d2451abbe206e863e4498e', 'g001', '86bf72b8ad644a02aed41b7fd27ca92a', '1', 12.90, 0, '2026-10-16 11:19:39');
-INSERT INTO `goods_sku` VALUES ('9a15759dca1b4db5b06bcec1ff78fd21', 'g026', 'b097792ee52440ae928d7218c3412112', '5kg/袋', 24.90, 250, '2026-08-06 09:03:16');
-INSERT INTO `goods_sku` VALUES ('9ecb9f6964634e73a9e8422a9891e1f8', 'g004', '80f615b92b5543fcbfe3cecae556b2e2', '1斤装(J级)', 69.90, 95, '2026-08-06 09:34:05');
-INSERT INTO `goods_sku` VALUES ('aecc08eaa93a4ff0a0a8607a736611ae', 'g028', '5530bcaa5993439681cd91f24afd1b2b', '500ml 小瓶装', 8.90, 200, '2026-08-05 14:12:01');
-INSERT INTO `goods_sku` VALUES ('b64c59cf9e914c489d3af0024ce5e665', 'g023', '7cdc194bebb847d582971eea689b6fec', '迷你罐 200ml×48罐', 8.00, 50, '2026-08-05 14:10:37');
-INSERT INTO `goods_sku` VALUES ('ba293f2c92a94c2db4aed0ce5993e934', 'g015', '39b11d3cfa434bc1b5ec7c036331c451', '250g/份', 98.90, 30, '2026-08-06 09:03:16');
-INSERT INTO `goods_sku` VALUES ('ba7a66b616c2463595f0a4d9276dc85f', 'g033', '3fc2f160169e4ad6a7c0b6b5f851dc45', '10卷/提', 19.90, 220, '2026-08-06 09:03:16');
-INSERT INTO `goods_sku` VALUES ('be8063dafd8b441b86afbb47045f60b3', 'g014', '257d0df11b52432d98f9e70743cf1ef5', '500g/份', 68.90, 40, '2026-08-06 09:03:16');
-INSERT INTO `goods_sku` VALUES ('c3f91133b958493bbbddc1738b6028d2', 'g004', '1ccb2e333a334195a8c793c930573481', '2斤装(J级)', 138.00, 50, '2026-08-06 09:34:05');
-INSERT INTO `goods_sku` VALUES ('c457d1edd69a46d2a76b40bcd71ea49a', 'g019', '911a710f54204d03b33ca36e1eb38fcb', '308g/包', 9.90, 600, '2026-08-06 09:03:16');
-INSERT INTO `goods_sku` VALUES ('cb486a7ded804b0da46dd10d735ea8c7', 'g025', 'e8e6485b023e41b8957247f44f15144b', '5kg/袋', 49.90, 200, '2026-08-06 09:03:16');
-INSERT INTO `goods_sku` VALUES ('cba56f1bcca54f31b7f87d86f6da2b3e', 'g028', '6146925848e54f5a85100d8fd841f75d', '1.9L 大桶装', 10.00, 70, '2026-08-05 14:12:01');
-INSERT INTO `goods_sku` VALUES ('cef018b1fddc4db3b8fdfa5eb63e9b5c', 'g011', '9f7aae7cc0ac4d4c9ced9306058fdc21', '后腿肉（炖煮首选）', 1.00, 30, '2026-08-05 14:06:23');
-INSERT INTO `goods_sku` VALUES ('d50e82840987498dbe8ddd307f7caf0d', 'g017', '8b79d5f5597a47ba9f2be52aefb98d4b', '块', 3.50, 150, '2026-08-06 09:03:16');
-INSERT INTO `goods_sku` VALUES ('d5788dee268d4e0b84ab1a4e8177f5b7', 'g036', '0b8dfc15340a48bfb3b98305de82bd99', '个', 2.50, 200, '2026-08-06 09:03:16');
-INSERT INTO `goods_sku` VALUES ('db09882520ba425988ff2f03db0da7f0', 'g034', '6f2a2a34c46f4622bc8f7e74ed4fb444', '只', 45.90, 50, '2026-08-06 09:03:16');
-INSERT INTO `goods_sku` VALUES ('dc327ddc284f408ca69b09013b76e536', 'g018', '734a0bb2bd114839b04dc348e75bf866', '24盒/箱', 49.90, 500, '2026-08-06 09:03:16');
-INSERT INTO `goods_sku` VALUES ('dcf43e675c7b4ae79401265df333e423', 'g023', 'fe46f36997924241aaa1e162b5f3898e', '听装 330ml×24罐', 39.90, 200, '2026-08-05 14:10:37');
-INSERT INTO `goods_sku` VALUES ('dfd4238a7b48437d9adf347727f9d4dd', 'g011', 'f5f29aac73184315af1564ef6dd8967e', '前腿肉（瘦肉多）', 2.00, 40, '2026-08-05 14:06:23');
-INSERT INTO `goods_sku` VALUES ('e30ce301962e41068c74f0189d5ce130', 'g012', 'c71830fa25064188b97d52302fe5e740', '500g/份', 49.90, 80, '2026-08-06 09:03:16');
-INSERT INTO `goods_sku` VALUES ('e655f0768f7c4473b7d471970a453c7b', 'g001', '571981d853494a2fbaa3fc6bb8935d7f', '500g/份', 12.90, 356, '2026-10-16 11:19:39');
-INSERT INTO `goods_sku` VALUES ('f54ecaf2f44e4675a9df4f12580cec03', 'g007', 'be21fdf9610b4c4ba87fa93e11d2b436', '500g/份', 5.90, 350, '2026-08-06 09:03:16');
-INSERT INTO `goods_sku` VALUES ('f6b7e9da0c5840dea4665593dd3f1d60', 'g006', '462b4d200f9e4a24b06480c6f5d466ae', '300g/份', 4.90, 199, '2026-08-11 09:32:55');
-INSERT INTO `goods_sku` VALUES ('f8438924baca4e4b9a91be3ceb52d1ba', 'g024', 'cf0d239dc53448d3b9f80b21c65fe1e2', '500ml', 2.90, 800, '2026-08-06 09:03:16');
+INSERT INTO `goods_sku` VALUES ('06b33c4573f7498d99e9c7f140233e32', 'g013', '55c7284584ad4635ad390e730e4eaf55', '整只', NULL, 35.90, 60, 0, '2026-08-06 09:03:16');
+INSERT INTO `goods_sku` VALUES ('13f8c9a8bdd74e9b94c914eb7b7c1f7c', 'g035', 'e98477eefa54469fb8cb5a05b469a86b', '个', NULL, 8.90, 100, 0, '2026-08-06 09:03:16');
+INSERT INTO `goods_sku` VALUES ('199ab09e4f384431a8e73435c6a3d17e', 'g027', '0579ef3b3b604fe1a231e64e99233a2d', '5L/桶', NULL, 129.00, 78, 0, '2026-08-06 09:03:16');
+INSERT INTO `goods_sku` VALUES ('1d91e28bd2a24ff58821e26f87885b88', 'g005', '5c61bade22144a2080343e1b5a61fde4', '500g/斤', NULL, 9.90, 298, 0, '2026-08-06 09:03:16');
+INSERT INTO `goods_sku` VALUES ('1ffa675f398642c091c8cd4f58dd642c', 'g016', '867728ac52c542d99ffbbdf4f5df8826', '10枚装', NULL, 16.90, 120, 0, '2026-08-05 14:08:22');
+INSERT INTO `goods_sku` VALUES ('2c8be24b3008466f8b9508cb6ff34f7c', 'g009', '4f217fd870c540c2a60a8106f37b12d5', '4个/盒', NULL, 7.90, 260, 0, '2026-08-06 09:03:16');
+INSERT INTO `goods_sku` VALUES ('2d015bdad7cf425da8caec5f1500da29', 'g029', 'ccb813fff7784577be360fdfad87d608', '520g', NULL, 13.90, 300, 0, '2026-08-06 09:03:16');
+INSERT INTO `goods_sku` VALUES ('2d2282cc55ab4dc484d93e8dd128168f', 'g004', '1b3a5725557049ef8c932ecfa79e3e76', '5斤装(J级)', NULL, 345.00, 4, 0, '2026-08-06 09:34:05');
+INSERT INTO `goods_sku` VALUES ('3a57a01cf8d94478a74f5ffea4fd7df8', 'g023', '705655dd2240456ba7f8bd2f911ce740', '瓶装 500ml×12瓶', NULL, 39.90, 100, 0, '2026-08-05 14:10:37');
+INSERT INTO `goods_sku` VALUES ('3af3e4513a224cb5b4cc45655cc3fa45', 'g030', 'b17423fe016b4026911240e359aac034', '3kg/瓶', NULL, 34.90, 150, 0, '2026-08-06 09:03:16');
+INSERT INTO `goods_sku` VALUES ('3b52081bd3cb410a9dd0bfea9cf4f505', 'g008', '1dd1a910c12346c9bab6742efbc1b946', '500g/份', NULL, 8.90, 180, 0, '2026-08-06 09:03:16');
+INSERT INTO `goods_sku` VALUES ('3bfa3524ca684949a18eac291fe43076', 'g016', '29761165bd4d49d696840b44fb812171', '60枚装', NULL, 18.00, 80, 0, '2026-08-05 14:08:22');
+INSERT INTO `goods_sku` VALUES ('544a297605d14f9aa481d6df5d93060e', 'g010', 'efb6bdef90754b9ab5efdd520d59046f', '500g/份', NULL, 11.90, 220, 0, '2026-08-06 09:03:16');
+INSERT INTO `goods_sku` VALUES ('554963271e7b459abbd5a4f47d37213a', 'g022', '7e58203f61104d7994595a37fa6dfbbe', '98g/盒', NULL, 24.90, 180, 0, '2026-08-06 09:03:16');
+INSERT INTO `goods_sku` VALUES ('5a9c90fd02a143138e07c0efe8776ae9', 'g016', 'cad2590605814f55ad9e2b57f8e88712', '30枚装', NULL, 8.00, 100, 0, '2026-08-05 14:08:22');
+INSERT INTO `goods_sku` VALUES ('5b713929da2c42ecbc2e35edd72b7760', 'g011', '53ef0353d11b4cc5b01e42279ccfb199', '五花肉（肥瘦相间）', NULL, 29.90, 50, 0, '2026-08-05 14:06:23');
+INSERT INTO `goods_sku` VALUES ('5fc175a0c6094a9e8fd8de7525e03b5e', 'g020', 'b29884855df54892a69160ab7b600640', '家庭款 1350g（54包）', NULL, 20.00, 20, 0, '2026-08-05 14:09:38');
+INSERT INTO `goods_sku` VALUES ('6048a94b442a41d2b662ab2806384148', 'g003', 'ad6e96a25bd44af1bd1e69a8269056d1', '整个', NULL, 29.90, 257, 0, '2026-08-06 09:03:16');
+INSERT INTO `goods_sku` VALUES ('69e4266e15644d668cdf5b4827960cc1', 'g031', '2983afd2e6544a76a8b4c848512704e1', '1.5kg', NULL, 13.90, 280, 0, '2026-08-06 09:03:16');
+INSERT INTO `goods_sku` VALUES ('6fceed5ca1c7423482b23b5939fae823', 'g020', '016763fbdf804973ab9988257d7888ea', '经典款 750g（30包）', NULL, 29.90, 120, 0, '2026-08-05 14:09:38');
+INSERT INTO `goods_sku` VALUES ('812cdab052894ec39a8db68a261c90a5', 'g032', '09064954542f418889e5c3429775faf8', '24包/提', NULL, 36.90, 180, 0, '2026-08-06 09:03:16');
+INSERT INTO `goods_sku` VALUES ('844ea6dcadf44a7c838bd3fedaf5540c', 'g028', 'eb908fbd7295409db83a3ab26dd8d82e', '1L 家庭装', NULL, 5.00, 130, 0, '2026-08-05 14:12:01');
+INSERT INTO `goods_sku` VALUES ('8501de8f61f74b3a9697400cf64092b7', 'g021', '1278dad8bdeb4c8d8ea1fa8eb44d4e07', '97g/包', NULL, 11.90, 400, 0, '2026-08-06 09:03:16');
+INSERT INTO `goods_sku` VALUES ('873cc221327a4fe0a64c6a7f1b8a8c68', 'g020', '0589f9592114473badd79f6ff5008b27', '升级款 900g（36包）', NULL, 8.00, 60, 0, '2026-08-05 14:09:38');
+INSERT INTO `goods_sku` VALUES ('9a15759dca1b4db5b06bcec1ff78fd21', 'g026', 'b097792ee52440ae928d7218c3412112', '5kg/袋', NULL, 24.90, 250, 0, '2026-08-06 09:03:16');
+INSERT INTO `goods_sku` VALUES ('9ecb9f6964634e73a9e8422a9891e1f8', 'g004', '80f615b92b5543fcbfe3cecae556b2e2', '1斤装(J级)', NULL, 69.90, 95, 0, '2026-08-06 09:34:05');
+INSERT INTO `goods_sku` VALUES ('aecc08eaa93a4ff0a0a8607a736611ae', 'g028', '5530bcaa5993439681cd91f24afd1b2b', '500ml 小瓶装', NULL, 8.90, 200, 0, '2026-08-05 14:12:01');
+INSERT INTO `goods_sku` VALUES ('b64c59cf9e914c489d3af0024ce5e665', 'g023', '7cdc194bebb847d582971eea689b6fec', '迷你罐 200ml×48罐', NULL, 8.00, 50, 0, '2026-08-05 14:10:37');
+INSERT INTO `goods_sku` VALUES ('ba293f2c92a94c2db4aed0ce5993e934', 'g015', '39b11d3cfa434bc1b5ec7c036331c451', '250g/份', NULL, 98.90, 30, 0, '2026-08-06 09:03:16');
+INSERT INTO `goods_sku` VALUES ('ba7a66b616c2463595f0a4d9276dc85f', 'g033', '3fc2f160169e4ad6a7c0b6b5f851dc45', '10卷/提', NULL, 19.90, 220, 0, '2026-08-06 09:03:16');
+INSERT INTO `goods_sku` VALUES ('be8063dafd8b441b86afbb47045f60b3', 'g014', '257d0df11b52432d98f9e70743cf1ef5', '500g/份', NULL, 68.90, 40, 0, '2026-08-06 09:03:16');
+INSERT INTO `goods_sku` VALUES ('c3f91133b958493bbbddc1738b6028d2', 'g004', '1ccb2e333a334195a8c793c930573481', '2斤装(J级)', NULL, 138.00, 50, 0, '2026-08-06 09:34:05');
+INSERT INTO `goods_sku` VALUES ('c457d1edd69a46d2a76b40bcd71ea49a', 'g019', '911a710f54204d03b33ca36e1eb38fcb', '308g/包', NULL, 9.90, 600, 0, '2026-08-06 09:03:16');
+INSERT INTO `goods_sku` VALUES ('cb486a7ded804b0da46dd10d735ea8c7', 'g025', 'e8e6485b023e41b8957247f44f15144b', '5kg/袋', NULL, 49.90, 200, 0, '2026-08-06 09:03:16');
+INSERT INTO `goods_sku` VALUES ('cba56f1bcca54f31b7f87d86f6da2b3e', 'g028', '6146925848e54f5a85100d8fd841f75d', '1.9L 大桶装', NULL, 10.00, 70, 0, '2026-08-05 14:12:01');
+INSERT INTO `goods_sku` VALUES ('cef018b1fddc4db3b8fdfa5eb63e9b5c', 'g011', '9f7aae7cc0ac4d4c9ced9306058fdc21', '后腿肉（炖煮首选）', NULL, 1.00, 30, 0, '2026-08-05 14:06:23');
+INSERT INTO `goods_sku` VALUES ('d50e82840987498dbe8ddd307f7caf0d', 'g017', '8b79d5f5597a47ba9f2be52aefb98d4b', '块', NULL, 3.50, 150, 0, '2026-08-06 09:03:16');
+INSERT INTO `goods_sku` VALUES ('d5788dee268d4e0b84ab1a4e8177f5b7', 'g036', '0b8dfc15340a48bfb3b98305de82bd99', '个', NULL, 2.50, 200, 0, '2026-08-06 09:03:16');
+INSERT INTO `goods_sku` VALUES ('db09882520ba425988ff2f03db0da7f0', 'g034', '6f2a2a34c46f4622bc8f7e74ed4fb444', '只', NULL, 45.90, 50, 0, '2026-08-06 09:03:16');
+INSERT INTO `goods_sku` VALUES ('dc327ddc284f408ca69b09013b76e536', 'g018', '734a0bb2bd114839b04dc348e75bf866', '24盒/箱', NULL, 49.90, 500, 0, '2026-08-06 09:03:16');
+INSERT INTO `goods_sku` VALUES ('dcf43e675c7b4ae79401265df333e423', 'g023', 'fe46f36997924241aaa1e162b5f3898e', '听装 330ml×24罐', NULL, 39.90, 200, 0, '2026-08-05 14:10:37');
+INSERT INTO `goods_sku` VALUES ('dfd4238a7b48437d9adf347727f9d4dd', 'g011', 'f5f29aac73184315af1564ef6dd8967e', '前腿肉（瘦肉多）', NULL, 2.00, 40, 0, '2026-08-05 14:06:23');
+INSERT INTO `goods_sku` VALUES ('e30ce301962e41068c74f0189d5ce130', 'g012', 'c71830fa25064188b97d52302fe5e740', '500g/份', NULL, 49.90, 80, 0, '2026-08-06 09:03:16');
+INSERT INTO `goods_sku` VALUES ('eabe2e14844d492286d3d3cf59efeb00', 'g001', '3c83c504501d4eefa329e9f97b9b6b50', '500g/份', NULL, 12.90, 35, 0, '2026-10-28 14:50:12');
+INSERT INTO `goods_sku` VALUES ('f54ecaf2f44e4675a9df4f12580cec03', 'g007', 'be21fdf9610b4c4ba87fa93e11d2b436', '500g/份', NULL, 5.90, 350, 0, '2026-08-06 09:03:16');
+INSERT INTO `goods_sku` VALUES ('f6b7e9da0c5840dea4665593dd3f1d60', 'g006', '462b4d200f9e4a24b06480c6f5d466ae', '300g/份', NULL, 4.90, 199, 0, '2026-08-11 09:32:55');
+INSERT INTO `goods_sku` VALUES ('f8438924baca4e4b9a91be3ceb52d1ba', 'g024', 'cf0d239dc53448d3b9f80b21c65fe1e2', '500ml', NULL, 2.90, 800, 0, '2026-08-06 09:03:16');
+
+-- ----------------------------
+-- Table structure for goods_spec
+-- ----------------------------
+DROP TABLE IF EXISTS `goods_spec`;
+CREATE TABLE `goods_spec`  (
+  `id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `goods_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '商品ID(good.id)',
+  `spec_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '规格组名称 如：规格/重量/包装',
+  `sort` int NOT NULL DEFAULT 0 COMMENT '排序',
+  `create_time` datetime NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_gs_goods`(`goods_id` ASC) USING BTREE,
+  CONSTRAINT `fk_goods_spec_goods_id` FOREIGN KEY (`goods_id`) REFERENCES `good` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品规格组表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of goods_spec
+-- ----------------------------
+INSERT INTO `goods_spec` VALUES ('3c83c504501d4eefa329e9f97b9b6b50', 'g001', '规格', 0, '2026-10-28 14:50:12');
 
 -- ----------------------------
 -- Table structure for logistics_company
@@ -562,6 +604,7 @@ CREATE TABLE `member_address`  (
 -- ----------------------------
 -- Records of member_address
 -- ----------------------------
+INSERT INTO `member_address` VALUES ('0806a839083743ba90635754d0f15050', '59fc4c41a3e849c5aa33dc8a3ab55b04', '张三', '13800000001', '广东省', '深圳市', '南山区', '科技园南路1号', 1, '2026-10-20 14:23:16', '2026-10-20 14:23:16');
 INSERT INTO `member_address` VALUES ('679deb5631cc44e7bb1cf8b3ac72b675', 'm_0001', '张三', '13800000001', '广东省', '深圳市', '南山区', '科技园南路1号', 1, '2026-09-15 18:40:05', '2026-09-15 18:40:05');
 
 -- ----------------------------
@@ -717,13 +760,39 @@ CREATE TABLE `merchant_login`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uk_merchant`(`merchant_id` ASC) USING BTREE,
   UNIQUE INDEX `uk_merchant_account`(`account` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商户登录账号' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商户登录账号' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of merchant_login
 -- ----------------------------
-INSERT INTO `merchant_login` VALUES (1, 'sp_0001', '12500000001', NULL, '$argon2id$v=19$m=19456,t=2,p=1$vmV47tDPxovrvlqgFM9ajg$vH+Eq9o1/ZkXTb1fcc8WGZZIxRbJaiNUvYKYj6dGBlc', 'cad7dac1', '2026-08-08 22:22:20', '绿野果蔬', 0);
+INSERT INTO `merchant_login` VALUES (1, 'sp_0001', '12500000001', '/api/file/6210f1ab4e9b4cd5a757c933c6c1f28b.jpg', '$argon2id$v=19$m=19456,t=2,p=1$vmV47tDPxovrvlqgFM9ajg$vH+Eq9o1/ZkXTb1fcc8WGZZIxRbJaiNUvYKYj6dGBlc', 'cad7dac1', '2026-08-08 22:22:20', '绿野果蔬', 0);
 INSERT INTO `merchant_login` VALUES (2, 'sp_0002', '14700000002', NULL, '$argon2id$v=19$m=19456,t=2,p=1$vmV47tDPxovrvlqgFM9ajg$vH+Eq9o1/ZkXTb1fcc8WGZZIxRbJaiNUvYKYj6dGBlc', 'cad7f637', '2026-08-08 22:22:20', '金谷粮油', 0);
+INSERT INTO `merchant_login` VALUES (8, 'f3fa7fc87c25486bb95de19e1c579d5d', '13900000001', NULL, '$argon2id$v=19$m=19456,t=2,p=1$7WHO6kbP+X1r5U5I/psIpw$/SdoP7maS3OIzTSEbvIN8/t5q0GgEeCQ8fKUHsdLG7c', '310e38d2', '2026-10-27 18:59:09', '13900000001', 0);
+
+-- ----------------------------
+-- Table structure for merchant_notice
+-- ----------------------------
+DROP TABLE IF EXISTS `merchant_notice`;
+CREATE TABLE `merchant_notice`  (
+  `id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `merchant_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '商户ID（merchant.merchant_id，如 sp_0001）',
+  `notice_type` int NOT NULL DEFAULT 1 COMMENT '通知类型：1库存预警 2订单提醒 3其他',
+  `title` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '通知标题',
+  `content` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '通知内容',
+  `related_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '关联业务ID（库存预警为商品ID）',
+  `stock_snapshot` int NOT NULL DEFAULT 0 COMMENT '预警时的库存快照（用于去重：库存没变不重复预警）',
+  `is_read` int NOT NULL DEFAULT 0 COMMENT '是否已读：0未读 1已读',
+  `create_time` datetime NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_notice_merchant`(`merchant_id` ASC) USING BTREE,
+  INDEX `idx_notice_type_time`(`merchant_id` ASC, `notice_type` ASC, `create_time` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of merchant_notice
+-- ----------------------------
+INSERT INTO `merchant_notice` VALUES ('2331c11b154b490c8f7f455097d4e55a', 'sp_0001', 1, '库存预警', '商品《挪威三文鱼刺身》当前库存仅剩 3 件，请及时补货。', 'g015', 3, 1, '2026-10-28 09:32:37');
+INSERT INTO `merchant_notice` VALUES ('a71990c86f904a26be8fcfb41224d0f0', 'sp_0001', 1, '库存预警', '商品《云南高原红富士苹果》当前库存仅剩 3 件，请及时补货。', 'g001', 3, 1, '2026-10-28 09:34:20');
 
 -- ----------------------------
 -- Table structure for merchant_qualification
@@ -827,10 +896,13 @@ INSERT INTO `order_event_log` VALUES ('468476bdffe04851add6f0c116eb60a0', '6f878
 INSERT INTO `order_event_log` VALUES ('56761afd87ed4ad8a8f8228aa9dd8bb0', 'f951a5ca649b4b6a94786a318dcaa0d9', 'order.created', '5c3733cd5efe46508aa2a22305887514', 'ORD2610140004', 'stock-alert:5c3733cd5efe46508aa2a22305887514', 1, '库存充足，无预警', '2026-10-14 11:07:59', '2026-10-14 11:07:59');
 INSERT INTO `order_event_log` VALUES ('5e205e4c0e2a42ef8b8fcfdd0a50d4a4', '6c9295179c3d4ab7b259b15cef3fbc83', 'order.created', '79fda0d10c28424db318863fb41bbdac', 'ORD2610140001', 'stock-alert:79fda0d10c28424db318863fb41bbdac', 1, '库存充足，无预警', '2026-10-14 11:03:39', '2026-10-14 11:03:39');
 INSERT INTO `order_event_log` VALUES ('7004e5744d1249d3ab657466645dbb5f', '9d225df479024cdd84c1583d0b3a1093', 'order.created', '69f8800f693348dc8da50667017a4ca9', 'ORD2610140005', 'stock-alert:69f8800f693348dc8da50667017a4ca9', 1, '库存充足，无预警', '2026-10-14 11:09:09', '2026-10-14 11:09:09');
+INSERT INTO `order_event_log` VALUES ('70eb9d8d4e104b6b8ad5aeb18a37e827', '54fe4ac781d141458b4d36740b50589d', 'order.created', 'd90b72df1132495498486485d7393418', 'ORD2610270002', 'stock-alert:d90b72df1132495498486485d7393418', 1, '库存充足，无预警', '2026-10-27 19:25:15', '2026-10-27 19:25:15');
 INSERT INTO `order_event_log` VALUES ('7321685b31044ef68dd67a6d51bc2c5c', 'a677929ef5f84e2aacd84e7fc21faa20', 'order.created', '45fe1edffc1e4af7b98273d67844105a', 'ORD2610140003', 'stock-alert:45fe1edffc1e4af7b98273d67844105a', 1, '1 个商品低库存', '2026-10-14 11:03:47', '2026-10-14 11:03:47');
 INSERT INTO `order_event_log` VALUES ('799928932ec142feaa1513e8f6ed2d5c', '7c4ec1efa1f84f0ea99629b694430e56', 'order.created', '30a374d1fe9f4c618c7366b4cab4398c', 'ORD2610140006', 'stock-alert:30a374d1fe9f4c618c7366b4cab4398c', 1, '库存充足，无预警', '2026-10-14 11:12:59', '2026-10-14 11:12:59');
 INSERT INTO `order_event_log` VALUES ('8746da28d4c4450791101de4c99248fe', '7acc7d7629044d65a01e94cdb1c117cb', 'order.created', '743e4810a92845c98de8aad67a42bd7b', 'ORD2610140002', 'stock-alert:743e4810a92845c98de8aad67a42bd7b', 1, '库存充足，无预警', '2026-10-14 11:03:47', '2026-10-14 11:03:47');
+INSERT INTO `order_event_log` VALUES ('c9127065f3534708a2198abbd24e812e', 'a1683f7a7bb14c01ac51591142638338', 'order.created', '9079d870991c448e9dbaac679ea6ae31', 'ORD2610200001', 'stock-alert:9079d870991c448e9dbaac679ea6ae31', 1, '库存充足，无预警', '2026-10-20 14:23:22', '2026-10-20 14:23:22');
 INSERT INTO `order_event_log` VALUES ('cd2df3aa0f1f45bbbf08fd55a86d9819', '344cb7ad543f4ce8a2ad2b2f38cfb930', 'order.completed', '3bc5dc22b5584d6987f1de03ecdf7ca9', 'ORD2610140007', 'settle:3bc5dc22b5584d6987f1de03ecdf7ca9', 1, '结算单 JS20261014-02', '2026-10-14 11:25:07', '2026-10-14 11:25:07');
+INSERT INTO `order_event_log` VALUES ('e8677bd6046e4ab38b7712cb5f5b7ad9', '1a08e5f120dd46b58e32906ec5829a87', 'order.created', '929e6a72806549208d4e96a198049714', 'ORD2610270001', 'stock-alert:929e6a72806549208d4e96a198049714', 1, '库存充足，无预警', '2026-10-27 16:12:08', '2026-10-27 16:12:08');
 
 -- ----------------------------
 -- Table structure for order_freight
@@ -866,6 +938,9 @@ CREATE TABLE `order_freight`  (
 -- ----------------------------
 -- Records of order_freight
 -- ----------------------------
+INSERT INTO `order_freight` VALUES ('1db8efb76fa34d8b8e744450b34f3ffc', 'FR20261027192515578', 'd90b72df1132495498486485d7393418', 'ORD2610270002', '59fcb930d17a4b4b919ef2ca5fc0df58', 'sp_0001', 12.90, 1, 8.00, 1, '按件计费', '首件 ¥8.00，续件 ¥2.00/件，共 1 件', 0, 20.90, 1, '2026-10-27 19:25:16', '2026-10-27 19:25:16', 0, NULL, '2026-10-27 19:25:16', '2026-10-27 19:25:16');
+INSERT INTO `order_freight` VALUES ('827d954825ca4181a579608369488265', 'FR20261027161207530', '929e6a72806549208d4e96a198049714', 'ORD2610270001', '59fcb930d17a4b4b919ef2ca5fc0df58', 'sp_0001', 12.90, 1, 8.00, 1, '按件计费', '首件 ¥8.00，续件 ¥2.00/件，共 1 件', 0, 20.90, 1, '2026-10-27 16:12:08', '2026-10-27 16:12:08', 0, NULL, '2026-10-27 16:12:08', '2026-10-27 16:12:08');
+INSERT INTO `order_freight` VALUES ('a108805222ba4b8dbca7f55b1897b931', 'FR20261020142322828', '9079d870991c448e9dbaac679ea6ae31', 'ORD2610200001', '59fc4c41a3e849c5aa33dc8a3ab55b04', 'sp_0001', 12.90, 1, 8.00, 1, '按件计费', '首件 ¥8.00，续件 ¥2.00/件，共 1 件', 0, 20.90, 1, '2026-10-20 14:23:22', '2026-10-20 14:23:22', 0, NULL, '2026-10-20 14:23:22', '2026-10-20 14:23:22');
 INSERT INTO `order_freight` VALUES ('f94a2a4df66d4c1e8abf3280ffbed369', 'FR20260916113905188', 'a92484fae614486991750697e3142cd8', 'ORD2609160005', 'm_0001', 'sp_0001', 25.80, 2, 10.00, 1, '按件计费', '首件 ¥8.00，续件 ¥2.00/件，共 2 件', 0, 35.80, 1, '2026-09-16 11:39:07', '2026-09-16 11:39:07', 0, NULL, '2026-09-16 11:39:05', '2026-09-16 11:39:07');
 
 -- ----------------------------
@@ -888,10 +963,9 @@ CREATE TABLE `order_pay`  (
 -- ----------------------------
 -- Records of order_pay
 -- ----------------------------
-INSERT INTO `order_pay` VALUES ('3c000e3736d64d0bb482c42d9d4bfb24', '3bc5dc22b5584d6987f1de03ecdf7ca9', 'PAY202610141120200593902', 98.90, 11, 1, '2026-10-14 11:20:20');
 INSERT INTO `order_pay` VALUES ('ca0c2368e13f46e383cd217e6350c034', 'f1d226eb5ed744049bd3848df2444575', 'PAY202609161122140726306', 345.00, 11, 1, '2026-09-16 11:22:14');
-INSERT INTO `order_pay` VALUES ('d0924384e1a8473d99d02ae352864aae', '79fda0d10c28424db318863fb41bbdac', 'PAY202610141103417262617', 25.80, 11, 1, '2026-10-14 11:03:42');
 INSERT INTO `order_pay` VALUES ('d4d095480b9447588e736c442aea61d6', 'c34c684fda284ef5913fde432bbb4ff0', 'PAY202609161102404642263', 345.00, 11, 1, '2026-09-16 11:02:40');
+INSERT INTO `order_pay` VALUES ('ec34059b33ec4433bcc8be0e25f2c0c9', 'd90b72df1132495498486485d7393418', 'PAY202610271925154977705', 12.90, 11, 1, '2026-10-27 19:25:15');
 
 -- ----------------------------
 -- Table structure for order_refund
@@ -969,21 +1043,30 @@ CREATE TABLE `sms_code`  (
 -- ----------------------------
 INSERT INTO `sms_code` VALUES ('1498564b4a2d4528b8ba24492738a885', '13800009999', '466353', 3, 1, '2026-10-17 14:07:24', '2026-10-17 14:02:24', '::1');
 INSERT INTO `sms_code` VALUES ('1abf12a9d824447f933298ac0fe35474', '13800001111', '573072', 3, 1, '2026-10-17 09:08:36', '2026-10-17 09:03:36', '::1');
+INSERT INTO `sms_code` VALUES ('23b4c454eba8435a8fd710b6e4d57949', '13800138000', '910772', 3, 1, '2026-10-27 19:08:59', '2026-10-27 19:03:59', '::1');
 INSERT INTO `sms_code` VALUES ('254ce91c82ed44e5aa46e2b5e5e38aaf', '11111111111', '493540', 1, 1, '2026-10-17 17:11:01', '2026-10-17 17:06:01', '::1');
 INSERT INTO `sms_code` VALUES ('255908c54d004badbd9fe188213b54c6', '13800002222', '544093', 3, 1, '2026-10-17 09:08:35', '2026-10-17 09:03:35', '::1');
 INSERT INTO `sms_code` VALUES ('305ced36a0b44004bd9bd8d8038c43b9', '13800002222', '361550', 3, 1, '2026-10-17 09:07:12', '2026-10-17 09:02:12', '::1');
 INSERT INTO `sms_code` VALUES ('33ebb67a02974955a16cc667b733f891', '13800003333', '361489', 3, 1, '2026-10-17 09:44:51', '2026-10-17 09:39:51', '::1');
 INSERT INTO `sms_code` VALUES ('3d0e2d36edbc452cbf4f875f73c3626b', '12232435445', '158976', 3, 0, '2026-10-17 15:34:08', '2026-10-17 15:29:08', '::1');
+INSERT INTO `sms_code` VALUES ('3f9ee9a1eac540bc9733878c8ad37612', '13800138000', '374911', 3, 0, '2026-10-27 18:57:20', '2026-10-27 18:52:20', '::1');
+INSERT INTO `sms_code` VALUES ('5906a7ba2ddb45cbb78d90c9d27d0448', '13800002222', '144183', 3, 1, '2026-10-27 16:09:33', '2026-10-27 16:04:33', '::1');
+INSERT INTO `sms_code` VALUES ('609a5a8159454631b87d549c40e35bd8', '13800138000', '307270', 3, 1, '2026-10-27 19:06:27', '2026-10-27 19:01:27', '::1');
+INSERT INTO `sms_code` VALUES ('75694fa51ed648f7a672816a1d14598b', '13800003333', '913130', 3, 1, '2026-10-27 16:14:24', '2026-10-27 16:09:24', '::1');
 INSERT INTO `sms_code` VALUES ('7ae6e9f997f340de95a59c8855a5d346', '13800009999', '155290', 3, 1, '2026-10-17 10:52:54', '2026-10-17 10:47:54', '::1');
 INSERT INTO `sms_code` VALUES ('81cb942a6f9e430594906d0fef18d5d6', '13800009999', '129486', 3, 1, '2026-10-17 10:47:00', '2026-10-17 10:42:00', '::1');
 INSERT INTO `sms_code` VALUES ('82150b4c62a242f58f2bb5c8418096bf', '19332405533', '453381', 3, 1, '2026-10-17 09:15:08', '2026-10-17 09:10:08', '::1');
 INSERT INTO `sms_code` VALUES ('88c9924abf4c4aa8bac53b180ccf885d', '13900000000', '743920', 3, 1, '2026-10-17 08:42:46', '2026-10-17 08:37:46', '::1');
+INSERT INTO `sms_code` VALUES ('8fbcfcdc7d2648cb8e4ecdf970271c45', '13900000001', '416121', 3, 1, '2026-10-27 19:04:08', '2026-10-27 18:59:08', '::1');
 INSERT INTO `sms_code` VALUES ('926b1193e564438cb23fabf6ce48db76', '13900001234', '761023', 3, 1, '2026-10-16 17:20:06', '2026-10-16 17:15:06', '::1');
+INSERT INTO `sms_code` VALUES ('9715c4b0885c4ad3810981ab7e85e4ae', '13800138000', '960795', 3, 1, '2026-10-27 19:11:21', '2026-10-27 19:06:21', '::1');
 INSERT INTO `sms_code` VALUES ('ac05d34dc9084fec93506d3e36144b0c', '13900001234', '497445', 3, 1, '2026-10-16 17:18:06', '2026-10-16 17:13:06', '::1');
 INSERT INTO `sms_code` VALUES ('b0802ad6cad24c399fa53244965ed57a', '13800001111', '687293', 3, 1, '2026-10-17 09:05:26', '2026-10-17 09:00:26', '::1');
+INSERT INTO `sms_code` VALUES ('bb97182fe04f431c8e2c26f9a9ef9977', '13800138000', '894179', 3, 1, '2026-10-27 18:52:27', '2026-10-27 18:47:27', '::1');
 INSERT INTO `sms_code` VALUES ('bc9b3297e4794f5c8e1407341cbf1a6e', '13800009999', '567022', 3, 1, '2026-10-17 10:48:22', '2026-10-17 10:43:22', '::1');
 INSERT INTO `sms_code` VALUES ('c5bee09eefa34a928d2720670648948d', '13900005678', '463676', 3, 1, '2026-10-16 17:18:37', '2026-10-16 17:13:37', '::1');
 INSERT INTO `sms_code` VALUES ('ca90f0d74d0a4a458b89e2e572d7e777', '13583395459', '819150', 3, 1, '2026-10-17 09:49:46', '2026-10-17 09:44:46', '::1');
+INSERT INTO `sms_code` VALUES ('f09a846063614c8a8e06d9088bdc60ba', '11111111111', '971536', 3, 1, '2026-10-20 14:27:16', '2026-10-20 14:22:16', '::1');
 
 -- ----------------------------
 -- Table structure for stock
@@ -1005,7 +1088,7 @@ CREATE TABLE `stock`  (
 -- ----------------------------
 -- Records of stock
 -- ----------------------------
-INSERT INTO `stock` VALUES ('88608b1789994d14ac4dd7a029404653', 'g001', '北门仓', 362, 6, '2026-08-13 09:46:38', '2026-10-16 11:19:39');
+INSERT INTO `stock` VALUES ('88608b1789994d14ac4dd7a029404653', 'g001', '北门仓', 362, 9, '2026-08-13 09:46:38', '2026-10-27 19:25:15');
 INSERT INTO `stock` VALUES ('af51414150bb46399fa7bd3c55693721', 'g003', '北门仓', 267, 10, '2026-08-13 09:46:22', '2026-09-16 08:45:19');
 INSERT INTO `stock` VALUES ('st_5e7a7009945711f199af28f52bf063a0', 'g004', NULL, 165, 17, '2026-08-10 09:03:59', '2026-10-14 11:07:57');
 INSERT INTO `stock` VALUES ('st_5e7a7327945711f199af28f52bf063a0', 'g005', NULL, 399, 2, '2026-08-10 09:03:59', '2026-10-14 11:13:59');
@@ -1187,17 +1270,21 @@ CREATE TABLE `sys_login_log`  (
 -- Records of sys_login_log
 -- ----------------------------
 INSERT INTO `sys_login_log` VALUES ('066899abeaca403ea96ad395c1bcd194', '9432473ed28b4126b2e274e373d53a0c', '13800009999', '也没有', '没有', 'a910b488892b4ce5928355e5b73694d0', '2026-10-17 14:02:25');
+INSERT INTO `sys_login_log` VALUES ('177e1414b9f8488aa36c9c0a42972dc3', '59fcb930d17a4b4b919ef2ca5fc0df58', '13800003333', '也没有', '没有', 'cb5c0a7c6d304a2fa3f0738d1318e8b4', '2026-10-27 16:09:33');
 INSERT INTO `sys_login_log` VALUES ('1da1a7b373ca4f64a0650d6543473e9c', '84f6a9f12f4a41e5b3701426ead5647a', '13800002222', '也没有', '没有', 'e20bb30e96c84d8da16197711c840a7c', '2026-10-17 09:02:13');
 INSERT INTO `sys_login_log` VALUES ('1ffbae996d77459a80af2e9bf5e31406', 'u_0001', '13700000001', '也没有', '没有', '2aa893d6da3a42028e6adcf4befc3c3f', '2026-10-18 13:22:43');
 INSERT INTO `sys_login_log` VALUES ('26242e4f31e44d4d89c2c3e74c5aa24a', 'u_0001', '13700000001', '也没有', '没有', 'ec8af647c6e34d24b40bb9b5cc9dc0c4', '2026-10-17 16:40:36');
 INSERT INTO `sys_login_log` VALUES ('2e99aacaa81546e6bcc96a161ab74f59', '42b4547c5cb746959f5cf0355e4e9903', '13900005678', '也没有', '没有', '612318a63a8c440f803228da9dbdc68a', '2026-10-16 17:13:37');
+INSERT INTO `sys_login_log` VALUES ('34c2d51cc76e43a3b70ae8f107a2f9cf', '278cf671e8ee4740801ff050570ad6c5', '13800138000', '也没有', '没有', '31b8e5a1433141a9b9ff614d0d12e81e', '2026-10-27 19:04:00');
 INSERT INTO `sys_login_log` VALUES ('398a586617fc4db8802c459f4becb888', 'u_0001', '13700000001', '也没有', '没有', 'fc1c1182e0c04853beeb28554c8ffbe7', '2026-10-16 16:20:40');
 INSERT INTO `sys_login_log` VALUES ('3a36e3ccfda74b299d50afe126878bd2', 'u_0001', '13700000001', '也没有', '没有', '6c539f2137794a31aa961f8244018800', '2026-10-18 13:39:15');
 INSERT INTO `sys_login_log` VALUES ('3dee28fa811f423083d6c1c07b601323', 'u_0001', '13700000001', '也没有', '没有', '59796ced82084ab1843a36760c0881da', '2026-10-16 14:59:10');
 INSERT INTO `sys_login_log` VALUES ('451cfad2bddc4ef8a51526d1d6db215c', 'u_0001', '13700000001', '也没有', '没有', '4a24789f6f39493c80ae846055118414', '2026-09-14 14:04:42');
 INSERT INTO `sys_login_log` VALUES ('46dd3485d2064d62831c9e315aec755d', 'u_0001', '13700000001', '也没有', '没有', '799c698cffe243a7867d78472b10e6aa', '2026-10-17 14:07:59');
+INSERT INTO `sys_login_log` VALUES ('498b7f74d76a4688a159b6241f575f55', '278cf671e8ee4740801ff050570ad6c5', '13800138000', '也没有', '没有', '10b37d8861a042c19bc31809e8b49c8c', '2026-10-27 18:47:46');
 INSERT INTO `sys_login_log` VALUES ('5dda16b5002d406980d98a7727ca866c', '479b927d83d14267bc4b8840297d638b', '13800000099', '也没有', '没有', '29f4764acf4149e7a11600089818bf78', '2026-10-17 15:16:31');
 INSERT INTO `sys_login_log` VALUES ('68e8c1babf154d05b8d2f907d047186d', 'u_0001', '13700000001', '也没有', '没有', '01a955d1fc9a48bab4a5b56b0f614365', '2026-09-14 16:30:27');
+INSERT INTO `sys_login_log` VALUES ('700c9a1558fc4f40852a38c94e20e467', '278cf671e8ee4740801ff050570ad6c5', '13800138000', '也没有', '没有', '04857d4993b3493393e98159569a4492', '2026-10-27 19:01:27');
 INSERT INTO `sys_login_log` VALUES ('734e7b41b0594127992e88f6a14cc822', '9432473ed28b4126b2e274e373d53a0c', '13800009999', '也没有', '没有', 'f92d38b5d8064f3a9a51190519a91176', '2026-10-17 10:48:47');
 INSERT INTO `sys_login_log` VALUES ('78416a667d3f48a9b3a0b168be60f9a5', 'u_0001', '13700000001', '也没有', '没有', '3c86eb9026e64dc5bf81497657d39ef7', '2026-09-14 11:44:45');
 INSERT INTO `sys_login_log` VALUES ('86e55a9b7345484bac11492a00fc6fda', 'u_0001', '13700000001', '也没有', '没有', 'e80e08516e7648cc89099c94199a4230', '2026-10-16 10:28:22');
@@ -1205,19 +1292,23 @@ INSERT INTO `sys_login_log` VALUES ('89bcfa69b529456a9220e4da80873cfd', 'u_0001'
 INSERT INTO `sys_login_log` VALUES ('94b99ba170c14e7280db10100b7c4024', 'u_0001', '13700000001', '也没有', '没有', '79c67e39bf4b4375a9c4f3ea369435c9', '2026-10-17 15:52:10');
 INSERT INTO `sys_login_log` VALUES ('98adb280e58f4edeaf8991f9e2e0b2c1', 'd4436e1517404f72b0ccc95a3f09fae5', '13583395459', '也没有', '没有', 'c1261948dbfd45028fcd53acb15e9a38', '2026-10-17 09:44:55');
 INSERT INTO `sys_login_log` VALUES ('9db3126ad62140f5adf90d19e407268c', '84f6a9f12f4a41e5b3701426ead5647a', '13800002222', '也没有', '没有', 'd293205ca71e44b687b41021ef6aa476', '2026-10-17 09:03:36');
+INSERT INTO `sys_login_log` VALUES ('a3ba9d76d62943d29bd756c279d44271', '59fc4c41a3e849c5aa33dc8a3ab55b04', '11111111111', '也没有', '没有', 'c27f9fdd4fb4491695b25d371f19b646', '2026-10-20 14:22:31');
 INSERT INTO `sys_login_log` VALUES ('a4593c8c344549ea8a4ed16251db660b', 'u_0001', '13700000001', '也没有', '没有', '1a6fb1dbc4c04558aef1227c0c1f3dd6', '2026-10-16 11:17:52');
 INSERT INTO `sys_login_log` VALUES ('a8b0ec4ccb5b4deab3af4a38e38edbf6', 'u_0001', '13700000001', '也没有', '没有', '0c8e93a648c248ef981669ca0c94fb83', '2026-09-14 14:05:28');
+INSERT INTO `sys_login_log` VALUES ('ab1ec0d9b6774586bcb548320c5e3e2e', '278cf671e8ee4740801ff050570ad6c5', '13800138000', '也没有', '没有', '0502f2f18ee942179d67835e0ea1e1c8', '2026-10-27 19:06:21');
 INSERT INTO `sys_login_log` VALUES ('afcf804b8c244c71b567d1a022dafe7b', '9432473ed28b4126b2e274e373d53a0c', '13800009999', '也没有', '没有', '3a884bd4af9b4fadb0681f97e0884738', '2026-10-17 10:42:01');
 INSERT INTO `sys_login_log` VALUES ('b4ac09ce6c8f4ed687190ab7620824ea', 'u_0001', '13700000001', '也没有', '没有', 'eeba34f602164d11b73e3ca78cf18ace', '2026-09-16 14:01:07');
 INSERT INTO `sys_login_log` VALUES ('b6241c03f11544c594f41fc86805cd53', 'b872bd7493954fd1aadceeaca53dc9a7', '13900001234', '也没有', '没有', 'a2675589278841958d76f09619a43c2b', '2026-10-16 17:13:21');
 INSERT INTO `sys_login_log` VALUES ('b650cd5da73249818ccde8d140306375', '59fcb930d17a4b4b919ef2ca5fc0df58', '13800003333', '也没有', '没有', 'b06078e705464ce1b92fe4a35c898424', '2026-10-17 09:39:53');
 INSERT INTO `sys_login_log` VALUES ('bfdeadfdd13949e7b6b01a577e0bde02', 'u_0001', '13700000001', '也没有', '没有', '3e3a8cfc0874492883da6ca1028eccd0', '2026-10-16 15:58:15');
 INSERT INTO `sys_login_log` VALUES ('c3f3f5ac10034473963139b003b35fdf', 'u_0001', '13700000001', '也没有', '没有', 'a977369238584fb094cd810e8a1006ed', '2026-10-16 14:45:04');
+INSERT INTO `sys_login_log` VALUES ('c835514c6e2546989e42cffc82dcb4d8', '84f6a9f12f4a41e5b3701426ead5647a', '13800002222', '也没有', '没有', '837813559c1f482c853de7dadb203869', '2026-10-27 16:04:41');
 INSERT INTO `sys_login_log` VALUES ('cb7199301ca64c89950e5bed29a35545', 'u_0001', '13700000001', '也没有', '没有', '4e242a79dcee41a9b410248a5a9b83e5', '2026-10-16 10:27:39');
 INSERT INTO `sys_login_log` VALUES ('cdf95c3a109c46cdb4c185c19c781d7d', 'u_0001', '13700000001', '也没有', '没有', '21b1ea047fa640e29c7ec6951d969618', '2026-10-17 17:39:13');
 INSERT INTO `sys_login_log` VALUES ('d506250f83f147b8892172a8a47d2d67', 'u_0001', '13700000001', '也没有', '没有', '6a4cc368ca2548f7bc5e977b6b9ba1a6', '2026-09-14 11:05:05');
 INSERT INTO `sys_login_log` VALUES ('d68583ecd7e64e3f947e2cc7ec6079c3', 'u_0001', '13700000001', '也没有', '没有', 'ee0dea636ed249939da382ab42241aad', '2026-09-14 14:04:36');
 INSERT INTO `sys_login_log` VALUES ('d88da08159804367af9e5a1157d856b3', 'u_0001', '13700000001', '也没有', '没有', '1d723b538f844397b343dae67d5c1f94', '2026-09-14 14:04:41');
+INSERT INTO `sys_login_log` VALUES ('d9cd77f5cd6041639bad16676f37453b', 'u_0001', '13700000001', '也没有', '没有', 'c8ad8e7575074c2bb6a7904ad74e7ac6', '2026-10-21 10:31:26');
 INSERT INTO `sys_login_log` VALUES ('dddf3610859947119a294783af9c826f', 'u_0001', '13700000001', '也没有', '没有', 'f2f769c631de45ed89538449bea4581a', '2026-09-14 14:04:43');
 INSERT INTO `sys_login_log` VALUES ('e19c5cb102b84e5782577d9a7d9287b4', '9eff5d29efc24c3998e9b07a315a7692', '13900000000', '也没有', '没有', '0e912204b6a642ab95db611ee42ad8d2', '2026-10-17 08:38:00');
 INSERT INTO `sys_login_log` VALUES ('e24a5cfe84ca4ee8b33e0dcba25f4aea', '0fb5a2f052614b42afb3732cee812919', '13800001111', '也没有', '没有', '6b9fdab8cf9c418ba67029aa8c653293', '2026-10-17 09:03:37');
@@ -1323,6 +1414,7 @@ INSERT INTO `sys_oper_log` VALUES ('2a52a8ae11dc4a1b8c29ec9b11097bed', '2026-10-
 INSERT INTO `sys_oper_log` VALUES ('2b000c5bc5484ff8990b553ff42556be', '2026-10-17 14:08:00', '/api/login/Login_Admin', '用户管理', '管理员登陆', 'POST', '{\"account\":\"13700000001\",\"password\":\"1******\"}', '2026-10-17 14:08:00', 'ok');
 INSERT INTO `sys_oper_log` VALUES ('35013582fe8f49b0be46c47978d92304', '2026-09-14 11:44:46', '/api/login/Login_Admin', '用户管理', '管理员登陆', 'POST', '{\"account\":\"13700000001\",\"password\":\"1******\"}', '2026-09-14 11:44:46', 'ok');
 INSERT INTO `sys_oper_log` VALUES ('3a79679b3cb4459e9398edff21977e41', '2026-10-16 15:58:15', '/api/login/Login_Admin', '用户管理', '管理员登陆', 'POST', '{\"account\":\"13700000001\",\"password\":\"1******\"}', '2026-10-16 15:58:15', 'ok');
+INSERT INTO `sys_oper_log` VALUES ('3eac096850744267a6ce3c41ce9a3928', '2026-10-21 10:31:27', '/api/login/Login_Admin', '用户管理', '管理员登陆', 'POST', '{\"account\":\"13700000001\",\"password\":\"1******\"}', '2026-10-21 10:31:27', 'ok');
 INSERT INTO `sys_oper_log` VALUES ('572c4f66c990474bbd02934afb8b9034', '2026-10-16 10:27:44', '/api/login/Login_Admin', '用户管理', '管理员登陆', 'POST', '{\"account\":\"13700000001\",\"password\":\"1******\"}', '2026-10-16 10:27:44', 'ok');
 INSERT INTO `sys_oper_log` VALUES ('603e5773ad144003911c163c07f717d3', '2026-10-18 13:39:16', '/api/login/Login_Admin', '用户管理', '管理员登陆', 'POST', '{\"account\":\"13700000001\",\"password\":\"1******\"}', '2026-10-18 13:39:16', 'ok');
 INSERT INTO `sys_oper_log` VALUES ('63c52faee7f2464f8657e2e019b8f752', '2026-10-18 13:22:43', '/api/login/Login_Admin', '用户管理', '管理员登陆', 'POST', '{\"account\":\"13700000001\",\"password\":\"1******\"}', '2026-10-18 13:22:43', 'ok');
@@ -1388,9 +1480,11 @@ CREATE TABLE `sys_users`  (
 -- Records of sys_users
 -- ----------------------------
 INSERT INTO `sys_users` VALUES ('0fb5a2f052614b42afb3732cee812919', '13800001111', '13800001111', '$argon2id$v=19$m=19456,t=2,p=1$ZVKFnfs9E8A7rLpId/zDbA$rtR0wDS521SWVuCTJVB9DkbMe7BEsoCUf9uKqIYQhTk', '28110d2d', '2026-10-17 09:00:27', 0, NULL, NULL, NULL);
+INSERT INTO `sys_users` VALUES ('278cf671e8ee4740801ff050570ad6c5', '13800138000', '13800138000', '$argon2id$v=19$m=19456,t=2,p=1$slM7P9pnSR7Q5+aP7y20nw$gz5kxizFUB8pC0Ke1S1B4evoAJ9uwoUT16nrSgwz6uc', 'aedfd9d8', '2026-10-27 18:47:45', 0, NULL, NULL, NULL);
 INSERT INTO `sys_users` VALUES ('42b4547c5cb746959f5cf0355e4e9903', '13900005678', '13900005678', '$argon2id$v=19$m=19456,t=2,p=1$NVRyY70u4vT7AntmCX8OEg$JzTNPt9/rD/XhK+06yyoT+jHp+QX6lfS7f7xX/xfZwo', '36c05a82', '2026-10-16 17:13:37', 0, NULL, NULL, NULL);
 INSERT INTO `sys_users` VALUES ('479b927d83d14267bc4b8840297d638b', '13800000099', '13800000099', '$argon2id$v=19$m=19456,t=2,p=1$wzUyaISrDKLhfh3tXABRRA$rj6tJj3GHA/5f4+iIc2Df8ZFVaJCc9R2yfEcRKeBzB4', 'eb591d1b', '2026-10-17 15:16:31', 0, NULL, NULL, NULL);
 INSERT INTO `sys_users` VALUES ('4ae99d2f4d194ffca171be252f68e8f9', '19332405533', '19332405533', '$argon2id$v=19$m=19456,t=2,p=1$VyymYWEmB93tkKXEsYBL1A$EpIpogiNEW6BK3U8dgCyujHa2t5Q/p+L6NGbZ57rwwI', '8c935e7c', '2026-10-17 09:12:55', 0, NULL, NULL, NULL);
+INSERT INTO `sys_users` VALUES ('59fc4c41a3e849c5aa33dc8a3ab55b04', '11111111111', '11111111111', '$argon2id$v=19$m=19456,t=2,p=1$v+1W0gQFQ6CXSiS+mMafKQ$VZcPMRVgvKmy++Jn6a9nM7IYmQiq85sU0FHehOjOO00', '948b801a', '2026-10-20 14:22:30', 0, NULL, NULL, NULL);
 INSERT INTO `sys_users` VALUES ('59fcb930d17a4b4b919ef2ca5fc0df58', '13800003333', '13800003333', '$argon2id$v=19$m=19456,t=2,p=1$KZqunbs2DM3ljXwM2ApQpw$lYGJXJO/k62YUmc290eyNOkKEbpG7v6Ob0CqouSID08', '159dbe1a', '2026-10-17 09:39:53', 0, NULL, NULL, NULL);
 INSERT INTO `sys_users` VALUES ('84f6a9f12f4a41e5b3701426ead5647a', '13800002222', '13800002222', '$argon2id$v=19$m=19456,t=2,p=1$2i3js8yJsCz/Tj3yFT1fSw$7BH/6uOgf6dd7f3HFpRhXIqhGYOeSmRV1Yffnqw/lLg', '92958e6f', '2026-10-17 09:02:13', 0, NULL, NULL, NULL);
 INSERT INTO `sys_users` VALUES ('9432473ed28b4126b2e274e373d53a0c', '13800009999', '13800009999', '$argon2id$v=19$m=19456,t=2,p=1$jYtlUZgmqD9B5NRV6hNxHA$3yw6eINZkaopenvntXv5n1YBCOoQ48zTVCtNdwDWtLo', '9da6f989', '2026-10-17 10:42:01', 0, NULL, NULL, NULL);

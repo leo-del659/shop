@@ -355,6 +355,12 @@ namespace ECommerce.Service.Instance
                 SupplyPrice = dto.CostPrice ?? 0,
                 CreateTime = now
             });
+            // 多规格：规格组写入 goods_spec，规格值写入 goods_sku
+            if (dto.Specs != null && dto.Specs.Count > 0)
+            {
+                SaveGoodsSpecs(goodsId, dto.Specs, now);
+                ApplySkuAggregate(goods, dto.Specs);
+            }
             _context.SaveChanges();
             return Ok("添加成功", BuildGoodsDto(goods, dto.CostPrice ?? 0));
         }
@@ -391,8 +397,112 @@ namespace ECommerce.Service.Instance
                 sg.SupplyPrice = dto.CostPrice.Value;
 
             goods.UpdateTime = DateTime.Now;
+
+            // 多规格：先删旧规格再写入新规格；规格价库存为空的规格值会被忽略
+            if (dto.Specs != null)
+            {
+                SaveGoodsSpecs(id, dto.Specs, DateTime.Now);
+                ApplySkuAggregate(goods, dto.Specs);
+            }
+
             _context.SaveChanges();
             return Ok("保存成功", BuildGoodsDto(goods, sg.SupplyPrice ?? 0));
+        }
+
+        /// <summary>
+        /// 保存商品规格：规格组 → goods_spec，规格值 → goods_sku（先删后写，全量覆盖）。
+        /// specs 为空数组时表示「清空该商品的全部规格」。
+        /// </summary>
+        private void SaveGoodsSpecs(string goodsId, List<MerchantGoodsSkuDto> specs, DateTime now)
+        {
+            // 清理旧数据（外键 ON DELETE CASCADE，但这里显式删除保证幂等）
+            var oldSkus = _context.GoodsSkus.Where(s => s.GoodsId == goodsId).ToList();
+            if (oldSkus.Count > 0) _context.GoodsSkus.RemoveRange(oldSkus);
+            var oldSpecs = _context.GoodsSpecs.Where(s => s.GoodsId == goodsId).ToList();
+            if (oldSpecs.Count > 0) _context.GoodsSpecs.RemoveRange(oldSpecs);
+            if (specs == null || specs.Count == 0) return;
+
+            // 按规格组分组：同一组名共用一个 goods_spec.id
+            var groupIds = new Dictionary<string, string>();
+            int groupSort = 0;
+            foreach (var s in specs)
+            {
+                var groupName = string.IsNullOrWhiteSpace(s.GroupName) ? "规格" : s.GroupName!.Trim();
+                if (groupIds.ContainsKey(groupName)) continue;
+                var specId = Config.NewSequentialGuid();
+                groupIds[groupName] = specId;
+                _context.GoodsSpecs.Add(new GoodsSpec
+                {
+                    Id = specId,
+                    GoodsId = goodsId,
+                    SpecName = groupName,
+                    Sort = groupSort++,
+                    CreateTime = now
+                });
+            }
+
+            int sort = 0;
+            foreach (var s in specs)
+            {
+                var specName = (s.SpecName ?? "").Trim();
+                if (string.IsNullOrEmpty(specName)) continue;
+                var groupName = string.IsNullOrWhiteSpace(s.GroupName) ? "规格" : s.GroupName!.Trim();
+                _context.GoodsSkus.Add(new GoodsSku
+                {
+                    Id = Config.NewSequentialGuid(),
+                    GoodsId = goodsId,
+                    SpecId = groupIds[groupName],
+                    SkuName = specName,
+                    SkuCode = string.IsNullOrWhiteSpace(s.Code) ? null : s.Code!.Trim(),
+                    Price = s.Price ?? 0,
+                    Stock = s.Stock ?? 0,
+                    Sort = sort++,
+                    CreateTime = now
+                });
+            }
+        }
+
+        /// <summary>
+        /// 多规格商品的价格/库存汇总：
+        /// 商品售价取规格最低价，库存取规格库存之和（与后台管理端口径一致）。
+        /// </summary>
+        private void ApplySkuAggregate(Good goods, List<MerchantGoodsSkuDto> specs)
+        {
+            var valid = specs.Where(s => !string.IsNullOrWhiteSpace(s.SpecName)).ToList();
+            if (valid.Count == 0) return;
+            var prices = valid.Where(s => s.Price.HasValue).Select(s => s.Price!.Value).ToList();
+            if (prices.Count > 0) goods.Price = prices.Min();
+            goods.Stock = valid.Sum(s => s.Stock ?? 0);
+        }
+
+        /// <summary>
+        /// 查询商品规格（商户端编辑页用）：返回规格组与 SKU 明细
+        /// </summary>
+        public Api_Response GetGoodsSpecs(string merchantId, string goodsId)
+        {
+            var sg = _context.MerchantGood.FirstOrDefault(x => x.GoodsId == goodsId && x.MerchantId == merchantId);
+            if (sg == null) return Fail("无权限查看该商品规格");
+
+            var specs = _context.GoodsSpecs
+                .Where(s => s.GoodsId == goodsId)
+                .OrderBy(s => s.Sort)
+                .Select(s => new { id = s.Id, specName = s.SpecName, sort = s.Sort })
+                .ToList();
+            var skus = _context.GoodsSkus
+                .Where(s => s.GoodsId == goodsId)
+                .OrderBy(s => s.Sort)
+                .Select(s => new
+                {
+                    id = s.Id,
+                    specId = s.SpecId,
+                    skuName = s.SkuName,
+                    skuCode = s.SkuCode,
+                    price = s.Price,
+                    stock = s.Stock,
+                    sort = s.Sort,
+                })
+                .ToList();
+            return Ok("ok", new { specs, skus });
         }
 
         public Api_Response ToggleGoods(string merchantId, string id)
@@ -1135,25 +1245,40 @@ namespace ECommerce.Service.Instance
             // 真实规格：JOIN goods_sku / goods_spec，输出 skus / specs 数组
             var skus = _context.GoodsSkus
                 .Where(s => s.GoodsId == g.Id)
+                .OrderBy(s => s.Sort)
                 .Select(s => new
                 {
                     id = s.Id,
                     specId = s.SpecId,
                     skuName = s.SkuName,
+                    skuCode = s.SkuCode,
                     price = s.Price,
                     stock = s.Stock,
                 })
                 .ToList();
-            // 规格表 goods_spec 未创建：规格由已查出的 skus 合成（specId 即规格 id，skuName 即规格名）
-            var specs = skus
-                .Where(s => !string.IsNullOrEmpty(s.specId))
-                .GroupBy(s => s.specId)
-                .Select(grp => new
-                {
-                    id = grp.Key,
-                    specName = grp.First().skuName,
-                })
+            // 规格组：优先取 goods_spec（商户端维护的规格组，如「重量」）；
+            // 老数据没有 goods_spec 时回退为「按 sku.spec_id 合成」，保证后台管理端创建的商品仍可展示规格
+            var specRows = _context.GoodsSpecs
+                .Where(s => s.GoodsId == g.Id)
+                .OrderBy(s => s.Sort)
+                .Select(s => new { id = s.Id, specName = s.SpecName })
                 .ToList();
+            var specs = specRows.Count > 0
+                ? specRows
+                : skus
+                    .Where(s => !string.IsNullOrEmpty(s.specId))
+                    .GroupBy(s => s.specId)
+                    .Select(grp => new
+                    {
+                        id = grp.Key,
+                        specName = grp.First().skuName,
+                    })
+                    .ToList();
+
+            // 多规格价格区间（列表页展示「¥最低价-最高价」与「多规格」标签）
+            var skuPrices = skus.Select(s => s.price).Where(p => p > 0).ToList();
+            decimal priceMin = skuPrices.Count > 0 ? skuPrices.Min() : g.Price;
+            decimal priceMax = skuPrices.Count > 0 ? skuPrices.Max() : g.SalePrice;
 
             // 查询所属商户名称：优先使用传入的 merchantId；为空时尝试从 merchant_goods 反查兜底
             var resolvedMerchantId = merchantId;
@@ -1194,6 +1319,9 @@ namespace ECommerce.Service.Instance
                 updateTime = g.UpdateTime,
                 skus = skus,
                 specs = specs,
+                skuCount = skus.Count,
+                priceMin = priceMin,
+                priceMax = priceMax,
                 merchantName = merchantName,
             };
         }

@@ -42,7 +42,7 @@
     the backend. That's intentional: a re-build means a re-deploy, and VS
     will start a fresh process when you next press F5.
   -->
-  <Target Name="KillRunningBackend" BeforeTargets="BeforeBuild">
+  <Target Name="KillRunningBackend" BeforeTargets="BeforeBuild" Condition="'$(OS)' == 'Windows_NT'">
     <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildThisFileDirectory)..\..\..\kill-backend-locks.ps1&quot;" IgnoreExitCode="true" />
   </Target>
 

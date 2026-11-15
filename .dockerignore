@@ -1,0 +1,21 @@
+# .NET
+**/bin/
+**/obj/
+**/.vs/
+
+# 前端
+**/node_modules/
+**/dist/
+
+# 运行时数据（容器内重新生成 / 用卷挂载）
+Api/Logs/
+Api/ECommerce/ECommerce.Api.Admin/uploads/
+
+# 版本控制
+.git/
+.gitignore
+**/.git/
+
+# 其它
+**/*.user
+**/*.suo

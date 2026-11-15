@@ -1,0 +1,89 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: shop_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: 111
+      TZ: Asia/Shanghai
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./SqlScript/111.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: shop_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: shop_rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: shop_api
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      host: "http://0.0.0.0:6001"
+      ConnectionStrings__MySql: "server=mysql;port=3306;user id=root;password=${MYSQL_ROOT_PASSWORD};database=111"
+      Jwt__SecretKey: "${JWT_SECRET}"
+      RabbitMQ__Enabled: "true"
+      RabbitMQ__HostName: "rabbitmq"
+      RabbitMQ__UserName: "${RABBITMQ_USER}"
+      RabbitMQ__Password: "${RABBITMQ_PASSWORD}"
+      Resilience__Enabled: "true"
+      Resilience__Redis__Configuration: "redis:6379"
+      Logs__Action_Log: "/app/Logs"
+      Logs__Error_Log: "/app/Logs/Error"
+      Uploads__Path: "/app/uploads"
+    # 后端仅经 nginx 反代对内网服务，不映射宿主机端口
+    volumes:
+      - api_uploads:/app/uploads
+      - api_logs:/app/Logs
+
+  admin:
+    build:
+      context: ./Admin/admin
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: "${ADMIN_API_BASE_URL:-/}"
+    container_name: shop_admin
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "8080:80"
+
+volumes:
+  mysql_data:
+  redis_data:
+  rabbitmq_data:
+  api_uploads:
+  api_logs:

@@ -48,8 +48,12 @@ builder.Services.AddScoped<JWT_Helper>();
 //泛型注入
 builder.Services.AddScoped(typeof(I_Repository<>), typeof(MySql_Repository<>));
 
-//连接字符串在哪？
-builder.Services.AddDbContext<_111Context>();
+//连接字符串：环境变量优先，缺省回退本地值
+var mysqlConnection = builder.Configuration.GetConnectionString("MySql")
+    ?? builder.Configuration["MySql:ConnectionString"]
+    ?? "server=localhost;user id=root;password=123456;database=111";
+builder.Services.AddDbContext<_111Context>(options =>
+    options.UseMySql(mysqlConnection, Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.46-mysql")));
 builder.Services.AddScoped<DbContext, _111Context>();
 
 //扩展方法 一次性注入一个程序集 
@@ -351,7 +355,9 @@ app.UseMiddleware<ECommerce.Api.Admin.Middles.Resilience.Resilience_MiddleWare>(
 
 // 3. 静态文件映射：让数据库里小程序风格的 /images/products/xxx.webp 路径
 // 在后台也能直接访问，指向与 FileController 相同的 uploads 目录。
-var uploadDir = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "uploads");
+//上传目录（环境变量 Uploads__Path 可覆盖）
+var uploadDir = builder.Configuration["Uploads:Path"]
+    ?? Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "uploads");
 if (!Directory.Exists(uploadDir))
 {
     Directory.CreateDirectory(uploadDir);
